@@ -13,5 +13,5 @@
 - [x] ربط apex بـWorkers Static Assets بعد إزالة سجل DNS القديم المتعارض.
 - [x] www → apex بحالة 301 مع حفظ المسار والاستعلام، وتفعيل Always Use HTTPS.
 - [x] تعطيل Cloudflare Managed robots.txt وحماية/حجب روبوتات المحتوى حتى يبقى `robots.txt` سامحًا لجميع الروبوتات كما هو معتمد.
-- [ ] تفعيل Crawler Hints من Dashboard؛ لا توفره Cloudflare في OpenAPI الحالي.
+- [x] تفعيل Crawler Hints للنطاق؛ أكدت Cloudflare تطبيق `crawlhints_enabled=true`.
 - [ ] إضافة ملكية Search Console/Bing وإرسال `https://sorouh.site/sitemap.xml` من حسابات المالك.
