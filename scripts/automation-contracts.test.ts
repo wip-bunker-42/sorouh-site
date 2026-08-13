@@ -73,6 +73,16 @@ describe('repository automation contracts', () => {
     expect(packageJson.scripts['deploy:ci']).toBe('sanity deploy --yes --schema-required')
   })
 
+  test('build integration tests create their own production artifacts', () => {
+    const packageJson = JSON.parse(read('web/package.json')) as {
+      scripts: Record<string, string>
+    }
+
+    expect(packageJson.scripts['test:build']).toBe(
+      'pnpm build && vitest run tests/integration/build.test.ts',
+    )
+  })
+
   test('the Studio package test command executes its real schema tests from the monorepo', () => {
     const command =
       process.platform === 'win32'
@@ -98,9 +108,10 @@ describe('repository automation contracts', () => {
   test('the release checklist records the current automated verification counts', () => {
     const checklist = read('docs/release-checklist.md')
 
-    expect(checklist).toContain('157 unit tests')
+    expect(checklist).toContain('158 unit tests')
     expect(checklist).toContain('6 build tests')
     expect(checklist).toContain('22 browser tests')
+    expect(checklist).not.toContain('157 unit tests')
     expect(checklist).not.toContain('128 unit tests')
     expect(checklist).not.toContain('18 browser tests')
   })

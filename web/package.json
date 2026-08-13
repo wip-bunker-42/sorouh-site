@@ -11,7 +11,7 @@
     "check:types": "astro check",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "test:build": "vitest run tests/integration/build.test.ts",
+    "test:build": "pnpm build && vitest run tests/integration/build.test.ts",
     "validate:dist": "tsx scripts/validate-dist.ts",
     "deploy": "wrangler deploy",
     "deploy:dry": "wrangler deploy --dry-run"
