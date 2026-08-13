@@ -32,4 +32,13 @@ Seed صروح create-missing: لا يكتب فوق تغييرات المحرر. 
 
 `pnpm check` للفورمات والأنواع والـschema وTypeGen والوحدات والبناء. `pnpm test:e2e` يشغّل Chromium desktop/mobile وAxe. القائمة والـCTA والمشاركة تعمل دون اعتماد المحتوى الأساسي على JavaScript.
 
+## الأتمتة
+
+- `CI` يعمل على `main` وكل Pull Request: تثبيت مقفل، تدقيق ثغرات متوسطة فأعلى، الفحص الكامل، Wrangler dry-run، واختبارات Chromium للديسكتوب والموبايل.
+- `Deploy Sanity Studio` يعمل عند تغييرات `studio/` على `main` وينشر Studio والـSchema إلى `sorouh-studio.sanity.studio` باستخدام GitHub Environment باسم `sanity-production`.
+- اتصال Cloudflare Workers Builds بالمستودع جاهز؛ تفعيل Production Trigger ينتظر إنشاء Build Token من حساب Cloudflare، ولا تُخزن أسرار Cloudflare في GitHub لهذا المسار.
+- `pnpm verify:production` يفحص الدومين الأساسي وcanonical وsitemaps وتحويل `www` بعد النشر.
+- `Production Check` يعيد فحص الإنتاج يوميًا ويمكن تشغيله يدويًا من Actions.
+- Dependabot يراجع pnpm وGitHub Actions أسبوعيًا، ولا يدمج تحديثات تلقائيًا.
+
 راجع [دليل المحرر](docs/editor-guide-ar.md)، [دليل النشر](docs/deployment-runbook.md)، [المراجعة البصرية](docs/visual-review.md)، و[قائمة العميل الجديد](docs/new-client-checklist.md).

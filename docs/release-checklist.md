@@ -7,7 +7,11 @@
 - [x] YouTube iframe حقيقي وlazy أسفل المقدمة.
 - [x] اتصال وواتساب فقط؛ الرقم الأساسي والاحتياطي و24/7.
 - [x] GTM اختياري ومعطل في أول نشر.
-- [x] 128 unit tests و6 build tests و18 browser tests وAxe desktop/mobile.
+- [x] 157 unit tests و6 build tests و22 browser tests وAxe desktop/mobile.
+- [x] GitHub Actions يشغّل التحقق الكامل وWrangler dry-run على `main` وكل Pull Request.
+- [x] نشر Sanity Studio والـSchema مؤتمت من `main` بتوكن `deploy-studio` محدود داخل GitHub Environment.
+- [x] Dependabot أسبوعي لاعتماديات pnpm وGitHub Actions.
+- [x] Production Check يومي ويدوي لـcanonical وsitemaps وتحويل `www`.
 - [x] Wrangler dry-run Static Assets فقط.
 - [x] Sanity Schema وStudio منشوران.
 - [x] ربط apex بـWorkers Static Assets بعد إزالة سجل DNS القديم المتعارض.

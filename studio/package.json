@@ -9,9 +9,10 @@
     "check": "pnpm check:types && pnpm check:schema && pnpm test",
     "check:types": "tsc --noEmit",
     "check:schema": "sanity schemas validate",
-    "test": "vitest run",
+    "test": "vitest run --root .. studio/src/tests",
     "typegen": "sanity schemas extract --enforce-required-fields --path ../web/src/sanity/schema.json --force && sanity typegen generate",
-    "deploy": "sanity deploy"
+    "deploy": "sanity deploy",
+    "deploy:ci": "sanity deploy --yes --schema-required"
   },
   "dependencies": {
     "@sanity/client": "8.0.0",
