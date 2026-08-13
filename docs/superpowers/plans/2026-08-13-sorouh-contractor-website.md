@@ -6,7 +6,7 @@
 
 **Architecture:** A small pnpm monorepo contains `web/` (Astro 7 SSG), `studio/` (Sanity 6 Studio), `scripts/` (client bootstrap and import utilities), and `content/sorouh/` (Sorouh-only seed content). A prebuild content snapshot fetches only published Sanity data once, validates it, generates internal redirects, and feeds every Astro route and static discovery file consistently. The public site has no runtime Worker or SSR; Cloudflare serves `web/dist` as Static Assets and enforces trailing-slash URLs.
 
-**Tech Stack:** Node.js 24, pnpm 11, Astro 7.2.1, TypeScript 7.0.2 strict, Sanity 6.9.2, `@sanity/client` 8.0.0, GROQ 6.9.2, Sanity TypeGen, Portable Text, Wrangler 4.122.0, Vitest 4.1.10, `@playwright/test` 1.62.1, axe-core, and Cloudflare Workers Static Assets.
+**Tech Stack:** Node.js 24, pnpm 11, Astro 7.2.1, TypeScript 6.0.3 strict, Sanity 6.9.2, `@sanity/client` 8.0.0, GROQ 6.9.2, Sanity TypeGen, Portable Text, Wrangler 4.122.0, Vitest 4.1.10, `@playwright/test` 1.62.1, axe-core, and Cloudflare Workers Static Assets.
 
 **Spec:** `docs/superpowers/specs/2026-08-13-sorouh-contractor-website-design.md`
 
@@ -14,6 +14,7 @@
 
 - Keep all visible copy Arabic (`ar-SA`, RTL) in a professional Saudi voice. Never invent an address, email, license, rating, review, staff name, guarantee, or Google Business Profile.
 - The primary call/WhatsApp number is `0546121683` (`+966546121683`); the backup is `0546745928` (`+966546745928`). Both are available 24/7.
+- The approved RSS author email is `info@sorouh.site`; keep visible contact CTAs limited to call and WhatsApp as previously approved.
 - Use the provided logo, project media, and four YouTube URLs. Do not ship local MP4 files when the equivalent YouTube video exists.
 - Every public URL ends in `/`, except actual files such as `.xml`, `.txt`, and `/404.html`. Canonicals always use `https://sorouh.site` unless a reviewed `canonicalOverride` exists.
 - Sitemaps, RSS, robots, llms, JSON-LD, HTML, and `_redirects` are build-time output. There is no runtime content endpoint.
@@ -22,7 +23,8 @@
 - Sanity image URLs use `auto=format`, explicit width/height, crop/hotspot, and responsive `srcset`; do not request `fm=avif`.
 - YouTube embeds must be real `<iframe src>` elements in generated HTML with `loading="lazy"`; do not use click-to-load.
 - `_redirects` contains internal path/slug redirects only. Cloudflare Always Use HTTPS and Bulk Redirect handle protocol and `www` canonicalization.
-- `workers_dev` is false. Preview URLs are permitted only after Cloudflare Access protects them.
+- `workers_dev` is false and `preview_urls` is true. Public branch/version previews are an accepted project choice and require no authentication work in this scope.
+- Keep TypeScript on `6.0.3` while `astro check` depends on the compiler's programmatic API. Do not upgrade this project to the TypeScript 7 native compiler until Astro's checker officially supports it and the full gate passes.
 - The general starter contains schemas, components, generators, tests, and empty singleton bootstrap only. It never contains Sorouh copy, services, areas, images, or SEO articles.
 - Use test-driven development for behavior. Run the narrow failing test first, implement the smallest change, rerun it, then run the relevant wider checks before committing.
 - Before each external CLI mutation, inspect the current official CLI help (`pnpm exec sanity ... --help`, `pnpm exec wrangler ... --help`, or `gh ... --help`) and preserve the verified output in the implementation log.
@@ -137,7 +139,8 @@
 
 - [ ] Write a failing root preflight script that exits if Node is below `22.12.0`, the package manager is not pnpm, or required env names are malformed.
 - [ ] Add `engines`, `packageManager: "pnpm@11.11.0"`, and workspace package scripts. Pin exact versions rather than version ranges for the application toolchain.
-- [ ] Use these verified versions: `astro@7.2.1`, `typescript@7.0.2`, `sanity@6.9.2`, `@sanity/vision@6.9.2`, `react@19.2.8`, `react-dom@19.2.8`, `styled-components@6.5.2`, `@sanity/client@8.0.0`, `@sanity/image-url@2.1.1`, `groq@6.9.2`, `astro-portabletext@0.13.0`, `@portabletext/markdown@1.4.6`, `@portabletext/types@4.0.2`, `@astrojs/check@0.9.10`, `@astrojs/rss@4.0.19`, `wrangler@4.122.0`, `vitest@4.1.10`, `@playwright/test@1.62.1`, `@axe-core/playwright@4.13.0`, `schema-dts@2.0.0`, `github-slugger@2.0.0`, `cheerio@1.2.0`, `tsx@4.23.12`, `zod@4.4.3`, `prettier@3.9.6`, and `prettier-plugin-astro@0.14.1`. Pin compatible type packages (`@types/node@26.2.0`, `@types/react@19.2.18`, `@types/react-dom@19.2.4`) as verified.
+- [ ] Use these verified versions: `astro@7.2.1`, `typescript@6.0.3`, `sanity@6.9.2`, `@sanity/vision@6.9.2`, `react@19.2.8`, `react-dom@19.2.8`, `styled-components@6.5.2`, `@sanity/client@8.0.0`, `@sanity/image-url@2.1.1`, `groq@6.9.2`, `astro-portabletext@0.13.0`, `@portabletext/markdown@1.4.6`, `@portabletext/types@4.0.2`, `@astrojs/check@0.9.10`, `@astrojs/rss@4.0.19`, `wrangler@4.122.0`, `vitest@4.1.10`, `@playwright/test@1.62.1`, `@axe-core/playwright@4.13.0`, `schema-dts@2.0.0`, `github-slugger@2.0.0`, `cheerio@1.2.0`, `tsx@4.23.12`, `zod@4.4.3`, `prettier@3.9.6`, and `prettier-plugin-astro@0.14.1`. Pin compatible type packages (`@types/node@26.2.0`, `@types/react@19.2.18`, `@types/react-dom@19.2.4`) as verified.
+- [ ] Add a dependency test that asserts `typescript` resolves to `6.0.3` and `@astrojs/check` runs successfully; this prevents an automated TypeScript 7 upgrade from silently disabling `.astro` diagnostics.
 - [ ] Add `@fontsource-variable/noto-sans-arabic@5.3.0` to `web`; import only the Arabic subsets and used weights. Keep its license notice in the dependency and mention it in README.
 - [ ] Add `.gitignore` entries for `.env*` except examples, `node_modules`, `dist`, `.astro`, `.sanity`, generated snapshot JSON, Playwright artifacts, and imported source media.
 - [ ] Run `pnpm install --frozen-lockfile=false`, then `pnpm install --frozen-lockfile`.
@@ -157,7 +160,7 @@
 - Consumes: Vitest, Playwright, an intentionally minimal normalized fixture
 - Produces: unit, build-integration, and browser test commands used by every later task
 
-- [ ] Write failing tests for the immutable facts: canonical origin, locale/direction, fixed API version, primary/backup normalized phones, and the 13 service/10 area/5 category counts.
+- [ ] Write failing tests for the immutable facts: canonical origin, locale/direction, fixed API version, RSS author email, primary/backup normalized phones, and the 13 service/10 area/5 category counts.
 - [ ] Create a tiny fixture containing one service, area, project, post, and video so later build tests do not require live Sanity.
 - [ ] Configure Vitest for Node utilities and Playwright for Chromium mobile/desktop projects against `pnpm preview`.
 - [ ] Add root `check` ordering: preflight → format check → TypeScript/Astro → schema validation/typegen diff → unit tests → build fixture → dist validation.
@@ -191,7 +194,8 @@ export const SINGLETONS = ['siteSettings', 'homePage', 'aboutPage', 'contactPage
 - [ ] Implement all approved documents and references. Put technical `redirectFrom` fields in a hidden/read-only group and keep `redirect` documents out of the ordinary client navigation.
 - [ ] Implement a fixed Studio structure: settings/pages → services → areas → projects → blog/categories; expose technical redirects only in a developer-labeled section.
 - [ ] Hide singleton create/delete/duplicate actions and make previews useful in Arabic.
-- [ ] Rerun schema tests and `pnpm --dir studio exec sanity schema validate`; expect zero errors.
+- [ ] Read the already-created Sanity project from the authenticated account/config with `pnpm --dir studio exec sanity projects list`; verify the intended Project ID and its `production` dataset before writing local `.env`. Do not create a new Sanity project. If more than one candidate exists, stop for an explicit Project ID rather than guessing.
+- [ ] Rerun schema tests and `pnpm --dir studio exec sanity schemas validate`; expect zero errors.
 - [ ] Commit: `feat(studio): model Sorouh content and editing workflow`
 
 ## Task 4: Capture prior slugs without custom modification timestamps
@@ -243,7 +247,7 @@ createClient({
 ```
 
 - [ ] Put all `defineQuery` calls in `web/src/sanity/queries.ts`, not inside `.astro` files. Fetch settings/pages, services, areas, projects, categories, posts, redirects, image metadata, references, and `_updatedAt` in one bounded build snapshot.
-- [ ] Use `sanity schema extract` followed by `sanity typegen generate`; configure TypeGen to scan the `.ts` query file and write `web/src/sanity/sanity.types.ts`.
+- [ ] Use `sanity schemas extract` followed by `sanity typegen generate`; configure TypeGen to scan the `.ts` query file and write `web/src/sanity/sanity.types.ts`.
 - [ ] Normalize references into route-safe view models. Mark project detail eligibility only when title, unique summary/description, service, area, and at least one image/video exist.
 - [ ] Make `prepare-build.ts` choose the explicit fixture only when `CONTENT_FIXTURE_PATH` is supplied; production must fail if Sanity env is missing. Write the generated snapshot atomically and never commit it.
 - [ ] Run `pnpm typegen`, `pnpm --filter web test -- content.test.ts`, and a fixture `prepare-build` command.
@@ -366,9 +370,9 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - [ ] Write five genuinely different Arabic articles, one per approved category, with direct answers, H2/H3 structure, useful checklists/tables, relevant city references only where factual, internal service/area links, midpoint CTA, final CTA, excerpt, featured image, author organization, and first-publish date. Do not reuse prose between articles or create city-keyword filler.
 - [ ] Use `@portabletext/markdown` in the seed pipeline to convert reviewed Markdown bodies to Portable Text. Preserve custom CTA and YouTube objects via explicit conversion rules and test the output block shapes.
 - [ ] Upload only approved images, reuse identical assets by hash, apply alt/captions, and connect each asset to its real project/service/area. Keep YouTube as URLs/metadata.
-- [ ] Implement `seed:sorouh` as create-missing by default with a hardcoded non-secret expected Sorouh project ID set only after project creation. Abort before any write if the current target differs.
+- [ ] Implement `seed:sorouh` as create-missing by default with the non-secret expected Sorouh Project ID set only after reading and verifying the existing project. Abort before any write if the current target differs.
 - [ ] Implement `bootstrap-client.ts` to create only empty singleton skeletons for a newly configured client. Add a test proving it imports no module from `content/sorouh`.
-- [ ] Run dry-run output, review the document/asset/reference counts, then execute against the Sorouh `production` dataset only after Task 15 creates the project.
+- [ ] Run dry-run output, review the document/asset/reference counts, re-read and verify the already-existing Sorouh Project ID plus `production` dataset, then execute only against that verified target. There is no project-creation dependency in this task.
 - [ ] Commit: `feat(content): add isolated Sorouh seed and neutral bootstrap`
 
 ## Task 11: Build all public pages from the snapshot
@@ -434,7 +438,7 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - [ ] Write failing XML tests for correct namespaces, XML escaping, only canonical/indexable URLs, accurate per-document `_updatedAt`, omission of untrusted aggregate `lastmod`, image entries, and no `priority`/`changefreq`.
 - [ ] Generate `/sitemap.xml` as an index referencing `/sitemap-pages.xml` and `/sitemap-videos.xml`.
 - [ ] Generate video entries only when the visible page has a real YouTube iframe and complete matching thumbnail/title/description/date metadata. Use `https://www.youtube.com/embed/{id}` in `video:player_loc`.
-- [ ] Generate RSS from indexable published posts only, with canonical links, actual dates, excerpts, and organization author. Do not include drafts or future posts.
+- [ ] Generate RSS from indexable published posts only, with canonical links, actual dates, and excerpts. Emit the RSS 2.0 item author through escaped `customData` as `<author>info@sorouh.site (شركة صروح الشرقية للمقاولات)</author>` because RSS 2.0 defines `author` as an email address; keep the organization name in parentheses. Do not include drafts or future posts.
 - [ ] Generate permissive robots text exactly around `User-agent: *`, `Allow: /`, and the sitemap URL. Do not name or block individual AI bots.
 - [ ] Generate concise `llms.txt` with company facts and canonical links, clearly treating it as discovery support rather than a ranking claim.
 - [ ] Generate `_redirects` before Astro copies `public/` into `dist`; include collected `redirectFrom[]` and developer redirect records as `301`, and test that no HTTP/HTTPS or `www` rule appears.
@@ -514,10 +518,10 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - [ ] Document exactly what the client may edit: phones/WhatsApp, CTA text, images, projects, services, areas, posts/categories, and safe SEO fields. Explain advanced canonical/noIndex warnings and keep redirects developer-only.
 - [ ] Document the new-client flow: new private repo, separate Sanity project plus `production` dataset, identity/domain config, original content import, new Studio hostname, new Worker, and no copying of `content/sorouh`.
 - [ ] Add a machine-verifiable test that `bootstrap-client.ts` and reusable `web/studio` modules contain no Sorouh phone, company name, article prose, project assets, or expected Sorouh project ID except through client config/content injection.
-- [ ] Document external Cloudflare settings: custom domain, Always Use HTTPS, `www` proxied DNS plus Bulk Redirect preserving path/query, Access on previews, deploy hook, Crawler Hints, Search Console, and Bing.
+- [ ] Document external Cloudflare settings: custom domain, Always Use HTTPS, `www` proxied DNS plus Bulk Redirect preserving path/query, public preview URLs, deploy hook, Crawler Hints, Search Console, and Bing.
 - [ ] Commit: `docs: add editor deployment and starter handoff guides`
 
-## Task 17: Provision isolated services and deploy production
+## Task 17: Connect the existing isolated services and deploy production
 
 **Files:**
 
@@ -527,16 +531,16 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 **Interfaces:**
 
 - Consumes: existing authenticated GitHub, Sanity, and Cloudflare sessions; `sorouh.site` zone
-- Produces: private GitHub repo, independent Sanity project/dataset/Studio, protected Workers previews, and production site
+- Produces: private GitHub repo, verified existing independent Sanity project/dataset/Studio, public Workers previews, and production site
 
 - [ ] Preflight read-only auth and ownership: `gh auth status`, `pnpm --dir studio exec sanity projects list`, `pnpm --dir web exec wrangler whoami`, and Cloudflare zone/domain inspection. Stop before mutation if the signed-in account cannot own the deliverables.
-- [ ] Create an independent project using the currently documented command shape: `pnpm --dir studio exec sanity projects create "شركة صروح الشرقية للمقاولات" --dataset production --dataset-visibility public --json`. Record the returned project ID in non-secret config, configure allowed CORS origins for local Studio and the deployed Studio/site, and never reuse another client's project.
-- [ ] Run schema validation/deployment and TypeGen; execute the reviewed Sorouh seed dry run, then create-missing import. Confirm document counts, links, images, and `_updatedAt` behavior after publishing.
+- [ ] Read and verify the already-created Sorouh Sanity Project ID and `production` dataset. Record only the non-secret Project ID/dataset in configuration, configure allowed CORS origins for local Studio and the deployed Studio/site, and never create or select a different client's project.
+- [ ] Run `sanity schemas validate`, `sanity schemas extract`, `sanity schemas deploy`, and `sanity typegen generate`. Confirm Task 10 already seeded the verified Project ID, then rerun seed in dry-run/create-missing mode to prove idempotency and confirm document counts, links, images, and `_updatedAt` behavior without rewriting editor changes.
 - [ ] Deploy Studio with `pnpm --dir studio exec sanity deploy`, choosing a unique Sorouh hostname. Verify client login and restricted navigation.
 - [ ] Build from live published Sanity and run the entire release gate. Inspect representative output manually before publishing.
 - [ ] Create the private GitHub repository only after confirming the intended owner: `gh repo create sorouh-site --private --source=. --remote=origin --push`. If the name exists, stop and resolve ownership/name rather than overwriting.
 - [ ] Create/deploy `sorouh-site` using `pnpm --dir web exec wrangler deploy`; connect Workers Builds to `main`, add the custom domain, and store the Sanity deploy-hook secret only in Sanity/Cloudflare settings.
-- [ ] Before enabling preview URLs, create Cloudflare Access protection for `*.sorouh-site.<account-subdomain>.workers.dev` preview hostnames and test unauthorized `403/login` plus authorized access. Do not publish an unprotected preview URL.
+- [ ] Enable and smoke-test public branch/version Preview URLs. Confirm they render correctly as public previews.
 - [ ] Enable Always Use HTTPS. Add proxied `www` DNS and a 301 Bulk Redirect from `www.sorouh.site` to apex with subpath/query preservation. Enable Crawler Hints. Keep these rules out of `_redirects`.
 - [ ] Test the live URL matrix: HTTP, HTTPS, `www`, apex, missing/present trailing slash, `.html`, query preservation, 404, internal old slug, and no redirect loops.
 - [ ] Verify the webhook by publishing a harmless reviewed content change, observing Workers Build, and confirming the new published `_updatedAt` reaches Article `dateModified`/eligible sitemap `lastmod` while draft-only edits do not.
@@ -569,12 +573,12 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - **Checkpoint A — Foundation:** Tasks 1–6 pass unit/type/schema tests before visual work.
 - **Checkpoint B — Content and UI:** Tasks 7–12 pass fixture build and browser tests before cloud mutation.
 - **Checkpoint C — Static delivery:** Tasks 13–16 pass full offline release gate before production deployment.
-- **Checkpoint D — Production:** Tasks 17–18 validate live redirects, Access protection, publish webhook, discovery files, and handoff ownership.
+- **Checkpoint D — Production:** Tasks 17–18 validate live redirects, public previews, publish webhook, discovery files, and handoff ownership.
 
 ## Definition of Done
 
 - `pnpm check`, `pnpm test`, `pnpm build`, `pnpm test:e2e`, live-content dist validation, and Wrangler dry-run all pass from a clean checkout.
 - The generated site contains every approved page, five original Sorouh articles, build-time discovery files, accurate canonical/lastmod behavior, visible real YouTube iframes, and no invented business data.
-- `sorouh.site` serves the Cloudflare Workers Static Assets deployment; protocol/host/trailing-slash behavior is canonical and loop-free; previews are protected by Access.
-- Sorouh owns an independent Sanity project with `production` dataset and hosted Studio, plus a private GitHub repository and documented rollback.
+- `sorouh.site` serves the Cloudflare Workers Static Assets deployment; protocol/host/trailing-slash behavior is canonical and loop-free; public previews behave as configured.
+- Sorouh's existing independent Sanity project is verified with its `production` dataset and hosted Studio, plus a private GitHub repository and documented rollback.
 - The reusable starter contains structure and automation only; Sorouh-specific content remains isolated under `content/sorouh` and is excluded from future-client bootstrap.

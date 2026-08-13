@@ -30,7 +30,8 @@
 - ساعات التواصل: 24 ساعة يوميًا، طوال أيام الأسبوع.
 - الرقم الأساسي للاتصال والواتساب: `0546121683`، ويُحوّل برمجيًا إلى الصيغة الدولية `+966546121683`.
 - الرقم الاحتياطي للاتصال والواتساب: `0546745928`، ويُحوّل إلى `+966546745928`.
-- لا يوجد بريد تواصل، نموذج مراسلة، Google Business Profile، تقييمات موثقة، أو عنوان. لا نختلق أيًا منها.
+- البريد المعتمد لخلاصة RSS هو `info@sorouh.site`. لا نعرضه كوسيلة CTA ولا نضيف نموذج مراسلة؛ التواصل الظاهر يظل اتصالًا وواتساب فقط.
+- لا يوجد Google Business Profile، تقييمات موثقة، أو عنوان. لا نختلق أيًا منها.
 - أرقام الثقة المقدمة من الشركة:
   - أكثر من 75 مشروعًا منجزًا.
   - أكثر من 180,000 م² أعمال منفذة.
@@ -54,7 +55,7 @@
 ### 3.2 الواجهة العامة
 
 - Astro بنمط SSG كامل؛ كل الصفحات تُولّد وقت البناء من محتوى Sanity المنشور.
-- TypeScript بوضع صارم.
+- TypeScript بوضع صارم، مثبت مؤقتًا على `6.0.3` لأن `astro check` الحالي يعتمد على Compiler Programmatic API غير المتاحة في TypeScript 7 native. لا نرقّي إلى 7 حتى يعلن Astro دعم checker رسميًا وتجتاز بوابة الجودة كاملة.
 - `site: "https://sorouh.site"` و`trailingSlash: "always"` ثابتان في إعداد Astro، لكي تولّد الروابط الداخلية والـcanonical والـsitemap بصيغة الشرطة المائلة نفسها.
 - لا نستخدم Astro Cloudflare Adapter ولا SSR ولا Worker script؛ مجلد `dist` هو الأصل المنشور.
 - محتوى الصفحات الأساسي، روابط التنقل، الفيديوهات، البيانات المنظمة والـmetadata موجودة في HTML الناتج.
@@ -63,6 +64,7 @@
 ### 3.3 Sanity
 
 - لكل عميل Sanity Project مستقل بالكامل، وdataset مستقل باسم `production`.
+- مشروع Sanity الخاص بصروح منشأ بالفعل؛ التنفيذ يقرأ Project ID الموجود ويتحقق من dataset `production` قبل أي seed، ولا ينشئ Project جديدًا.
 - Studio صروح يُنشر عبر `sanity deploy` على عنوان `*.sanity.studio` فريد.
 - الدخول للعميل من خلال عضوية Sanity وصلاحياته؛ لا توجد واجهة إدارة مخصصة أو مصادقة من صنعنا.
 - نستخدم `defineType` و`defineField` و`defineArrayMember`، وreferences للعلاقات القابلة لإعادة الاستخدام، وobjects للبيانات التابعة للوثيقة.
@@ -77,7 +79,7 @@
 - `wrangler.jsonc` لا يحتوي `main` لأن الموقع ثابت ولا يحتاج Worker runtime.
 - `assets.not_found_handling` مضبوط على `"404-page"` و`assets.html_handling` مضبوط على `"force-trailing-slash"`. Cloudflare هو الذي يخدم HTML ويحوّل صيغ URL غير المطابقة إلى الصيغة ذات الشرطة المائلة.
 - Workers Builds متصل بالمستودع الخاص: فرع `main` للإنتاج، وبقية الفروع لنسخ المعاينة. نضبط `workers_dev: false` لمسار الإنتاج، و`preview_urls: true` للمعاينات فقط.
-- Preview URLs على `workers.dev` تُحمى بسياسة Cloudflare Access قبل استخدامها أو مشاركتها؛ لا توجد نسخة Preview عامة قابلة للزحف أو الفهرسة.
+- Preview URLs على `workers.dev` تبقى عامة وفق قرار المشروع، ولا تحتاج عمل مصادقة ضمن النطاق.
 - Sanity webhook يستدعي Workers Deploy Hook عند publish أو unpublish أو delete لمحتوى يؤثر في الموقع.
 - الدومين الأساسي هو النسخة غير `www`: `https://sorouh.site`. تفعيل Always Use HTTPS في Cloudflare يحوّل HTTP إلى HTTPS، وBulk Redirect على مستوى zone يحوّل `www.sorouh.site` إلى `sorouh.site` بحالة `301` مع `Subpath matching` و`Preserve path suffix` و`Preserve query string`. يُنشأ سجل DNS proxied لـ`www` حتى تصل الطلبات إلى قاعدة التحويل.
 - تحويلات البروتوكول والـhost تتم في Cloudflare قبل الموقع ولا تدخل ملف `_redirects`. ملف `_redirects` مخصص فقط لتغيير slugs والمسارات الداخلية.
@@ -266,7 +268,7 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - `/sitemap.xml` يولّد كـSitemap Index يشير إلى `/sitemap-pages.xml` و`/sitemap-videos.xml`.
 - Sitemap الصفحات يحتوي canonical URLs القابلة للفهرسة فقط. يستخدم `_updatedAt` للوثيقة المنشورة عندما يكون ممثلًا موثوقًا للصفحة، وإلا يحذف `lastmod`.
 - لا نضيف `priority` أو `changefreq`.
-- RSS يحتوي أحدث المقالات المنشورة وروابطها canonical وتواريخها الفعلية.
+- RSS يحتوي أحدث المقالات المنشورة وروابطها canonical وتواريخها الفعلية. عنصر `<author>` لكل item يستخدم الصيغة الصحيحة لـRSS 2.0: `info@sorouh.site (شركة صروح الشرقية للمقاولات)`؛ اسم الجهة وحده يظل Author في صفحة المقال وArticle JSON-LD.
 - `robots.txt`:
   - `User-agent: *`
   - `Allow: /`
@@ -360,7 +362,7 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 
 ### 14.1 اختبارات آلية
 
-- TypeScript strict و`astro check`.
+- TypeScript `6.0.3` strict و`astro check`؛ يمنع فحص التبعيات الترقية العرضية إلى TypeScript 7 قبل دعم Astro للـprogrammatic API.
 - Sanity schema extraction وTypeGen، ثم فحص أن الأنواع المولدة متزامنة.
 - Unit tests لـ:
   - canonical URL builder.
@@ -381,7 +383,7 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - Lighthouse على الهاتف والكمبيوتر للصفحة الرئيسية وصفحة خدمة ومنطقة ومقال ومشروع.
 - Google Rich Results Test وSchema.org Validator لعينات JSON-LD.
 - معاينة sitemap وRSS وrobots وvideo entries.
-- تجربة build من Workers Builds، والتأكد أن Preview URL يرفض الزائر غير المصرح له عبر Cloudflare Access ويعمل للمستخدم المصرح له.
+- تجربة build من Workers Builds، والتأكد أن Preview URL العام يعمل كما هو متوقع.
 - اختبار مصفوفة URL على Cloudflare: HTTP إلى HTTPS، و`www` إلى apex، والمسار بلا شرطة إلى الصيغة ذات الشرطة، و`.html` إلى canonical النهائي، مع حفظ path وquery string وعدم وجود loops.
 - اختبار Sanity publish → webhook → build → ظهور المحتوى.
 - بعد الإطلاق: إضافة Search Console وBing، إرسال sitemap، وتفعيل Crawler Hints.
@@ -398,7 +400,7 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - المحتوى والوسائط الأولية المستوردة والمرتبطة.
 - README عربي: التشغيل المحلي، إدارة المحتوى، النشر، rollback، تغيير الدومين، وإضافة عميل جديد من Starter.
 - دليل محرر قصير للعميل يشرح الأرقام والمشروعات والمقالات والصور وSEO الآمن.
-- قائمة إعدادات خارجية موثقة: GitHub، Sanity، Workers Builds، Deploy Hook، custom domain، Always Use HTTPS، Bulk Redirect لـ`www`، Cloudflare Access للمعاينات، Search Console، Bing، وCrawler Hints.
+- قائمة إعدادات خارجية موثقة: GitHub، Sanity، Workers Builds، Deploy Hook، custom domain، Always Use HTTPS، Bulk Redirect لـ`www`، Preview URLs العامة، Search Console، Bing، وCrawler Hints.
 
 ## 16. قرارات عدم البناء
 
@@ -425,11 +427,12 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - [Cloudflare Workers Static Assets best practices](https://developers.cloudflare.com/workers/best-practices/workers-best-practices/): Workers هي الوجهة الموصى بها للمشروعات الجديدة.
 - [Cloudflare HTML handling](https://developers.cloudflare.com/workers/static-assets/routing/advanced/html-handling/): فرض canonical URL للـHTML عبر `force-trailing-slash`.
 - [Cloudflare Always Use HTTPS](https://developers.cloudflare.com/ssl/edge-certificates/additional-options/always-use-https/) و[www to apex redirect](https://developers.cloudflare.com/pages/how-to/www-redirect/): توحيد البروتوكول والـhost على مستوى Cloudflare.
-- [Cloudflare Preview URLs](https://developers.cloudflare.com/workers/versions-and-deployments/preview-urls/): المعاينات عامة عند تفعيلها ويمكن حمايتها بـCloudflare Access.
+- [Cloudflare Preview URLs](https://developers.cloudflare.com/workers/versions-and-deployments/preview-urls/): المعاينات عامة عند تفعيلها، وهو السلوك المقبول لهذا المشروع.
 - [Cloudflare Deploy Hooks](https://developers.cloudflare.com/workers/ci-cd/builds/deploy-hooks/): إعادة البناء من headless CMS.
 - [Cloudflare Crawler Hints](https://developers.cloudflare.com/cache/advanced-configuration/crawler-hints/): إشارات IndexNow على جميع الخطط.
 - [Sanity Studio hosting](https://www.sanity.io/docs/studio/deployment): `sanity deploy` والاستضافة على `*.sanity.studio`.
 - [Sanity TypeGen](https://www.sanity.io/docs/apis-and-sdks/sanity-typegen) و[Querying content in Astro](https://www.sanity.io/docs/astro/query-content-astro): استعلامات `defineQuery` في ملفات TypeScript مستقلة وأنواع مولدة.
+- [Sanity Schemas CLI](https://www.sanity.io/docs/cli-reference/cli-schema): أوامر التحقق والاستخراج الحالية هي `sanity schemas validate` و`sanity schemas extract`.
 - [Sanity API versioning](https://www.sanity.io/docs/help/js-client-api-version): تثبيت `apiVersion` كسلسلة تاريخ وعدم توليدها ديناميكيًا.
 - [Sanity drafts](https://www.sanity.io/docs/content-lake/drafts): استقلال `_updatedAt` للـdraft عن الوثيقة المنشورة.
 - [Sanity image transformations](https://www.sanity.io/docs/apis-and-sdks/image-urls): `auto=format` والتفاوض على AVIF/WebP، وعدم دعم `fm=avif` المباشر.
@@ -437,3 +440,4 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - [Google video sitemap guidance](https://developers.google.com/search/docs/crawling-indexing/sitemaps/video-sitemaps): دعم YouTube embed.
 - [Google lazy-loading guidance](https://developers.google.com/search/docs/crawling-indexing/javascript/lazy-loading): عدم اشتراط تفاعل المستخدم لتحميل المحتوى القابل للفهرسة.
 - [Schema.org GeneralContractor](https://schema.org/GeneralContractor): نوع الشركة و`areaServed`.
+- [RSS 2.0 Specification](https://www.rssboard.org/rss-specification): عنصر item `<author>` هو عنوان البريد، ويمكن إلحاق اسم الجهة بين قوسين.
