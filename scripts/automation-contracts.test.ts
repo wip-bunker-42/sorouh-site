@@ -89,7 +89,10 @@ describe('repository automation contracts', () => {
     })
 
     expect(result.status, `${result.stdout}\n${result.stderr}`).toBe(0)
-    expect(result.stdout).toContain('Test Files  2 passed')
+
+    const plainOutput = result.stdout.replace(/\u001b\[[0-9;]*m/g, '')
+    expect(plainOutput).toMatch(/Test Files\s+2 passed/)
+    expect(plainOutput).toMatch(/Tests\s+25 passed/)
   }, 20_000)
 
   test('the release checklist records the current automated verification counts', () => {
