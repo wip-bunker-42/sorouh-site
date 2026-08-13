@@ -4,6 +4,12 @@
   "compatibility_date": "2026-08-13",
   "workers_dev": false,
   "preview_urls": true,
+  "routes": [
+    {
+      "pattern": "sorouh.site",
+      "custom_domain": true,
+    },
+  ],
   "assets": {
     "directory": "./dist",
     "html_handling": "force-trailing-slash",

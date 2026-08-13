@@ -24,7 +24,8 @@
     "validate:dist": "pnpm --filter @sorouh/web validate:dist",
     "audit:media": "tsx scripts/lib/audit-source-assets.ts",
     "typegen": "pnpm --filter @sorouh/studio typegen",
-    "seed:sorouh": "pnpm --dir studio exec sanity exec ../scripts/seed-sorouh.ts --with-user-token --"
+    "seed:sorouh": "pnpm --dir studio exec sanity exec ../scripts/seed-sorouh.ts --with-user-token --",
+    "bootstrap:client": "pnpm --dir studio exec sanity exec ../scripts/bootstrap-client.ts --with-user-token"
   },
   "devDependencies": {
     "@portabletext/markdown": "1.4.6",

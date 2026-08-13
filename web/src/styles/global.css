@@ -4,7 +4,7 @@
   --navy-950: #071629;
   --navy-900: #0b2038;
   --navy-800: #123354;
-  --copper: #d9782d;
+  --copper: #93400b;
   --copper-bright: #f09a4b;
   --cream: #fbf8f3;
   --white: #fff;
@@ -89,6 +89,18 @@ a {
   font-size: 0.85rem;
   font-weight: 850;
   letter-spacing: 0.08em;
+}
+.home-hero .eyebrow,
+.page-hero .eyebrow,
+.detail-hero .eyebrow,
+.area-hero .eyebrow,
+.project-hero .eyebrow,
+.article-head .eyebrow,
+.contact-hero .eyebrow,
+.areas .eyebrow,
+.final .eyebrow,
+.not-found .eyebrow {
+  color: var(--copper-bright);
 }
 h1,
 h2,

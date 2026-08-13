@@ -62,7 +62,8 @@ const videoSchema = (project.videos ?? []).map((v: any) => {
     <div class="container">
       <div><span>التصنيف</span><b>{project.classification}</b></div><div>
         <span>المدينة</span><a href={`/مناطق-الخدمة/${project.serviceArea?.slug}/`}
-          >{project.serviceArea?.title}</a>
+          >{project.serviceArea?.title}</a
+        >
       </div><div>
         <span>الخدمات</span>{
           project.services.map((s: any) => <a href={`/الخدمات/${s.slug}/`}>{s.title}</a>)
