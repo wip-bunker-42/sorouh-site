@@ -31,7 +31,7 @@ const generatedPlacements = [
     '/المدونة/الفرق-بين-قص-الخرسانة-والكور/',
     'مقارنة بصرية بين قص الخرسانة بالمنشار وتنفيذ فتحة كور',
   ],
-]
+] as const
 
 test('discloses every generated editorial image in visible HTML', async ({ page }) => {
   for (const [path, alt] of generatedPlacements) {
