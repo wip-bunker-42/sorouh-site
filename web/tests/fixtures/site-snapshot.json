@@ -1,0 +1,59 @@
+{
+  "siteSettings": {
+    "companyName": "شركة صروح الشرقية للمقاولات",
+    "primaryPhone": "+966546121683",
+    "backupPhone": "+966546745928"
+  },
+  "services": [
+    {
+      "_id": "fixture-service",
+      "title": "مقاولات عامة",
+      "slug": "مقاولات-عامة",
+      "summary": "تنفيذ وإدارة أعمال المقاولات العامة للفلل والمنازل في المنطقة الشرقية."
+    }
+  ],
+  "areas": [
+    {
+      "_id": "fixture-area",
+      "title": "الدمام",
+      "slug": "الدمام",
+      "summary": "خدمات مقاولات متكاملة في الدمام والأحياء المحيطة."
+    }
+  ],
+  "projects": [
+    {
+      "_id": "fixture-project",
+      "title": "تنفيذ أعمال تشطيب في الدمام",
+      "slug": "تشطيب-منزل-الدمام",
+      "summary": "مشروع تشطيب متكامل بمراحل تنفيذ منظمة وتسليم نهائي متقن.",
+      "serviceId": "fixture-service",
+      "areaId": "fixture-area",
+      "media": [{ "_type": "image", "alt": "تفاصيل أعمال التشطيب أثناء التنفيذ" }]
+    }
+  ],
+  "posts": [
+    {
+      "_id": "fixture-post",
+      "title": "كيف تختار مقاولًا مناسبًا في الدمام؟",
+      "slug": "اختيار-مقاول-في-الدمام",
+      "excerpt": "معايير عملية تساعدك على تقييم المقاول قبل بدء مشروع البناء أو الترميم.",
+      "categoryId": "fixture-category",
+      "areaId": "fixture-area",
+      "publishedAt": "2026-08-13T08:00:00.000Z",
+      "_updatedAt": "2026-08-13T08:00:00.000Z"
+    }
+  ],
+  "categories": [
+    {
+      "_id": "fixture-category",
+      "title": "المقاولات والبناء",
+      "slug": "المقاولات-والبناء"
+    }
+  ],
+  "videos": [
+    {
+      "url": "https://www.youtube.com/shorts/IK7jw0fu3zE",
+      "title": "لقطات من تنفيذ أحد مشاريع صروح الشرقية"
+    }
+  ]
+}

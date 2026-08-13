@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "sanity dev",
     "build": "sanity build",
-    "check": "sanity schemas validate && vitest run",
+    "check": "pnpm check:types && pnpm check:schema && pnpm test",
+    "check:types": "tsc --noEmit",
+    "check:schema": "sanity schemas validate",
     "test": "vitest run",
     "typegen": "sanity schemas extract --path ../web/src/sanity/schema.json && sanity typegen generate",
     "deploy": "sanity deploy"
