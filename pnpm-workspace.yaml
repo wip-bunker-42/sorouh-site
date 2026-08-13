@@ -1,0 +1,14 @@
+packages:
+  - web
+  - studio
+
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  sharp: true
+  workerd: true
+
+minimumReleaseAgeExclude:
+  - '@sanity/client@8.0.0'
+  - miniflare@5.20260811.0-alpha
+  - wrangler@4.122.0

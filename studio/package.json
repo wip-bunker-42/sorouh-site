@@ -1,0 +1,30 @@
+{
+  "name": "@sorouh/studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "check": "sanity schemas validate && vitest run",
+    "test": "vitest run",
+    "typegen": "sanity schemas extract --path ../web/src/sanity/schema.json && sanity typegen generate",
+    "deploy": "sanity deploy"
+  },
+  "dependencies": {
+    "@sanity/client": "8.0.0",
+    "@sanity/vision": "6.9.2",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "sanity": "6.9.2",
+    "styled-components": "6.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "26.2.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "tsx": "4.23.12",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}

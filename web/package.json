@@ -1,0 +1,42 @@
+{
+  "name": "@sorouh/web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "tsx scripts/prepare-build.ts && astro build && tsx scripts/validate-dist.ts",
+    "preview": "astro preview",
+    "check": "astro check && vitest run",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "deploy": "wrangler deploy",
+    "deploy:dry": "wrangler deploy --dry-run"
+  },
+  "dependencies": {
+    "@astrojs/rss": "4.0.19",
+    "@fontsource-variable/noto-sans-arabic": "5.3.0",
+    "@portabletext/types": "4.0.2",
+    "@sanity/client": "8.0.0",
+    "@sanity/image-url": "2.1.1",
+    "astro": "7.2.1",
+    "astro-portabletext": "0.13.0",
+    "github-slugger": "2.0.0",
+    "groq": "6.9.2",
+    "schema-dts": "2.0.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.62.1",
+    "@types/node": "26.2.0",
+    "cheerio": "1.2.0",
+    "prettier": "3.9.6",
+    "prettier-plugin-astro": "0.14.1",
+    "tsx": "4.23.12",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10",
+    "wrangler": "4.122.0"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "sorouh-contractor-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.11.0",
+  "engines": {
+    "node": ">=22.12.0",
+    "pnpm": ">=11.0.0"
+  },
+  "scripts": {
+    "preflight": "tsx scripts/preflight.ts",
+    "dev": "pnpm --parallel --filter @sorouh/web --filter @sorouh/studio dev",
+    "build": "pnpm preflight && pnpm --filter @sorouh/web build && pnpm --filter @sorouh/studio build",
+    "check": "pnpm preflight && prettier --check . && pnpm -r check",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "pnpm --filter @sorouh/web test:e2e",
+    "typegen": "pnpm --filter @sorouh/studio typegen",
+    "seed:sorouh": "tsx scripts/seed-sorouh.ts"
+  },
+  "devDependencies": {
+    "@portabletext/markdown": "1.4.6",
+    "@sanity/client": "8.0.0",
+    "@types/node": "26.2.0",
+    "prettier": "3.9.6",
+    "prettier-plugin-astro": "0.14.1",
+    "sharp": "0.35.3",
+    "tsx": "4.23.12",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10",
+    "zod": "4.4.3"
+  }
+}
