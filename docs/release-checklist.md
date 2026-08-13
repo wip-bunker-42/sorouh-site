@@ -7,7 +7,7 @@
 - [x] YouTube iframe حقيقي وlazy أسفل المقدمة.
 - [x] اتصال وواتساب فقط؛ الرقم الأساسي والاحتياطي و24/7.
 - [x] GTM اختياري ومعطل في أول نشر.
-- [x] 116 unit tests و4 build tests و18 browser tests وAxe desktop/mobile.
+- [x] 128 unit tests و6 build tests و18 browser tests وAxe desktop/mobile.
 - [x] Wrangler dry-run Static Assets فقط.
 - [x] Sanity Schema وStudio منشوران.
 - [ ] ربط apex بعد إزالة سجل DNS القديم المتعارض.

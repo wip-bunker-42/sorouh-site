@@ -1,32 +1,29 @@
 ---
-import GithubSlugger from 'github-slugger'
-import { blockText } from '../lib/toc'
-const { value } = Astro.props as { value: any[] }
-const slugger = new GithubSlugger()
+import { PortableText } from 'astro-portabletext'
+import PortableCta from './portable/PortableCta.astro'
+import PortableHeading2 from './portable/PortableHeading2.astro'
+import PortableHeading3 from './portable/PortableHeading3.astro'
+import PortableImage from './portable/PortableImage.astro'
+import PortableLink from './portable/PortableLink.astro'
+import PortableYouTube from './portable/PortableYouTube.astro'
+import { preparePortableText, type PortableNode } from '../lib/portable-text'
+
+const { value = [] } = Astro.props as { value?: PortableNode[] }
+const prepared = preparePortableText(value)
+const components = {
+  type: {
+    contentImage: PortableImage,
+    cta: PortableCta,
+    youtubeVideo: PortableYouTube,
+  },
+  block: {
+    h2: PortableHeading2,
+    h3: PortableHeading3,
+  },
+  mark: {
+    link: PortableLink,
+  },
+}
 ---
 
-<div class="prose">
-  {
-    value
-      .filter((block) => block._type === 'block')
-      .map((block) => {
-        const text = blockText(block)
-        if (block.style === 'h2') return <h2 id={slugger.slug(text)}>{text}</h2>
-        if (block.style === 'h3') return <h3 id={slugger.slug(text)}>{text}</h3>
-        if (block.style === 'blockquote') return <blockquote>{text}</blockquote>
-        if (block.listItem === 'bullet')
-          return (
-            <ul>
-              <li>{text}</li>
-            </ul>
-          )
-        if (block.listItem === 'number')
-          return (
-            <ol>
-              <li>{text}</li>
-            </ol>
-          )
-        return <p>{text}</p>
-      })
-  }
-</div>
+<div class="prose"><PortableText value={prepared} {components} /></div>

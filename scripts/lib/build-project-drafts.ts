@@ -11,6 +11,7 @@ export interface ProjectDraft {
   result: string
   mediaKeys: string[]
   youtubeUrl?: string
+  youtubeUploadDate?: string
   seo: { metaTitle: string; metaDescription: string; shareMediaKey: string }
 }
 

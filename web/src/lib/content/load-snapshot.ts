@@ -1,20 +1,20 @@
-import { readFileSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
+import { existsSync, readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
-import generatedSnapshot from '../../data/site-snapshot.json'
 import type { NormalizedSnapshot } from './normalize'
 
-export const DEFAULT_SNAPSHOT_PATH = fileURLToPath(
-  new URL('../../data/site-snapshot.json', import.meta.url),
-)
+const packageRelative = resolve(process.cwd(), 'src/data/site-snapshot.json')
+const workspaceRelative = resolve(process.cwd(), 'web/src/data/site-snapshot.json')
+export const DEFAULT_SNAPSHOT_PATH = existsSync(resolve(process.cwd(), 'src/data'))
+  ? packageRelative
+  : workspaceRelative
 
 export function loadSnapshot(path?: string): NormalizedSnapshot {
-  if (!path || path === DEFAULT_SNAPSHOT_PATH)
-    return generatedSnapshot as unknown as NormalizedSnapshot
+  const snapshotPath = path ?? DEFAULT_SNAPSHOT_PATH
   try {
-    return JSON.parse(readFileSync(path, 'utf8')) as NormalizedSnapshot
+    return JSON.parse(readFileSync(snapshotPath, 'utf8')) as NormalizedSnapshot
   } catch (error) {
     const reason = error instanceof Error ? error.message : 'unknown error'
-    throw new Error(`Unable to load generated content snapshot at ${path}: ${reason}`)
+    throw new Error(`Unable to load generated content snapshot at ${snapshotPath}: ${reason}`)
   }
 }

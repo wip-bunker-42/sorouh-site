@@ -6,6 +6,7 @@ import ContactActions from '../../components/ContactActions.astro'
 import FaqList from '../../components/FaqList.astro'
 import ListingCard from '../../components/ListingCard.astro'
 import { loadSnapshot } from '../../lib/content/load-snapshot'
+import { SITE_ORIGIN } from '../../config/site'
 export function getStaticPaths() {
   const d = loadSnapshot()
   return d.services.map((service) => ({ params: { slug: service.slug }, props: { service } }))
@@ -13,15 +14,15 @@ export function getStaticPaths() {
 const { service } = Astro.props as { service: any }
 const data = loadSnapshot()
 const projects = data.projects
-  .filter((p) => p.services?.some((s: any) => s._id === service._id))
+  .filter((p) => !p.seo.noIndex && p.services?.some((s: any) => s._id === service._id))
   .slice(0, 3)
-const related = data.services.filter((s) => s._id !== service._id).slice(0, 4)
+const related = data.services.filter((s) => s._id !== service._id && !s.seo.noIndex).slice(0, 4)
 const serviceSchema = {
   '@type': 'Service',
-  '@id': `https://sorouh.site/الخدمات/${service.slug}/#service`,
+  '@id': `${SITE_ORIGIN}/الخدمات/${service.slug}/#service`,
   name: service.title,
   description: service.summary,
-  provider: { '@id': 'https://sorouh.site/#organization' },
+  provider: { '@id': `${SITE_ORIGIN}/#organization` },
   areaServed: data.areas.map((a) => a.title),
 }
 ---
@@ -32,6 +33,7 @@ const serviceSchema = {
   path={`/الخدمات/${service.slug}/`}
   canonicalOverride={service.seo.canonicalOverride}
   noIndex={service.seo.noIndex}
+  image={service.seo.shareImage?.asset?.url}
   breadcrumbs={[{ label: 'الخدمات', href: '/الخدمات/' }, { label: service.title }]}
   schema={serviceSchema}
   ><section class="detail-hero">

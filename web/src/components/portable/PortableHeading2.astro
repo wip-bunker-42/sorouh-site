@@ -1,0 +1,5 @@
+---
+const { node } = Astro.props as { node: { portableId?: string } }
+---
+
+<h2 id={node.portableId}><slot /></h2>

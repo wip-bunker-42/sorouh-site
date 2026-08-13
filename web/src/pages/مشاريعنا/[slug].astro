@@ -6,37 +6,36 @@ import ContactActions from '../../components/ContactActions.astro'
 import YouTubeEmbed from '../../components/media/YouTubeEmbed.astro'
 import ListingCard from '../../components/ListingCard.astro'
 import { loadSnapshot } from '../../lib/content/load-snapshot'
+import { videoObjectFromYouTube } from '../../lib/video-object'
 export function getStaticPaths() {
   const d = loadSnapshot()
   return d.projects.map((project) => ({ params: { slug: project.slug }, props: { project } }))
 }
 const { project } = Astro.props as { project: any }
 const data = loadSnapshot()
-const related = data.projects
-  .filter(
-    (p) =>
-      p._id !== project._id &&
-      p.services?.some((s: any) => project.services?.some((x: any) => x._id === s._id)),
-  )
-  .slice(0, 3)
+const explicitRelated = (project.relatedProjects ?? [])
+  .map((reference: any) => data.projects.find((item) => item._id === reference._id))
+  .filter((item: any) => item && !item.seo.noIndex)
+const inferredRelated = data.projects.filter(
+  (p) =>
+    p._id !== project._id &&
+    !p.seo.noIndex &&
+    p.services?.some((s: any) => project.services?.some((x: any) => x._id === s._id)),
+)
+const related = (explicitRelated.length ? explicitRelated : inferredRelated).slice(0, 3)
 const hero = project.gallery?.[0]
-const videoSchema = (project.videos ?? []).map((v: any) => {
-  const id = new URL(v.url).pathname.split('/').filter(Boolean).at(-1)
-  return {
-    '@type': 'VideoObject',
-    name: v.title,
-    description: v.description,
-    thumbnailUrl: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
-    uploadDate: v.uploadDate,
-    embedUrl: `https://www.youtube.com/embed/${id}`,
-  }
-})
+const videoSchema = (project.videos ?? [])
+  .map(videoObjectFromYouTube)
+  .filter((item: any) => item !== null)
 ---
 
 <BaseLayout
   title={project.seo.metaTitle}
   description={project.seo.metaDescription}
   path={`/مشاريعنا/${project.slug}/`}
+  image={project.seo.shareImage?.asset?.url}
+  noIndex={project.seo.noIndex}
+  canonicalOverride={project.seo.canonicalOverride}
   breadcrumbs={[{ label: 'مشاريعنا', href: '/مشاريعنا/' }, { label: project.title }]}
   schema={videoSchema}
   ><section class="project-hero">
@@ -130,7 +129,7 @@ const videoSchema = (project.videos ?? []).map((v: any) => {
           <>
             <h2>مشاريع مرتبطة</h2>
             <div class="grid grid-3">
-              {related.map((p) => (
+              {related.map((p: any) => (
                 <ListingCard
                   href={`/مشاريعنا/${p.slug}/`}
                   title={p.title}

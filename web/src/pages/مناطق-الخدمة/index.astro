@@ -19,15 +19,17 @@ const data = loadSnapshot()
   </section><section class="section">
     <div class="container cards">
       {
-        data.areas.map((area) => (
-          <ListingCard
-            href={`/مناطق-الخدمة/${area.slug}/`}
-            title={area.title}
-            summary={area.summary}
-            image={area.image}
-            eyebrow="خدمات صروح الشرقية"
-          />
-        ))
+        data.areas
+          .filter((area) => !area.seo.noIndex)
+          .map((area) => (
+            <ListingCard
+              href={`/مناطق-الخدمة/${area.slug}/`}
+              title={area.title}
+              summary={area.summary}
+              image={area.image}
+              eyebrow="خدمات صروح الشرقية"
+            />
+          ))
       }
     </div>
   </section></BaseLayout

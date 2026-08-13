@@ -1,7 +1,9 @@
 import { parseYouTubeUrl } from '../youtube'
 import type { NormalizedSnapshot } from '../content/normalize'
+import { generateRedirects } from '../redirects'
+import { SITE_ORIGIN } from '../../config/site'
 
-const origin = 'https://sorouh.site'
+const origin = SITE_ORIGIN
 const xml = (value: unknown) =>
   String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -13,10 +15,14 @@ const absolute = (path: string) => `${origin}${path}`
 type Entry = { path: string; lastmod?: string; image?: string }
 
 export function pageEntries(data: NormalizedSnapshot): Entry[] {
-  const fixed: Entry[] = [
-    { path: '/', lastmod: data.homePage._updatedAt },
-    { path: '/من-نحن/', lastmod: data.aboutPage._updatedAt },
-    { path: '/اتصل-بنا/', lastmod: data.contactPage._updatedAt },
+  const fixed: Array<Entry & { noIndex?: boolean }> = [
+    { path: '/', lastmod: data.homePage._updatedAt, noIndex: data.homePage.seo.noIndex },
+    { path: '/من-نحن/', lastmod: data.aboutPage._updatedAt, noIndex: data.aboutPage.seo.noIndex },
+    {
+      path: '/اتصل-بنا/',
+      lastmod: data.contactPage._updatedAt,
+      noIndex: data.contactPage.seo.noIndex,
+    },
     { path: '/الخدمات/' },
     { path: '/مناطق-الخدمة/' },
     { path: '/مشاريعنا/' },
@@ -29,7 +35,7 @@ export function pageEntries(data: NormalizedSnapshot): Entry[] {
     ...data.posts.map((d) => ({ ...d, path: `/المدونة/${d.slug}/` })),
   ]
   return [
-    ...fixed,
+    ...fixed.filter((entry) => !entry.noIndex),
     ...docs
       .filter((d) => !d.seo.noIndex)
       .map((d) => ({
@@ -57,6 +63,7 @@ export function sitemapPages(data: NormalizedSnapshot) {
 
 export function sitemapVideos(data: NormalizedSnapshot) {
   const entries = data.projects
+    .filter((project) => !project.seo.noIndex)
     .flatMap((project) =>
       (project.videos ?? []).map((video: any) => ({
         project,
@@ -75,22 +82,46 @@ export function rss(data: NormalizedSnapshot) {
   const posts = data.posts
     .filter((p) => !p.seo.noIndex && new Date(p.publishedAt) <= new Date())
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>مدونة شركة صروح الشرقية للمقاولات</title><link>${origin}/المدونة/</link><description>أدلة المقاولات والترميم والتشطيب في المنطقة الشرقية</description><language>ar-SA</language>${posts.map((p) => `<item><title>${xml(p.title)}</title><link>${xml(absolute(`/المدونة/${p.slug}/`))}</link><guid isPermaLink="true">${xml(absolute(`/المدونة/${p.slug}/`))}</guid><pubDate>${new Date(p.publishedAt).toUTCString()}</pubDate><author>${xml(`${data.siteSettings.rssAuthorEmail} (${data.siteSettings.companyName})`)}</author><description>${xml(p.excerpt)}</description></item>`).join('')}</channel></rss>\n`
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0"><channel><title>مدونة ${xml(data.siteSettings.companyName)}</title><link>${origin}/المدونة/</link><description>${xml(data.siteSettings.tagline)}</description><language>ar-SA</language>${posts.map((p) => `<item><title>${xml(p.title)}</title><link>${xml(absolute(`/المدونة/${p.slug}/`))}</link><guid isPermaLink="true">${xml(absolute(`/المدونة/${p.slug}/`))}</guid><pubDate>${new Date(p.publishedAt).toUTCString()}</pubDate><author>${xml(`${data.siteSettings.rssAuthorEmail} (${data.siteSettings.companyName})`)}</author><description>${xml(p.excerpt)}</description></item>`).join('')}</channel></rss>\n`
 }
 
 export function redirects(data: NormalizedSnapshot) {
-  const lines: string[] = []
+  const records: Array<{ source: string; destination: string; status?: 301 | 302 }> = []
   for (const [base, docs] of [
     ['الخدمات', data.services],
     ['مناطق-الخدمة', data.areas],
     ['مشاريعنا', data.projects],
     ['المدونة', data.posts],
   ] as const) {
-    for (const doc of docs)
-      for (const old of doc.redirectFrom ?? [])
-        lines.push(`/${base}/${old}/ /${base}/${doc.slug}/ 301`)
+    for (const doc of docs) {
+      for (const old of doc.redirectFrom ?? []) {
+        records.push({
+          source: old.startsWith('/') ? old : `/${base}/${old}/`,
+          destination: `/${base}/${doc.slug}/`,
+          status: 301,
+        })
+      }
+    }
   }
-  for (const item of data.redirects)
-    lines.push(`${item.source} ${item.destination} ${item.status ?? 301}`)
-  return [...new Set(lines)].join('\n') + (lines.length ? '\n' : '')
+  records.push(
+    ...data.redirects.map((item) => ({
+      source: String(item.source),
+      destination: String(item.destination),
+      status: item.status === 302 ? (302 as const) : (301 as const),
+    })),
+  )
+  const liveRoutes = new Set([
+    '/',
+    '/من-نحن/',
+    '/اتصل-بنا/',
+    '/الخدمات/',
+    '/مناطق-الخدمة/',
+    '/مشاريعنا/',
+    '/المدونة/',
+    ...data.services.map((doc) => `/الخدمات/${doc.slug}/`),
+    ...data.areas.map((doc) => `/مناطق-الخدمة/${doc.slug}/`),
+    ...data.projects.map((doc) => `/مشاريعنا/${doc.slug}/`),
+    ...data.posts.map((doc) => `/المدونة/${doc.slug}/`),
+  ])
+  return generateRedirects(records, liveRoutes)
 }

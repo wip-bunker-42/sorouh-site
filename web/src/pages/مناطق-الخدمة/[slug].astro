@@ -12,8 +12,10 @@ export function getStaticPaths() {
 }
 const { area } = Astro.props as { area: any }
 const data = loadSnapshot()
-const projects = data.projects.filter((p) => p.serviceArea?._id === area._id).slice(0, 3)
-const nearby = data.areas.filter((a) => a._id !== area._id).slice(0, 6)
+const projects = data.projects
+  .filter((p) => !p.seo.noIndex && p.serviceArea?._id === area._id)
+  .slice(0, 3)
+const nearby = data.areas.filter((a) => a._id !== area._id && !a.seo.noIndex).slice(0, 6)
 ---
 
 <BaseLayout
@@ -22,6 +24,7 @@ const nearby = data.areas.filter((a) => a._id !== area._id).slice(0, 6)
   path={`/مناطق-الخدمة/${area.slug}/`}
   canonicalOverride={area.seo.canonicalOverride}
   noIndex={area.seo.noIndex}
+  image={area.seo.shareImage?.asset?.url}
   breadcrumbs={[{ label: 'مناطق الخدمة', href: '/مناطق-الخدمة/' }, { label: area.title }]}
   ><section class="area-hero">
     <div class="container">
@@ -37,15 +40,20 @@ const nearby = data.areas.filter((a) => a._id !== area._id).slice(0, 6)
     <div class="container area-content">
       <PortableContent value={area.intro} /><div class="services">
         <p class="eyebrow">الخدمات المتاحة</p>{
-          area.featuredServices.map((service: any, index: number) => (
-            <a href={`/الخدمات/${service.slug}/`}>
-              <>
-                <b>{String(index + 1).padStart(2, '0')}</b>
-                <span>{service.title}</span>
-              </>
-              ←
-            </a>
-          ))
+          area.featuredServices
+            .filter(
+              (service: any) =>
+                !data.services.find((item) => item._id === service._id)?.seo.noIndex,
+            )
+            .map((service: any, index: number) => (
+              <a href={`/الخدمات/${service.slug}/`}>
+                <>
+                  <b>{String(index + 1).padStart(2, '0')}</b>
+                  <span>{service.title}</span>
+                </>
+                ←
+              </a>
+            ))
         }
       </div>
     </div>

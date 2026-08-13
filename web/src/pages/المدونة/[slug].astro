@@ -6,17 +6,21 @@ import ContactActions from '../../components/ContactActions.astro'
 import ListingCard from '../../components/ListingCard.astro'
 import { loadSnapshot } from '../../lib/content/load-snapshot'
 import { extractToc } from '../../lib/toc'
+import { canonicalUrl } from '../../lib/url'
+import { SITE_ORIGIN } from '../../config/site'
+import { preparePortableText } from '../../lib/portable-text'
 export function getStaticPaths() {
   const d = loadSnapshot()
   return d.posts.map((post) => ({ params: { slug: post.slug }, props: { post } }))
 }
 const { post } = Astro.props as { post: any }
 const data = loadSnapshot()
-const marker = post.body.findIndex((b: any) => b._type === 'cta')
-const before = marker >= 0 ? post.body.slice(0, marker) : post.body
-const after = marker >= 0 ? post.body.slice(marker + 1) : []
+const preparedBody = preparePortableText(post.body)
+const marker = preparedBody.findIndex((b: any) => b._type === 'cta')
+const before = marker >= 0 ? preparedBody.slice(0, marker) : preparedBody
+const after = marker >= 0 ? preparedBody.slice(marker + 1) : []
 const toc = extractToc(post.body)
-const canonical = `https://sorouh.site/المدونة/${post.slug}/`
+const canonical = canonicalUrl(`/المدونة/${post.slug}/`, post.seo.canonicalOverride).href
 const encoded = encodeURIComponent(canonical)
 const shareText = encodeURIComponent(post.title)
 const related = data.posts
@@ -44,8 +48,8 @@ const articleSchema = {
   datePublished: post.publishedAt,
   dateModified: post._updatedAt,
   inLanguage: 'ar-SA',
-  author: { '@id': 'https://sorouh.site/#organization' },
-  publisher: { '@id': 'https://sorouh.site/#organization' },
+  author: { '@id': `${SITE_ORIGIN}/#organization` },
+  publisher: { '@id': `${SITE_ORIGIN}/#organization` },
   mainEntityOfPage: { '@id': `${canonical}#webpage` },
 }
 ---
@@ -54,6 +58,9 @@ const articleSchema = {
   title={post.seo.metaTitle}
   description={post.seo.metaDescription}
   path={`/المدونة/${post.slug}/`}
+  image={post.seo.shareImage?.asset?.url}
+  noIndex={post.seo.noIndex}
+  canonicalOverride={post.seo.canonicalOverride}
   breadcrumbs={[{ label: 'المدونة', href: '/المدونة/' }, { label: post.title }]}
   schema={articleSchema}
   ><article>
@@ -87,9 +94,14 @@ const articleSchema = {
         )
       }<div class="article-body">
         <PortableContent value={before} /><div class="article-cta">
-          <h2>{post.body[marker]?.headline ?? 'تحتاج مقاولًا لمشروعك؟'}</h2><p>
-            {post.body[marker]?.body ?? 'تواصل معنا لترتيب المعاينة ومناقشة نطاق العمل.'}
-          </p><ContactActions primary={data.siteSettings.primaryPhone} location="article_mid" />
+          <h2>{preparedBody[marker]?.headline ?? 'تحتاج مقاولًا لمشروعك؟'}</h2><p>
+            {preparedBody[marker]?.body ?? 'تواصل معنا لترتيب المعاينة ومناقشة نطاق العمل.'}
+          </p><ContactActions
+            primary={data.siteSettings.primaryPhone}
+            location="article_mid"
+            action={preparedBody[marker]?.action}
+            label={preparedBody[marker]?.label}
+          />
         </div><PortableContent value={after} /><div class="share">
           <b>شارك المقال</b><a
             href={`https://wa.me/?text=${shareText}%20${encoded}`}
@@ -105,6 +117,8 @@ const articleSchema = {
           <h2>{post.articleCta.headline}</h2><p>{post.articleCta.body}</p><ContactActions
             primary={data.siteSettings.primaryPhone}
             location="article_end"
+            action={post.articleCta.action}
+            label={post.articleCta.label}
           />
         </div>
       </div>

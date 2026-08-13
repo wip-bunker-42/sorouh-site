@@ -6,6 +6,7 @@ import { loadSnapshot } from '../lib/content/load-snapshot'
 import { canonicalUrl } from '../lib/url'
 import { contactLinks } from '../lib/phone'
 import GoogleTagManager from '../components/analytics/GoogleTagManager.astro'
+import { SITE_ORIGIN } from '../config/site'
 
 type Crumb = { label: string; href?: string }
 type Props = {
@@ -36,18 +37,18 @@ const pageId = `${canonical}#webpage`
 const graph: Record<string, unknown>[] = [
   {
     '@type': 'WebSite',
-    '@id': 'https://sorouh.site/#website',
-    url: 'https://sorouh.site/',
+    '@id': `${SITE_ORIGIN}/#website`,
+    url: `${SITE_ORIGIN}/`,
     name: settings.companyName,
     inLanguage: 'ar-SA',
-    publisher: { '@id': 'https://sorouh.site/#organization' },
+    publisher: { '@id': `${SITE_ORIGIN}/#organization` },
   },
   {
     '@type': 'GeneralContractor',
-    '@id': 'https://sorouh.site/#organization',
+    '@id': `${SITE_ORIGIN}/#organization`,
     name: settings.companyName,
-    url: 'https://sorouh.site/',
-    logo: { '@type': 'ImageObject', url: 'https://sorouh.site/brand/logo.png' },
+    url: `${SITE_ORIGIN}/`,
+    logo: { '@type': 'ImageObject', url: `${SITE_ORIGIN}/brand/logo.png` },
     telephone: [settings.primaryPhone, settings.backupPhone],
     openingHours: 'Mo-Su 00:00-23:59',
     areaServed: snapshot.areas.map((area) => ({ '@type': 'City', name: area.title })),
@@ -59,8 +60,8 @@ const graph: Record<string, unknown>[] = [
     name: title,
     description,
     inLanguage: 'ar-SA',
-    isPartOf: { '@id': 'https://sorouh.site/#website' },
-    about: { '@id': 'https://sorouh.site/#organization' },
+    isPartOf: { '@id': `${SITE_ORIGIN}/#website` },
+    about: { '@id': `${SITE_ORIGIN}/#organization` },
   },
 ]
 if (breadcrumbs.length)
@@ -101,7 +102,7 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
       content={description}
     /><meta property="og:url" content={canonical} /><meta
       property="og:image"
-      content={new URL(image, canonical).href}
+      content={new URL(image, SITE_ORIGIN).href}
     /><meta property="og:image:width" content="1200" /><meta
       property="og:image:height"
       content="630"
@@ -111,7 +112,7 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
       content={title}
     /><meta name="twitter:description" content={description} /><meta
       name="twitter:image"
-      content={new URL(image, canonical).href}
+      content={new URL(image, SITE_ORIGIN).href}
     />
     <script is:inline type="application/ld+json" set:html={jsonLd} />
   </head>
@@ -123,6 +124,7 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
         <div class="container top-inner">
           <span>متاحون {settings.availability}</span><a
             href={primary.tel}
+            dir="ltr"
             data-contact
             data-contact-type="call"
             data-contact-location="header">{settings.primaryPhone}</a
@@ -130,13 +132,13 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
         </div>
       </div>
       <div class="container nav-wrap">
-        <a class="brand" href="/" aria-label="صروح الشرقية — الرئيسية"
+        <a class="brand" href="/" aria-label={`${settings.shortName} — الرئيسية`}
           ><img
             src="/brand/logo.webp"
             width="64"
             height="64"
-            alt="شعار شركة صروح الشرقية للمقاولات"
-          /><span><b>صروح الشرقية</b><small>للمقاولات</small></span></a
+            alt={`شعار ${settings.companyName}`}
+          /><span><b>{settings.shortName}</b><small>للمقاولات</small></span></a
         >
         <button class="menu-button" type="button" aria-expanded="false" aria-controls="main-nav"
           ><span></span><span></span><span></span><span class="sr-only">فتح القائمة</span></button
@@ -161,10 +163,15 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
     <footer class="site-footer">
       <div class="container footer-grid">
         <div>
-          <img src="/brand/logo.webp" width="82" height="82" alt="شعار صروح الشرقية" /><h2>
+          <img
+            src="/brand/logo.webp"
+            width="82"
+            height="82"
+            alt={`شعار ${settings.shortName}`}
+          /><h2>
             {settings.companyName}
           </h2><p>
-            {settings.tagline}. تنفيذ للمنازل والفلل في الدمام والخبر ومدن المنطقة الشرقية.
+            {settings.tagline}. {snapshot.contactPage.serviceAreaIntro}
           </p><ContactActions
             primary={settings.primaryPhone}
             backup={settings.backupPhone}
@@ -174,12 +181,14 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
         </div><div>
           <h3>الخدمات</h3>{
             snapshot.services
+              .filter((service) => !service.seo.noIndex)
               .slice(0, 7)
               .map((service) => <a href={`/الخدمات/${service.slug}/`}>{service.title}</a>)
           }
         </div><div>
           <h3>مناطق الخدمة</h3>{
             snapshot.areas
+              .filter((area) => !area.seo.noIndex)
               .slice(0, 7)
               .map((area) => <a href={`/مناطق-الخدمة/${area.slug}/`}>{area.title}</a>)
           }
@@ -189,7 +198,7 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
           ><p class="availability">{settings.availability}</p>
         </div>
       </div><div class="container copyright">
-        © {new Date().getFullYear()} شركة صروح الشرقية للمقاولات
+        {`© ${new Date().getFullYear()} ${settings.companyName}`}
       </div>
     </footer>
     <div class="mobile-contact" aria-label="تواصل سريع">

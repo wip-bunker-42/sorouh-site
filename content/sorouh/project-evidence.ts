@@ -21,6 +21,7 @@ export const projectDrafts: ProjectDraft[] = [
       'أسطح متجانسة وخطوط معمارية واضحة أصبحت جاهزة لاستقبال أعمال العزل والدهانات والتشطيبات الخارجية.',
     mediaKeys: ['building-plastering-video'],
     youtubeUrl: 'https://youtube.com/shorts/IK7jw0fu3zE?feature=share',
+    youtubeUploadDate: '2026-08-12',
     seo: {
       metaTitle: 'مشروع بناء ولياسة في الشرقية | صروح الشرقية',
       metaDescription:
@@ -81,6 +82,7 @@ export const projectDrafts: ProjectDraft[] = [
       'porcelain-video',
     ],
     youtubeUrl: 'https://youtube.com/shorts/esZBNafjbQw',
+    youtubeUploadDate: '2026-08-12',
     seo: {
       metaTitle: 'تشطيب حمام بورسلان فاخر في الدمام',
       metaDescription:
@@ -262,6 +264,7 @@ export const projectDrafts: ProjectDraft[] = [
     result: 'فتحة خرسانية محددة بأطراف منتظمة ونطاق تأثير محدود مقارنة بالتكسير التقليدي.',
     mediaKeys: ['concrete-saw-eastern', 'concrete-saw-video'],
     youtubeUrl: 'https://youtube.com/shorts/H8w3JVB4P48',
+    youtubeUploadDate: '2026-08-12',
     seo: {
       metaTitle: 'قص خرسانة بالمنشار الماسي في الشرقية',
       metaDescription:
@@ -290,6 +293,7 @@ export const projectDrafts: ProjectDraft[] = [
       'شبكات منظمة بمسارات واضحة ونقاط موزعة لتسهيل الاختبار واستكمال أعمال الإغلاق والتشطيب.',
     mediaKeys: ['electrical-plumbing-dammam', 'electrical-plumbing-video'],
     youtubeUrl: 'https://youtube.com/shorts/_8Y1ACr_tus?feature=share',
+    youtubeUploadDate: '2026-08-12',
     seo: {
       metaTitle: 'تأسيس كهرباء وسباكة فيلا في الدمام',
       metaDescription:

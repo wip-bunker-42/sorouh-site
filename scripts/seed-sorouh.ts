@@ -265,7 +265,7 @@ for (const [projectIndex, project] of projectDrafts.entries()) {
           url: project.youtubeUrl,
           title: `فيديو ${project.title}`,
           description: `${project.summary} شاهد جانبًا من التنفيذ في موقع المشروع.`,
-          uploadDate: '2026-08-01',
+          uploadDate: project.youtubeUploadDate,
         },
       ]
     : []

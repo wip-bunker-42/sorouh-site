@@ -1,0 +1,11 @@
+---
+const { node } = Astro.props as { node?: { href?: string; openInNewTab?: boolean } }
+const href = node?.href ?? '#'
+const external = node?.openInNewTab === true
+---
+
+<a
+  {href}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}><slot /></a
+>

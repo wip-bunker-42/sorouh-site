@@ -1,0 +1,10 @@
+---
+import YouTubeEmbed from '../media/YouTubeEmbed.astro'
+
+const { node } = Astro.props as { node: { url: string; title: string; description?: string } }
+---
+
+<figure class="portable-video">
+  <YouTubeEmbed url={node.url} title={node.title} />
+  {node.description && <figcaption>{node.description}</figcaption>}
+</figure>

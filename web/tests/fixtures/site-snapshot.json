@@ -99,7 +99,8 @@
           "_key": "video",
           "url": "https://www.youtube.com/shorts/IK7jw0fu3zE",
           "title": "تنفيذ أعمال التشطيب",
-          "description": "لقطات توضح جانبًا من أعمال التنفيذ داخل المشروع."
+          "description": "لقطات توضح جانبًا من أعمال التنفيذ داخل المشروع.",
+          "uploadDate": "2026-08-12"
         }
       ],
       "seo": { "noIndex": false },
@@ -121,7 +122,7 @@
       },
       "serviceArea": { "_id": "fixture-area", "title": "الدمام", "slug": "الدمام" },
       "relatedPosts": [],
-      "publishedAt": "2026-08-13T08:00:00.000Z",
+      "publishedAt": "2026-08-12T08:00:00.000Z",
       "author": "شركة صروح الشرقية للمقاولات",
       "seo": { "noIndex": false },
       "redirectFrom": []

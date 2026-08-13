@@ -4,11 +4,25 @@ import ContactActions from '../components/ContactActions.astro'
 import ContentImage from '../components/ContentImage.astro'
 import ListingCard from '../components/ListingCard.astro'
 import FaqList from '../components/FaqList.astro'
+import PortableContent from '../components/PortableContent.astro'
 import { loadSnapshot } from '../lib/content/load-snapshot'
 const data = loadSnapshot(),
   home = data.homePage,
   settings = data.siteSettings
-const featuredProjects = data.projects.filter((p) => p.featured).slice(0, 4)
+const indexableServices = data.services.filter((service) => !service.seo.noIndex)
+const indexableProjects = data.projects.filter((project) => !project.seo.noIndex)
+const featuredServices = (home.featuredServices ?? [])
+  .map((reference: any) => indexableServices.find((service) => service._id === reference._id))
+  .filter(Boolean)
+const displayedServices = featuredServices.length ? featuredServices : indexableServices.slice(0, 7)
+const selectedProjects = (home.featuredProjects ?? [])
+  .map((reference: any) => indexableProjects.find((project) => project._id === reference._id))
+  .filter(Boolean)
+const featuredProjects = (
+  selectedProjects.length
+    ? selectedProjects
+    : indexableProjects.filter((project) => project.featured)
+).slice(0, 4)
 const faqs = [
   {
     question: 'ما الخدمات التي تنفذها صروح الشرقية؟',
@@ -28,7 +42,14 @@ const faqs = [
 ]
 ---
 
-<BaseLayout title={home.seo.metaTitle} description={home.seo.metaDescription} path="/">
+<BaseLayout
+  title={home.seo.metaTitle}
+  description={home.seo.metaDescription}
+  path="/"
+  image={home.seo.shareImage?.asset?.url}
+  noIndex={home.seo.noIndex}
+  canonicalOverride={home.seo.canonicalOverride}
+>
   <section class="home-hero">
     <div class="container hero-grid">
       <div class="hero-copy">
@@ -57,6 +78,9 @@ const faqs = [
       }
     </div>
   </section>
+  <section class="section home-introduction">
+    <div class="narrow"><PortableContent value={home.introduction} /></div>
+  </section>
   <section class="section">
     <div class="container">
       <div class="section-head">
@@ -67,7 +91,7 @@ const faqs = [
         </div><p>نرتب البنود بحيث تعمل فرق البناء والخدمات والتشطيبات ضمن مسار واحد واضح.</p>
       </div><div class="service-strips">
         {
-          data.services.slice(0, 7).map((service, index) => (
+          displayedServices.map((service: any, index: number) => (
             <a href={`/الخدمات/${service.slug}/`}>
               <>
                 <span>{String(index + 1).padStart(2, '0')}</span>
@@ -85,7 +109,7 @@ const faqs = [
     <div class="container">
       <p class="eyebrow">من موقع العمل</p><h2>مشاريع تتحدث بالتفاصيل</h2><div class="project-grid">
         {
-          featuredProjects.map((project) => (
+          featuredProjects.map((project: any) => (
             <ListingCard
               href={`/مشاريعنا/${project.slug}/`}
               title={project.title}
@@ -132,12 +156,14 @@ const faqs = [
         </p><ContactActions primary={settings.primaryPhone} location="home_areas" light />
       </div><div class="area-links">
         {
-          data.areas.map((area) => (
-            <a href={`/مناطق-الخدمة/${area.slug}/`}>
-              {area.title}
-              <span>←</span>
-            </a>
-          ))
+          data.areas
+            .filter((area) => !area.seo.noIndex)
+            .map((area) => (
+              <a href={`/مناطق-الخدمة/${area.slug}/`}>
+                {area.title}
+                <span>←</span>
+              </a>
+            ))
         }
       </div>
     </div>
@@ -156,6 +182,7 @@ const faqs = [
       </div><div class="grid grid-3">
         {
           data.posts
+            .filter((post) => !post.seo.noIndex)
             .slice(0, 3)
             .map((post) => (
               <ListingCard
@@ -178,6 +205,8 @@ const faqs = [
         primary={settings.primaryPhone}
         backup={settings.backupPhone}
         location="home_end"
+        action={home.closingCta.action}
+        label={home.closingCta.label}
       />
     </div>
   </section>

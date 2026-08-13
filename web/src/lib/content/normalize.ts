@@ -2,13 +2,31 @@ import type { RawDocument, RawSnapshot } from './validate'
 
 type NormalizedDocument = RawDocument & {
   slug?: string
-  seo: Record<string, any> & { noIndex: boolean }
+  seo: Record<string, any> & {
+    metaTitle: string
+    metaDescription: string
+    noIndex: boolean
+    canonicalOverride?: string
+    shareImage?: Record<string, any>
+  }
 }
 
 export type NormalizedSnapshot = Omit<
   RawSnapshot,
-  'services' | 'areas' | 'projects' | 'categories' | 'posts'
+  | 'siteSettings'
+  | 'homePage'
+  | 'aboutPage'
+  | 'contactPage'
+  | 'services'
+  | 'areas'
+  | 'projects'
+  | 'categories'
+  | 'posts'
 > & {
+  siteSettings: NormalizedDocument
+  homePage: NormalizedDocument
+  aboutPage: NormalizedDocument
+  contactPage: NormalizedDocument
   services: NormalizedDocument[]
   areas: NormalizedDocument[]
   projects: NormalizedDocument[]
@@ -29,11 +47,50 @@ function slugValue(document: RawDocument): string | undefined {
   return undefined
 }
 
-function normalizeDocument(document: RawDocument): NormalizedDocument {
+function firstText(...values: unknown[]): string {
+  return values.find(hasText)?.toString().trim() ?? 'صفحة الموقع'
+}
+
+function inferredImage(document: RawDocument, defaultImage?: Record<string, any>) {
+  return (
+    document.seo?.shareImage ??
+    document.heroImage ??
+    document.image ??
+    document.featuredImage ??
+    document.gallery?.[0] ??
+    defaultImage
+  )
+}
+
+function normalizeDocument(
+  document: RawDocument,
+  defaultImage?: Record<string, any>,
+): NormalizedDocument {
+  const metaTitle = firstText(
+    document.seo?.metaTitle,
+    document.title,
+    document.heroTitle,
+    document.companyName,
+  )
+  const metaDescription = firstText(
+    document.seo?.metaDescription,
+    document.summary,
+    document.excerpt,
+    document.lead,
+    document.heroSummary,
+    document.tagline,
+    metaTitle,
+  )
   return {
     ...document,
     slug: slugValue(document),
-    seo: { ...(document.seo ?? {}), noIndex: Boolean(document.seo?.noIndex) },
+    seo: {
+      ...(document.seo ?? {}),
+      metaTitle,
+      metaDescription,
+      noIndex: Boolean(document.seo?.noIndex),
+      shareImage: inferredImage(document, defaultImage),
+    },
   }
 }
 
@@ -103,12 +160,27 @@ function collectVideos(projects: NormalizedDocument[], extra: RawDocument[] = []
   })
 }
 
-export function normalizeSnapshot(raw: RawSnapshot): NormalizedSnapshot {
-  const services = publishedOnly(raw.services).map(normalizeDocument)
-  const areas = publishedOnly(raw.areas).map(normalizeDocument)
-  const projects = publishedOnly(raw.projects).map(normalizeDocument)
-  const categories = publishedOnly(raw.categories).map(normalizeDocument)
-  const posts = publishedOnly(raw.posts).map(normalizeDocument)
+export function normalizeSnapshot(raw: RawSnapshot, now = new Date()): NormalizedSnapshot {
+  const siteSettings = normalizeDocument(raw.siteSettings)
+  const defaultImage = siteSettings.defaultShareImage
+  const homePage = normalizeDocument(raw.homePage, defaultImage)
+  const aboutPage = normalizeDocument(raw.aboutPage, defaultImage)
+  const contactPage = normalizeDocument(raw.contactPage, defaultImage)
+  const services = publishedOnly(raw.services).map((document) =>
+    normalizeDocument(document, defaultImage),
+  )
+  const areas = publishedOnly(raw.areas).map((document) =>
+    normalizeDocument(document, defaultImage),
+  )
+  const projects = publishedOnly(raw.projects).map((document) =>
+    normalizeDocument(document, defaultImage),
+  )
+  const categories = publishedOnly(raw.categories).map((document) =>
+    normalizeDocument(document, defaultImage),
+  )
+  const posts = publishedOnly(raw.posts)
+    .filter((document) => hasText(document.publishedAt) && new Date(document.publishedAt) <= now)
+    .map((document) => normalizeDocument(document, defaultImage))
   const redirects = publishedOnly(raw.redirects)
 
   assertUniqueSlugs('service', services)
@@ -146,6 +218,10 @@ export function normalizeSnapshot(raw: RawSnapshot): NormalizedSnapshot {
 
   return {
     ...raw,
+    siteSettings,
+    homePage,
+    aboutPage,
+    contactPage,
     services,
     areas,
     projects,

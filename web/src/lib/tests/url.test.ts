@@ -22,10 +22,9 @@ describe('canonicalUrl', () => {
     )
   })
 
-  test('rejects a foreign override unless a technical caller explicitly allows it', () => {
-    expect(() => canonicalUrl('/', 'https://example.com/')).toThrow('Foreign canonical override')
-    expect(canonicalUrl('/', 'https://example.com/', { allowForeignOverride: true }).href).toBe(
-      'https://example.com/',
+  test('supports an intentional HTTPS cross-origin canonical override', () => {
+    expect(canonicalUrl('/', 'https://example.com/original').href).toBe(
+      'https://example.com/original/',
     )
   })
 

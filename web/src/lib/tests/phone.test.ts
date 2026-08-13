@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { contactLinks, normalizeSaudiMobile } from '../phone'
+import { contactLinks, formatSaudiMobile, normalizeSaudiMobile } from '../phone'
 
 describe('Saudi contact links', () => {
   test.each([
@@ -23,5 +23,9 @@ describe('Saudi contact links', () => {
     expect(links.whatsapp).toBe(
       `https://wa.me/966546121683?text=${encodeURIComponent('السلام عليكم، أحتاج عرض سعر للمشروع')}`,
     )
+  })
+
+  test('formats the same editable number for display', () => {
+    expect(formatSaudiMobile('+966546121683')).toBe('054 612 1683')
   })
 })

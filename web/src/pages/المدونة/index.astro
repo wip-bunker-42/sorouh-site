@@ -17,19 +17,27 @@ const data = loadSnapshot()
       </p>
     </div>
   </section><section class="categories">
-    <div class="container">{data.categories.map((c) => <span>{c.title}</span>)}</div>
+    <div class="container">
+      {
+        data.categories
+          .filter((category) => !category.seo.noIndex)
+          .map((c) => <span>{c.title}</span>)
+      }
+    </div>
   </section><section class="section">
     <div class="container blog-grid">
       {
-        data.posts.map((post) => (
-          <ListingCard
-            href={`/المدونة/${post.slug}/`}
-            title={post.title}
-            summary={post.excerpt}
-            image={post.featuredImage}
-            eyebrow={`${post.category?.title} • ${new Intl.DateTimeFormat('ar-SA', { dateStyle: 'medium' }).format(new Date(post.publishedAt))}`}
-          />
-        ))
+        data.posts
+          .filter((post) => !post.seo.noIndex)
+          .map((post) => (
+            <ListingCard
+              href={`/المدونة/${post.slug}/`}
+              title={post.title}
+              summary={post.excerpt}
+              image={post.featuredImage}
+              eyebrow={`${post.category?.title} • ${new Intl.DateTimeFormat('ar-SA', { dateStyle: 'medium' }).format(new Date(post.publishedAt))}`}
+            />
+          ))
       }
     </div>
   </section></BaseLayout

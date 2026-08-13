@@ -7,7 +7,9 @@ import { createBuildClient } from '../src/sanity/client'
 import { SITE_SNAPSHOT_QUERY } from '../src/sanity/queries'
 import { normalizeSnapshot } from '../src/lib/content/normalize'
 import { validateRawSnapshot } from '../src/lib/content/validate'
+import { validateRenderContract } from '../src/lib/content/contract'
 import { redirects, rss, sitemapIndex, sitemapPages, sitemapVideos } from '../src/lib/seo/discovery'
+import { SITE_ORIGIN } from '../src/config/site'
 
 const webRoot = fileURLToPath(new URL('..', import.meta.url))
 const outputPath = resolve(webRoot, 'src/data/site-snapshot.json')
@@ -39,7 +41,7 @@ export async function writeSnapshotAtomically(value: unknown, destination = outp
 
 export async function prepareBuild(environment: NodeJS.ProcessEnv = process.env) {
   const raw = await fetchRawSnapshot(environment)
-  const snapshot = normalizeSnapshot(validateRawSnapshot(raw))
+  const snapshot = validateRenderContract(normalizeSnapshot(validateRawSnapshot(raw)))
   await writeSnapshotAtomically(snapshot)
   const publicDir = resolve(webRoot, 'public')
   await mkdir(publicDir, { recursive: true })
@@ -50,11 +52,11 @@ export async function prepareBuild(environment: NodeJS.ProcessEnv = process.env)
     writeFile(resolve(publicDir, 'rss.xml'), rss(snapshot)),
     writeFile(
       resolve(publicDir, 'robots.txt'),
-      'User-agent: *\nAllow: /\nSitemap: https://sorouh.site/sitemap.xml\n',
+      `User-agent: *\nAllow: /\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`,
     ),
     writeFile(
       resolve(publicDir, 'llms.txt'),
-      '# شركة صروح الشرقية للمقاولات\n\nشركة مقاولات عربية تخدم الدمام والخبر ومدن المنطقة الشرقية.\n\n- الموقع: https://sorouh.site/\n- الخدمات: https://sorouh.site/الخدمات/\n- المشاريع: https://sorouh.site/مشاريعنا/\n- مناطق الخدمة: https://sorouh.site/مناطق-الخدمة/\n- المدونة: https://sorouh.site/المدونة/\n- التواصل: اتصال وواتساب على +966546121683، والرقم الاحتياطي +966546745928.\n',
+      `# ${snapshot.siteSettings.companyName}\n\n${snapshot.siteSettings.tagline}.\n\n- الموقع: ${SITE_ORIGIN}/\n- الخدمات: ${SITE_ORIGIN}/الخدمات/\n- المشاريع: ${SITE_ORIGIN}/مشاريعنا/\n- مناطق الخدمة: ${SITE_ORIGIN}/مناطق-الخدمة/\n- المدونة: ${SITE_ORIGIN}/المدونة/\n- التواصل: اتصال وواتساب على ${snapshot.siteSettings.primaryPhone}، والرقم الاحتياطي ${snapshot.siteSettings.backupPhone}.\n`,
     ),
     writeFile(resolve(publicDir, '_redirects'), redirects(snapshot)),
   ])

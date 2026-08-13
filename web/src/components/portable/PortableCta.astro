@@ -1,0 +1,40 @@
+---
+import { loadSnapshot } from '../../lib/content/load-snapshot'
+import { contactLinks } from '../../lib/phone'
+
+const { node } = Astro.props as {
+  node: { headline: string; body: string; action: 'call' | 'whatsapp'; label: string }
+}
+const links = contactLinks(loadSnapshot().siteSettings.primaryPhone)
+const href = node.action === 'call' ? links.tel : links.whatsapp
+---
+
+<aside class="portable-cta">
+  <h2>{node.headline}</h2>
+  <p>{node.body}</p>
+  <a
+    class="btn btn-primary"
+    {href}
+    data-contact
+    data-contact-type={node.action}
+    data-contact-location="portable_content">{node.label}</a
+  >
+</aside>
+
+<style>
+  .portable-cta {
+    margin-block: 2rem;
+    padding: 1.5rem;
+    color: white;
+    background: var(--navy-900);
+    border-right: 4px solid var(--copper-bright);
+    border-radius: var(--radius);
+  }
+  .portable-cta h2 {
+    margin-top: 0;
+    color: white;
+  }
+  .portable-cta p {
+    color: #d5dfe7;
+  }
+</style>

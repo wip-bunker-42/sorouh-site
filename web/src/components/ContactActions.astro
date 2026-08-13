@@ -6,27 +6,40 @@ type Props = {
   location: string
   light?: boolean
   compact?: boolean
+  action?: 'call' | 'whatsapp'
+  label?: string
 }
-const { primary, backup, location, light = false, compact = false } = Astro.props
+const {
+  primary,
+  backup,
+  location,
+  light = false,
+  compact = false,
+  action = 'whatsapp',
+  label,
+} = Astro.props
 const first = contactLinks(primary)
 const second = backup ? contactLinks(backup) : null
+const preferredHref = action === 'call' ? first.tel : first.whatsapp
+const alternateHref = action === 'call' ? first.whatsapp : first.tel
 ---
 
 <div class:list={['actions', { compact }]}>
   <a
     class="btn btn-primary"
-    href={first.whatsapp}
+    href={preferredHref}
     data-contact
-    data-contact-type="whatsapp"
+    data-contact-type={action}
     data-contact-location={location}
-    aria-label="تواصل عبر واتساب مع صروح الشرقية">واتساب</a
+    aria-label={label ?? (action === 'call' ? 'اتصل بنا' : 'تواصل معنا عبر واتساب')}
+    >{label ?? (action === 'call' ? 'اتصل الآن' : 'واتساب')}</a
   >
   <a
     class:list={['btn', light ? 'btn-light' : 'btn-ghost']}
-    href={first.tel}
+    href={alternateHref}
     data-contact
-    data-contact-type="call"
-    data-contact-location={location}>اتصل الآن</a
+    data-contact-type={action === 'call' ? 'whatsapp' : 'call'}
+    data-contact-location={location}>{action === 'call' ? 'واتساب' : 'اتصل الآن'}</a
   >
   {
     second && compact && (

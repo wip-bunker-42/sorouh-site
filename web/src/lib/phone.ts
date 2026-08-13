@@ -22,3 +22,9 @@ export function contactLinks(phone: string, message = DEFAULT_MESSAGE) {
     whatsapp: `https://wa.me/${digits}?text=${encodeURIComponent(message)}`,
   }
 }
+
+export function formatSaudiMobile(phone: string): string {
+  const normalized = normalizeSaudiMobile(phone)
+  const local = `0${normalized.slice(4)}`
+  return `${local.slice(0, 3)} ${local.slice(3, 6)} ${local.slice(6)}`
+}

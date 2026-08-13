@@ -13,7 +13,7 @@ pnpm check
 pnpm build
 ```
 
-متغيرات الواجهة: `PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET=production`، و`PUBLIC_GTM_ID` اختياري. القيمة الفارغة تعني أن GTM معطل تمامًا.
+متغيرات الواجهة: `PUBLIC_SANITY_PROJECT_ID`, `PUBLIC_SANITY_DATASET=production`، `PUBLIC_SITE_ORIGIN`، و`PUBLIC_GTM_ID` اختياري. القيمة الفارغة تعني أن GTM معطل تمامًا.
 
 ## المحتوى والنشر
 

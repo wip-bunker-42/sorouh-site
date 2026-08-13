@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, test } from 'vitest'
 
 import { normalizeSnapshot } from '../content/normalize'
 import { validateRawSnapshot } from '../content/validate'
+import { validateRenderContract } from '../content/contract'
 import { createBuildClient } from '../../sanity/client'
 
 type MutableSnapshot = Record<string, any>
@@ -87,5 +88,41 @@ describe('published content snapshot', () => {
   test('omits aggregate lastmod because collection pages change for many reasons', () => {
     const snapshot = normalizeSnapshot(validateRawSnapshot(raw))
     expect(snapshot.aggregateLastmod).toEqual({})
+  })
+
+  test('treats SEO fields as optional overrides with content and image fallbacks', () => {
+    raw.homePage.heroSummary = 'ملخص واضح لخدمات المقاولات والبناء والترميم في المنطقة الشرقية.'
+    raw.homePage.heroImage = { asset: { url: 'https://cdn.sanity.io/images/example/home.jpg' } }
+    delete raw.homePage.seo
+    delete raw.services[0].seo
+    const snapshot = normalizeSnapshot(validateRawSnapshot(raw))
+
+    expect(snapshot.homePage.seo).toMatchObject({
+      metaTitle: raw.homePage.heroTitle,
+      metaDescription: raw.homePage.heroSummary,
+      noIndex: false,
+    })
+    expect(snapshot.homePage.seo.shareImage).toEqual(raw.homePage.heroImage)
+    expect(snapshot.services[0]!.seo.metaTitle).toBe(raw.services[0].title)
+    expect(snapshot.services[0]!.seo.metaDescription).toBe(raw.services[0].summary)
+    expect(snapshot.services[0]!.seo.shareImage).toEqual(raw.services[0].heroImage)
+  })
+
+  test('excludes scheduled posts consistently before route generation', () => {
+    raw.posts.push({
+      ...raw.posts[0],
+      _id: 'future-post',
+      slug: 'future-post',
+      publishedAt: '2030-01-01T00:00:00.000Z',
+    })
+    const snapshot = normalizeSnapshot(validateRawSnapshot(raw), new Date('2026-08-13T00:00:00Z'))
+    expect(snapshot.posts.map((post) => post._id)).not.toContain('future-post')
+  })
+
+  test('fails before Astro when a field consumed by a page is missing', () => {
+    const snapshot = normalizeSnapshot(validateRawSnapshot(raw))
+    expect(() => validateRenderContract(snapshot)).toThrow(
+      'Published content is missing render field',
+    )
   })
 })

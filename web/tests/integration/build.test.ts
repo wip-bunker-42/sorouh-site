@@ -45,4 +45,19 @@ describe('production build', () => {
   it('does not inject GTM when its optional environment variable is absent', () => {
     expect(read('index.html')).not.toContain('googletagmanager.com')
   })
+
+  it('uses page-specific Sanity share images on editorial pages', () => {
+    const $ = load(read('المدونة/كيف-تختار-مقاول-في-الدمام/index.html'))
+    expect($('meta[property="og:image"]').attr('content')).toMatch(
+      /^https:\/\/cdn\.sanity\.io\/images\/ki7bs4vk\/production\//,
+    )
+    expect($('meta[name="robots"]').attr('content')).toContain('index, follow')
+  })
+
+  it('ships only verified YouTube publication dates and valid redirect paths', () => {
+    const videos = read('sitemap-videos.xml')
+    expect(videos).toContain('<video:publication_date>2026-08-12</video:publication_date>')
+    expect(videos).not.toContain('2026-08-01')
+    expect(read('_redirects')).not.toContain('//الخدمات/')
+  })
 })

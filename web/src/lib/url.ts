@@ -1,8 +1,4 @@
-import { SITE_ORIGIN } from '../../../content/sorouh/invariants'
-
-type CanonicalOptions = {
-  allowForeignOverride?: boolean
-}
+import { SITE_ORIGIN } from '../config/site'
 
 function isFilePath(path: string): boolean {
   const finalSegment = path.split('/').filter(Boolean).at(-1) ?? ''
@@ -32,7 +28,7 @@ function normalizeCanonicalUrl(url: URL): URL {
   return url
 }
 
-export function canonicalUrl(path: string, override?: string, options: CanonicalOptions = {}): URL {
+export function canonicalUrl(path: string, override?: string): URL {
   const origin = new URL(SITE_ORIGIN)
   if (!override) return normalizeCanonicalUrl(new URL(normalizeCanonicalPath(path), origin))
 
@@ -43,8 +39,5 @@ export function canonicalUrl(path: string, override?: string, options: Canonical
     throw new Error(`Unsafe canonical override: ${override}`)
   }
 
-  if (candidate.origin !== origin.origin && !options.allowForeignOverride) {
-    throw new Error(`Foreign canonical override: ${candidate.origin}`)
-  }
   return normalizeCanonicalUrl(candidate)
 }

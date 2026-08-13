@@ -20,14 +20,16 @@ const data = loadSnapshot()
   </section><section class="section">
     <div class="container cards">
       {
-        data.services.map((service) => (
-          <ListingCard
-            href={`/الخدمات/${service.slug}/`}
-            title={service.title}
-            summary={service.summary}
-            image={service.heroImage}
-          />
-        ))
+        data.services
+          .filter((service) => !service.seo.noIndex)
+          .map((service) => (
+            <ListingCard
+              href={`/الخدمات/${service.slug}/`}
+              title={service.title}
+              summary={service.summary}
+              image={service.heroImage}
+            />
+          ))
       }
     </div>
   </section></BaseLayout

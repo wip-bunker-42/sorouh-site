@@ -3,18 +3,33 @@ import BaseLayout from '../layouts/BaseLayout.astro'
 import ContactActions from '../components/ContactActions.astro'
 import FaqList from '../components/FaqList.astro'
 import { loadSnapshot } from '../lib/content/load-snapshot'
-import { contactLinks } from '../lib/phone'
+import { contactLinks, formatSaudiMobile } from '../lib/phone'
 const data = loadSnapshot(),
   page = data.contactPage,
   s = data.siteSettings,
   p = contactLinks(s.primaryPhone),
   b = contactLinks(s.backupPhone)
+const primaryPoint = page.contactPoints?.[0]
+const backupPoint = page.contactPoints?.[1]
+const preferred = (
+  point: { action?: 'call' | 'whatsapp'; label?: string } | undefined,
+  links: typeof p,
+) => ({
+  type: point?.action === 'call' ? ('call' as const) : ('whatsapp' as const),
+  href: point?.action === 'call' ? links.tel : links.whatsapp,
+  label: point?.label ?? (point?.action === 'call' ? 'اتصال' : 'واتساب'),
+})
+const primaryPreferred = preferred(primaryPoint, p)
+const backupPreferred = preferred(backupPoint, b)
 ---
 
 <BaseLayout
   title={page.seo.metaTitle}
   description={page.seo.metaDescription}
   path="/اتصل-بنا/"
+  image={page.seo.shareImage?.asset?.url}
+  noIndex={page.seo.noIndex}
+  canonicalOverride={page.seo.canonicalOverride}
   breadcrumbs={[{ label: 'اتصل بنا' }]}
   ><section class="contact-hero">
     <div class="container contact-grid">
@@ -29,31 +44,37 @@ const data = loadSnapshot(),
         />
       </div><div class="numbers">
         <article>
-          <span>الرقم الأساسي</span><strong dir="ltr">054 612 1683</strong><div>
+          <span>{primaryPoint?.headline ?? 'الرقم الأساسي'}</span><strong dir="ltr"
+            >{formatSaudiMobile(s.primaryPhone)}</strong
+          ><p>{primaryPoint?.body}</p><div>
             <a
-              href={p.whatsapp}
+              href={primaryPreferred.href}
               data-contact
-              data-contact-type="whatsapp"
-              data-contact-location="contact_primary">واتساب</a
+              data-contact-type={primaryPreferred.type}
+              data-contact-location="contact_primary">{primaryPreferred.label}</a
             ><a
-              href={p.tel}
+              href={primaryPreferred.type === 'call' ? p.whatsapp : p.tel}
               data-contact
-              data-contact-type="call"
-              data-contact-location="contact_primary">اتصال</a
+              data-contact-type={primaryPreferred.type === 'call' ? 'whatsapp' : 'call'}
+              data-contact-location="contact_primary"
+              >{primaryPreferred.type === 'call' ? 'واتساب' : 'اتصال'}</a
             >
           </div>
         </article><article>
-          <span>الرقم الاحتياطي</span><strong dir="ltr">054 674 5928</strong><div>
+          <span>{backupPoint?.headline ?? 'الرقم الاحتياطي'}</span><strong dir="ltr"
+            >{formatSaudiMobile(s.backupPhone)}</strong
+          ><p>{backupPoint?.body}</p><div>
             <a
-              href={b.whatsapp}
+              href={backupPreferred.href}
               data-contact
-              data-contact-type="whatsapp"
-              data-contact-location="contact_backup">واتساب</a
+              data-contact-type={backupPreferred.type}
+              data-contact-location="contact_backup">{backupPreferred.label}</a
             ><a
-              href={b.tel}
+              href={backupPreferred.type === 'call' ? b.whatsapp : b.tel}
               data-contact
-              data-contact-type="call"
-              data-contact-location="contact_backup">اتصال</a
+              data-contact-type={backupPreferred.type === 'call' ? 'whatsapp' : 'call'}
+              data-contact-location="contact_backup"
+              >{backupPreferred.type === 'call' ? 'واتساب' : 'اتصال'}</a
             >
           </div>
         </article>
@@ -65,7 +86,11 @@ const data = loadSnapshot(),
         <p class="eyebrow">نغطي المنطقة الشرقية</p><h2>أرسل المدينة ونوع العمل</h2><p class="lead">
           {page.serviceAreaIntro}
         </p><div class="city-list">
-          {data.areas.map((area) => <a href={`/مناطق-الخدمة/${area.slug}/`}>{area.title}</a>)}
+          {
+            data.areas
+              .filter((area) => !area.seo.noIndex)
+              .map((area) => <a href={`/مناطق-الخدمة/${area.slug}/`}>{area.title}</a>)
+          }
         </div>
       </div><div><h2>قبل التواصل</h2><FaqList items={page.faqs} /></div>
     </div>

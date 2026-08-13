@@ -19,15 +19,17 @@ const data = loadSnapshot()
   </section><section class="section">
     <div class="container project-list">
       {
-        data.projects.map((project) => (
-          <ListingCard
-            href={`/مشاريعنا/${project.slug}/`}
-            title={project.title}
-            summary={project.summary}
-            image={project.gallery?.[0]}
-            eyebrow={`${project.serviceArea?.title} • ${project.classification}`}
-          />
-        ))
+        data.projects
+          .filter((project) => !project.seo.noIndex)
+          .map((project) => (
+            <ListingCard
+              href={`/مشاريعنا/${project.slug}/`}
+              title={project.title}
+              summary={project.summary}
+              image={project.gallery?.[0]}
+              eyebrow={`${project.serviceArea?.title} • ${project.classification}`}
+            />
+          ))
       }
     </div>
   </section></BaseLayout
