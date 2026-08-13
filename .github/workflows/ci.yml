@@ -38,7 +38,7 @@ jobs:
       - run: pnpm audit --audit-level moderate
       - run: pnpm check
       - run: pnpm --dir web deploy:dry
-      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm --dir web exec playwright install --with-deps chromium
       - run: pnpm test:e2e
       - name: Upload Playwright report on failure
         if: failure()
