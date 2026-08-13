@@ -24,7 +24,7 @@
     "validate:dist": "pnpm --filter @sorouh/web validate:dist",
     "audit:media": "tsx scripts/lib/audit-source-assets.ts",
     "typegen": "pnpm --filter @sorouh/studio typegen",
-    "seed:sorouh": "tsx scripts/seed-sorouh.ts"
+    "seed:sorouh": "pnpm --dir studio exec sanity exec ../scripts/seed-sorouh.ts --with-user-token --"
   },
   "devDependencies": {
     "@portabletext/markdown": "1.4.6",
@@ -32,6 +32,7 @@
     "@types/node": "26.2.0",
     "prettier": "3.9.6",
     "prettier-plugin-astro": "0.14.1",
+    "sanity": "6.9.2",
     "sharp": "0.35.3",
     "tsx": "4.23.12",
     "typescript": "6.0.3",

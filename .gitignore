@@ -12,6 +12,10 @@ test-results/
 web/src/data/site-snapshot.json
 web/src/sanity/schema.json
 web/public/_redirects
+web/public/sitemap*.xml
+web/public/rss.xml
+web/public/robots.txt
+web/public/llms.txt
 work/
 *.mp4
 *.mov
