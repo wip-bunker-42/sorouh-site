@@ -1,10 +1,10 @@
 # Sorouh Contractor Website Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (- [ ]) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Build, populate, verify, and deploy the Arabic-only Sorouh contractor website and its Sanity Studio as an isolated, reusable code starter, with static-first SEO/AEO and Cloudflare Workers Static Assets hosting.
 
-**Architecture:** A small pnpm monorepo contains `web/` (Astro 7 SSG), `studio/` (Sanity 6 Studio), `scripts/` (client bootstrap and import utilities), and `content/sorouh/` (Sorouh-only seed content). A prebuild content snapshot fetches only published Sanity data once, validates it, generates internal redirects, and feeds every Astro route and static discovery file consistently. The public site has no runtime Worker or SSR; Cloudflare serves `web/dist` as Static Assets and enforces trailing-slash URLs.
+**Architecture:** A small pnpm monorepo contains `web/` (Astro 7 SSG), `studio/` (Sanity 6 Studio), `scripts/` (client bootstrap and import utilities), and `content/sorouh/` (Sorouh-only seed content). A prebuild content snapshot fetches only published Sanity data once, validates it, generates internal redirects, and feeds every Astro route and static discovery file consistently. The public site has no runtime Worker or SSR; Cloudflare serves `web/dist` as Static Assets and enforces trailing-slash URLs. An optional build-time GTM component is completely absent when `PUBLIC_GTM_ID` is unset and needs no Sanity field.
 
 **Tech Stack:** Node.js 24, pnpm 11, Astro 7.2.1, TypeScript 6.0.3 strict, Sanity 6.9.2, `@sanity/client` 8.0.0, GROQ 6.9.2, Sanity TypeGen, Portable Text, Wrangler 4.122.0, Vitest 4.1.10, `@playwright/test` 1.62.1, axe-core, and Cloudflare Workers Static Assets.
 
@@ -24,6 +24,8 @@
 - YouTube embeds must be real `<iframe src>` elements in generated HTML with `loading="lazy"`; do not use click-to-load.
 - `_redirects` contains internal path/slug redirects only. Cloudflare Always Use HTTPS and Bulk Redirect handle protocol and `www` canonicalization.
 - `workers_dev` is false and `preview_urls` is true. Public branch/version previews are an accepted project choice and require no authentication work in this scope.
+- Google Tag Manager is disabled by default. Set one optional build variable, `PUBLIC_GTM_ID`, to a valid `GTM-...` container ID to enable the official snippets and generic contact events; never store the ID in Sanity.
+- Use Astro's normal `{value}` interpolation for text and `astro-portabletext` for rich content. Never pass Sanity editorial content to `set:html`; reserve raw insertion for trusted generated output such as serialized JSON-LD.
 - Keep TypeScript on `6.0.3` while `astro check` depends on the compiler's programmatic API. Do not upgrade this project to the TypeScript 7 native compiler until Astro's checker officially supports it and the full gate passes.
 - The general starter contains schemas, components, generators, tests, and empty singleton bootstrap only. It never contains Sorouh copy, services, areas, images, or SEO articles.
 - Use test-driven development for behavior. Run the narrow failing test first, implement the smallest change, rerun it, then run the relevant wider checks before committing.
@@ -89,6 +91,7 @@
     ├── scripts/{prepare-build.ts,validate-dist.ts}
     ├── src/
     │   ├── components/
+    │   │   ├── analytics/GoogleTagManager.astro
     │   │   ├── content/{ArticleCta,PortableContent,RelatedPosts,ShareButtons,TableOfContents}.astro
     │   │   ├── media/{SanityImage,YouTubeEmbed}.astro
     │   │   ├── seo/{JsonLd,SeoHead}.astro
@@ -97,6 +100,7 @@
     │   ├── data/.gitkeep
     │   ├── layouts/{ArticleLayout,BaseLayout,ContentLayout}.astro
     │   ├── lib/
+    │   │   ├── analytics/gtm.ts
     │   │   ├── content/{load-snapshot,normalize,validate}.ts
     │   │   ├── seo/{jsonld,metadata,rss,sitemap}.ts
     │   │   ├── {phone,redirects,toc,url,youtube}.ts
@@ -119,7 +123,7 @@
     │   ├── sanity/{client,queries,sanity.types}.ts
     │   └── styles/{global,prose,tokens}.css
     └── tests/
-        ├── e2e/{navigation,seo,sharing}.spec.ts
+        ├── e2e/{gtm,navigation,seo,sharing}.spec.ts
         ├── fixtures/site-snapshot.json
         └── integration/build.test.ts
 ```
@@ -323,7 +327,7 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - [ ] Define CSS custom properties for navy, copper/orange, white, charcoal, spacing, typography, radii, shadows, and container sizes. Import the local Noto Sans Arabic variable font with `font-display: swap`.
 - [ ] Build `BaseLayout` and the semantic shell with zero hydration for static pieces. Use one tiny vanilla script only for the mobile-menu state and another for copy-link later.
 - [ ] Build a desktop header, rich footer, breadcrumbs, and fixed mobile bar with safe-area padding. Header/footer include services, areas, blog, contact, 24/7, call, and WhatsApp.
-- [ ] Add stable analytics hooks such as `data-contact="call-primary"` and `data-contact="whatsapp-primary"`, without adding analytics or cookies.
+- [ ] Add stable hooks to every contact action: boolean `data-contact`, `data-contact-type="call|whatsapp"`, and finite `data-contact-location` values. These attributes alone add no tracking, requests, or cookies and are consumed only if Task 14 enables GTM.
 - [ ] Respect `prefers-reduced-motion` and meet WCAG AA contrast at token/component level.
 - [ ] Run component tests and Playwright navigation tests at mobile and desktop widths.
 - [ ] Commit: `feat(web): build accessible Arabic conversion shell`
@@ -346,7 +350,7 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - [ ] Write JSON-LD tests for stable `@id` relationships among `WebSite`, `GeneralContractor`, `WebPage`, `BreadcrumbList`, `Service`, `Article`, `ImageObject`, and eligible `VideoObject`.
 - [ ] Assert the company graph contains two phone numbers, 24/7 opening hours, and the ten `areaServed` values, but no `address`, `geo`, `hasMap`, `aggregateRating`, or invented `sameAs`.
 - [ ] Assert `Article.author` and `publisher` both refer to شركة صروح الشرقية للمقاولات; `datePublished` uses `publishedAt`; `dateModified` uses published `_updatedAt`.
-- [ ] Emit JSON-LD with `<` escaped as `\u003c` before insertion into the script element.
+- [ ] Render ordinary metadata text through Astro `{value}` interpolation. For the JSON-LD script only, serialize the trusted graph with `JSON.stringify`, replace `<` with `\u003c`, and insert that generated string with `set:html`; never route Sanity editorial HTML through this component.
 - [ ] Add visible FAQ markup first; only then attach matching FAQ schema when the questions/answers are literally rendered.
 - [ ] Run all SEO unit tests and inspect one rendered JSON-LD graph with a schema validator in the later release task.
 - [ ] Commit: `feat(seo): add canonical metadata and linked structured data`
@@ -413,7 +417,7 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - Produces: blog index and article HTML with featured image, dates, TOC, shares, CTAs, related posts, and Article schema
 
 - [ ] Write failing tests for author label, formatted publish/update dates, primary category, optional areas, featured image, breadcrumb, long-post TOC, no TOC for short content, midpoint/final CTA, and related-post exclusion of current/noIndex posts.
-- [ ] Render Portable Text semantically with stable H2/H3 IDs shared with the TOC extractor. External links use safe `rel`; internal links keep trailing slashes.
+- [ ] Render Portable Text semantically through `astro-portabletext` plus explicit custom components, with stable H2/H3 IDs shared with the TOC extractor. Do not convert it to raw HTML or use `set:html`. External links use safe `rel`; internal links keep trailing slashes.
 - [ ] Insert the midpoint CTA at an intentional content block marker, never by splitting arbitrary paragraphs. Always render the final CTA.
 - [ ] Build WhatsApp share, X share, and copy-link actions. WhatsApp/X are ordinary links; copy uses a tiny progressive-enhancement script and Arabic success/failure status announced with `aria-live`.
 - [ ] Prefer explicit related-post references, then fill remaining slots from the same category, then actual shared areas; cap and deduplicate results.
@@ -438,14 +442,58 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - [ ] Write failing XML tests for correct namespaces, XML escaping, only canonical/indexable URLs, accurate per-document `_updatedAt`, omission of untrusted aggregate `lastmod`, image entries, and no `priority`/`changefreq`.
 - [ ] Generate `/sitemap.xml` as an index referencing `/sitemap-pages.xml` and `/sitemap-videos.xml`.
 - [ ] Generate video entries only when the visible page has a real YouTube iframe and complete matching thumbnail/title/description/date metadata. Use `https://www.youtube.com/embed/{id}` in `video:player_loc`.
-- [ ] Generate RSS from indexable published posts only, with canonical links, actual dates, and excerpts. Emit the RSS 2.0 item author through escaped `customData` as `<author>info@sorouh.site (شركة صروح الشرقية للمقاولات)</author>` because RSS 2.0 defines `author` as an email address; keep the organization name in parentheses. Do not include drafts or future posts.
+- [ ] Generate RSS from indexable published posts only, with canonical links, actual dates, and excerpts. Build `customData` only from XML-escaped approved values and emit `<author>info@sorouh.site (شركة صروح الشرقية للمقاولات)</author>` because RSS 2.0 defines `author` as an email address; keep the organization name in parentheses. Do not accept editorial HTML, drafts, or future posts.
 - [ ] Generate permissive robots text exactly around `User-agent: *`, `Allow: /`, and the sitemap URL. Do not name or block individual AI bots.
 - [ ] Generate concise `llms.txt` with company facts and canonical links, clearly treating it as discovery support rather than a ranking claim.
 - [ ] Generate `_redirects` before Astro copies `public/` into `dist`; include collected `redirectFrom[]` and developer redirect records as `301`, and test that no HTTP/HTTPS or `www` rule appears.
 - [ ] Parse every output file in tests and verify every sitemap/RSS URL maps to an actual generated file or canonical public endpoint.
 - [ ] Commit: `feat(seo): generate static discovery and internal redirect files`
 
-## Task 14: Configure Cloudflare static delivery, CSP, and cache/security headers
+## Task 14: Add optional Google Tag Manager support
+
+**Files:**
+
+- Create: `web/src/lib/analytics/gtm.ts`
+- Create: `web/src/components/analytics/GoogleTagManager.astro`
+- Modify: `web/src/layouts/BaseLayout.astro`, `web/.env.example`
+- Test: `web/src/lib/tests/gtm.test.ts`, `web/tests/e2e/gtm.spec.ts`
+
+**Interfaces:**
+
+- Consumes: optional build-time `PUBLIC_GTM_ID`, existing `data-contact` attributes
+- Produces: `parseGtmId(value: string | undefined): string | null`, one official head snippet, one body `noscript`, and non-personal `contact_click` dataLayer events
+
+- [ ] Write failing unit tests for an absent/blank variable returning `null`, valid uppercase `GTM-ABCDEFG` values, and rejection of `G-`, `AW-`, whitespace, quotes, URL fragments, or arbitrary JavaScript.
+- [ ] Write a failing fixture-build test with no ID that asserts `gtm.js`, `ns.html`, `dataLayer`, and Google Tag Manager markup are completely absent from every generated page.
+- [ ] Implement `parseGtmId` with the exact allowlist `/^GTM-[A-Z0-9]+$/`; throw a build-stopping error naming `PUBLIC_GTM_ID` when a non-empty value is invalid:
+
+```ts
+export function parseGtmId(value: string | undefined): string | null {
+  if (value === undefined || value === '') return null
+  if (!/^GTM-[A-Z0-9]+$/.test(value)) {
+    throw new Error('PUBLIC_GTM_ID must match GTM-[A-Z0-9]+')
+  }
+  return value
+}
+```
+
+- [ ] Implement `GoogleTagManager.astro` with a required `placement: 'head' | 'body'` prop. Use it once immediately inside `<head>` for Google's official loader and once immediately inside `<body>` for the official zero-size `noscript` iframe plus the contact listener. Pass the parsed ID through Astro variables/attributes; do not use `set:html` or accept Sanity content.
+- [ ] Add a delegated click listener only when GTM is enabled. For elements with `data-contact`, push exactly this non-personal shape and never include `href`, phone, page copy, or user input:
+
+```ts
+window.dataLayer?.push({
+  event: 'contact_click',
+  contact_type: element.dataset.contactType,
+  contact_location: element.dataset.contactLocation,
+})
+```
+
+- [ ] Standardize contact elements to `data-contact`, `data-contact-type="call|whatsapp"`, and a finite `data-contact-location` value such as `header`, `mobile_bar`, `article_mid`, or `article_end`.
+- [ ] Add `PUBLIC_GTM_ID=` to `.env.example` with an Arabic note that blank means disabled and the ID is technical build configuration, not a Sanity field or secret.
+- [ ] Build once without the variable and once with a fixture `GTM-ABCDEFG`; assert zero markup when disabled, exactly one loader/iframe per page when enabled, and the documented event object on call/WhatsApp clicks. In Playwright, intercept `**/*googletagmanager.com/**` and prove the disabled build makes no matching request.
+- [ ] Commit: `feat(analytics): add optional Google Tag Manager support`
+
+## Task 15: Configure Cloudflare static delivery and cache headers
 
 **Files:**
 
@@ -455,8 +503,8 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 
 **Interfaces:**
 
-- Consumes: Astro static `dist`, Sanity image hosts, YouTube iframe hosts
-- Produces: Workers Static Assets config, Astro CSP, static response headers, deployment-ready build
+- Consumes: Astro static `dist`
+- Produces: Workers Static Assets config, cache/minimal static headers, deployment-ready build
 
 - [ ] Write failing config tests for no `main`, `workers_dev: false`, `preview_urls: true`, asset directory, trailing-slash handling, and 404 behavior.
 - [ ] Use the current Wrangler JSON schema and this minimum shape:
@@ -476,13 +524,12 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 }
 ```
 
-- [ ] Configure Astro's built-in CSP to allow only self, Sanity CDN images, YouTube embeds/thumbnails, and the minimum hashed inline output; prohibit `unsafe-eval` and avoid `unsafe-inline` unless an official Astro limitation is reproduced and documented.
-- [ ] Add `_headers` for `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, appropriate frame policy compatible with YouTube embedding, long immutable cache for hashed assets/fonts, and short revalidation for HTML/XML/TXT.
-- [ ] Make `validate-dist.ts` reject missing files, noncanonical internal links, duplicate canonicals, unexpected origins, secrets, missing CSP/security headers, and accidental MP4 output.
+- [ ] Add one `/*` rule in `_headers` with `Cache-Control: public, max-age=0, must-revalidate`, `X-Content-Type-Options: nosniff`, and `Referrer-Policy: strict-origin-when-cross-origin`; override `/_astro/*` with `Cache-Control: public, max-age=31536000, immutable`. Do not add other browser policy headers or per-provider allowlists.
+- [ ] Make `validate-dist.ts` reject missing files, noncanonical internal links, duplicate canonicals, leaked secrets, missing cache/minimal headers, accidental MP4 output, and unexpected external origins. Permit `www.googletagmanager.com` only in the GTM-enabled test build.
 - [ ] Run `pnpm --filter web build` with fixture data, then `pnpm --dir web exec wrangler deploy --dry-run`; expect a static-assets-only bundle and no Worker entry module.
-- [ ] Commit: `feat(cloudflare): configure secure static asset delivery`
+- [ ] Commit: `feat(cloudflare): configure static asset delivery and caching`
 
-## Task 15: Complete automated SEO, accessibility, and browser gates
+## Task 16: Complete automated SEO, accessibility, and browser gates
 
 **Files:**
 
@@ -502,7 +549,7 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - [ ] Run `pnpm check`, `pnpm test`, `pnpm build`, and `pnpm test:e2e`; capture exact output in the implementation log.
 - [ ] Commit: `test: enforce SEO accessibility and static build gates`
 
-## Task 16: Document reuse, editing, deployment, and rollback
+## Task 17: Document reuse, editing, deployment, and rollback
 
 **Files:**
 
@@ -515,13 +562,14 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - Produces: handoff documentation for developer and Arabic editor
 
 - [ ] Document local setup, env variables, content pull, TypeGen, tests, build, Studio dev/deploy, Worker dev/deploy, and rollback.
+- [ ] Document optional GTM activation through `PUBLIC_GTM_ID`, Cloudflare Builds configuration, validation failure behavior, supported contact event fields, disabled-by-default output, and the need to assess requirements separately before adding tags that create cookies or collect personal data.
 - [ ] Document exactly what the client may edit: phones/WhatsApp, CTA text, images, projects, services, areas, posts/categories, and safe SEO fields. Explain advanced canonical/noIndex warnings and keep redirects developer-only.
 - [ ] Document the new-client flow: new private repo, separate Sanity project plus `production` dataset, identity/domain config, original content import, new Studio hostname, new Worker, and no copying of `content/sorouh`.
 - [ ] Add a machine-verifiable test that `bootstrap-client.ts` and reusable `web/studio` modules contain no Sorouh phone, company name, article prose, project assets, or expected Sorouh project ID except through client config/content injection.
-- [ ] Document external Cloudflare settings: custom domain, Always Use HTTPS, `www` proxied DNS plus Bulk Redirect preserving path/query, public preview URLs, deploy hook, Crawler Hints, Search Console, and Bing.
+- [ ] Document external Cloudflare settings: custom domain, Always Use HTTPS, `www` proxied DNS plus Bulk Redirect preserving path/query, public preview URLs, optional GTM build variable, deploy hook, Crawler Hints, Search Console, and Bing.
 - [ ] Commit: `docs: add editor deployment and starter handoff guides`
 
-## Task 17: Connect the existing isolated services and deploy production
+## Task 18: Connect the existing isolated services and deploy production
 
 **Files:**
 
@@ -538,6 +586,7 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - [ ] Run `sanity schemas validate`, `sanity schemas extract`, `sanity schemas deploy`, and `sanity typegen generate`. Confirm Task 10 already seeded the verified Project ID, then rerun seed in dry-run/create-missing mode to prove idempotency and confirm document counts, links, images, and `_updatedAt` behavior without rewriting editor changes.
 - [ ] Deploy Studio with `pnpm --dir studio exec sanity deploy`, choosing a unique Sorouh hostname. Verify client login and restricted navigation.
 - [ ] Build from live published Sanity and run the entire release gate. Inspect representative output manually before publishing.
+- [ ] Keep `PUBLIC_GTM_ID` unset for the initial production deployment unless the owner supplies an approved container ID. Verify the deployed HTML contains no GTM loader/iframe while unset; later activation requires only the Cloudflare Builds variable and a rebuild.
 - [ ] Create the private GitHub repository only after confirming the intended owner: `gh repo create sorouh-site --private --source=. --remote=origin --push`. If the name exists, stop and resolve ownership/name rather than overwriting.
 - [ ] Create/deploy `sorouh-site` using `pnpm --dir web exec wrangler deploy`; connect Workers Builds to `main`, add the custom domain, and store the Sanity deploy-hook secret only in Sanity/Cloudflare settings.
 - [ ] Enable and smoke-test public branch/version Preview URLs. Confirm they render correctly as public previews.
@@ -547,7 +596,7 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 - [ ] Add Search Console and Bing verification, submit `https://sorouh.site/sitemap.xml`, and verify robots/RSS/video sitemap are fetchable. Do not claim indexing or ranking immediately.
 - [ ] Commit any final non-secret deployment identifiers/docs: `chore: document Sorouh production deployment`
 
-## Task 18: Final review and delivery
+## Task 19: Final review and delivery
 
 **Files:**
 
@@ -572,13 +621,14 @@ buildRedirectFile(input: RedirectInput[], liveRoutes: Set<string>): string
 
 - **Checkpoint A — Foundation:** Tasks 1–6 pass unit/type/schema tests before visual work.
 - **Checkpoint B — Content and UI:** Tasks 7–12 pass fixture build and browser tests before cloud mutation.
-- **Checkpoint C — Static delivery:** Tasks 13–16 pass full offline release gate before production deployment.
-- **Checkpoint D — Production:** Tasks 17–18 validate live redirects, public previews, publish webhook, discovery files, and handoff ownership.
+- **Checkpoint C — Static delivery:** Tasks 13–17 pass the GTM-disabled/enabled builds and full offline release gate before production deployment.
+- **Checkpoint D — Production:** Tasks 18–19 validate live redirects, public previews, publish webhook, discovery files, and handoff ownership.
 
 ## Definition of Done
 
 - `pnpm check`, `pnpm test`, `pnpm build`, `pnpm test:e2e`, live-content dist validation, and Wrangler dry-run all pass from a clean checkout.
 - The generated site contains every approved page, five original Sorouh articles, build-time discovery files, accurate canonical/lastmod behavior, visible real YouTube iframes, and no invented business data.
+- A clean build with no `PUBLIC_GTM_ID` contains no GTM markup or requests; a build with a valid ID contains one official installation per page and emits only the documented non-personal contact events.
 - `sorouh.site` serves the Cloudflare Workers Static Assets deployment; protocol/host/trailing-slash behavior is canonical and loop-free; public previews behave as configured.
 - Sorouh's existing independent Sanity project is verified with its `production` dataset and hosted Studio, plus a private GitHub repository and documented rollback.
 - The reusable starter contains structure and automation only; Sorouh-specific content remains isolated under `content/sorouh` and is excluded from future-client bootstrap.
