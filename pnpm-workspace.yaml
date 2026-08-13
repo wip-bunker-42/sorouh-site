@@ -12,3 +12,4 @@ minimumReleaseAgeExclude:
   - '@sanity/client@8.0.0'
   - miniflare@5.20260811.0-alpha
   - wrangler@4.122.0
+  - '@sanity/ui@3.5.3'

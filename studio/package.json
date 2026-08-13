@@ -10,11 +10,13 @@
     "check:types": "tsc --noEmit",
     "check:schema": "sanity schemas validate",
     "test": "vitest run",
-    "typegen": "sanity schemas extract --path ../web/src/sanity/schema.json && sanity typegen generate",
+    "typegen": "sanity schemas extract --enforce-required-fields --path ../web/src/sanity/schema.json --force && sanity typegen generate --config-path schema-typegen.json",
     "deploy": "sanity deploy"
   },
   "dependencies": {
     "@sanity/client": "8.0.0",
+    "@sanity/icons": "5.2.1",
+    "@sanity/ui": "3.5.3",
     "@sanity/vision": "6.9.2",
     "react": "19.2.8",
     "react-dom": "19.2.8",
