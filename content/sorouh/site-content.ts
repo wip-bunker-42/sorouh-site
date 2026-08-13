@@ -49,7 +49,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.general,
     title: 'مقاولات عامة',
     slug: 'مقاولات-عامة',
-    mediaKey: 'building-plastering-video',
+    mediaKey: 'generated-service-general-contracting',
     summary:
       'إدارة وتنفيذ أعمال المقاولات للمنازل والفلل من تجهيز الموقع حتى التسليم في المنطقة الشرقية.',
     directAnswer:
@@ -77,7 +77,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.restoration,
     title: 'ترميم منازل وفلل',
     slug: 'ترميم-منازل-وفلل',
-    mediaKey: 'restoration-old-villa',
+    mediaKey: 'source-restoration-old-villa',
     summary:
       'ترميم وتجديد المنازل والفلل مع معالجة العناصر المتضررة وإعادة تأهيل التشطيبات والخدمات.',
     directAnswer:
@@ -106,7 +106,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.finishing,
     title: 'تشطيب منازل وفلل',
     slug: 'تشطيب-منازل-وفلل',
-    mediaKey: 'porcelain-modern-wall',
+    mediaKey: 'generated-home-villa-finishing',
     summary: 'تنفيذ تشطيبات المنازل والفلل بتنسيق متكامل بين الأسطح والخدمات والديكور حتى التسليم.',
     directAnswer:
       'نحوّل مرحلة العظم أو التجديد إلى مساحات مكتملة عبر خطة تربط اللياسة والكهرباء والسباكة والأسقف والأرضيات والدهانات دون تضارب.',
@@ -130,7 +130,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.builder,
     title: 'مقاول بناء',
     slug: 'مقاول-بناء',
-    mediaKey: 'building-plastering-video',
+    mediaKey: 'generated-building-contractor',
     summary:
       'مقاول بناء للمنازل والفلل يتابع الأعمال المدنية وتسلسل التنفيذ في الدمام ومدن الشرقية.',
     directAnswer:
@@ -149,7 +149,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.plastering,
     title: 'أعمال اللياسة',
     slug: 'اعمال-اللياسة',
-    mediaKey: 'building-plastering-video',
+    mediaKey: 'generated-plastering',
     summary: 'تنفيذ لياسة داخلية وخارجية مع تجهيز السطح وضبط الزوايا والاستقامة استعدادًا للتشطيب.',
     directAnswer:
       'جودة اللياسة تبدأ من نظافة السطح والطرطشة والبؤج والأوتار، ثم التطبيق والمعالجة؛ لذلك نراجع الاستقامة والسماكة قبل اعتماد الجدار للتشطيبات.',
@@ -168,7 +168,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.concreteSaw,
     title: 'قص الخرسانة بالمنشار والليزر',
     slug: 'قص-الخرسانة-بالمنشار-والليزر',
-    mediaKey: 'concrete-saw-eastern',
+    mediaKey: 'source-concrete-saw',
     summary: 'قص فتحات الخرسانة بالمنشار الماسي بدقة للأبواب والنوافذ ومسارات الخدمات.',
     directAnswer:
       'ننفذ القص الماسي بخطوط محددة وحواف منتظمة للفتحات المطلوبة، مع اختيار المعدة المناسبة لسماكة العنصر وموقع العمل.',
@@ -186,7 +186,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.core,
     title: 'فتحات كور وتخريم الخرسانة',
     slug: 'فتحات-كور-وتخريم-الخرسانة',
-    mediaKey: 'core-openings-dammam-khobar',
+    mediaKey: 'source-core-drilling',
     summary: 'تخريم فتحات كور دائرية للسباكة والتكييف والكهرباء بأقطار ومواقع محددة.',
     directAnswer:
       'نستخدم معدات الكور لعمل فتحات دائرية دقيقة تمر عبر الخرسانة وفق القطر والعمق المطلوبين لخدمات التكييف والسباكة والكهرباء.',
@@ -204,7 +204,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.helicopter,
     title: 'صبة مروحة وصبة ميول وتنعيم بالمروحية',
     slug: 'صبة-مروحة-وصبة-ميول',
-    mediaKey: 'restoration-structural-modification',
+    mediaKey: 'generated-helicopter-screed',
     summary: 'تنفيذ صبات أرضيات وميول مع تسوية وتنعيم بالمروحية للمساحات السكنية والخدمية.',
     directAnswer:
       'نضبط المناسيب والميول قبل الصب، ثم نتابع توقيت التنعيم بالمروحية للحصول على سطح متجانس مناسب لطبيعة الاستخدام.',
@@ -223,7 +223,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.electrical,
     title: 'أعمال الكهرباء',
     slug: 'اعمال-الكهرباء',
-    mediaKey: 'electrical-plumbing-dammam',
+    mediaKey: 'electrical-video-still',
     summary: 'تأسيس وتشطيب كهرباء المنازل والفلل من المواسير والعلب إلى اللوحات والإنارة.',
     directAnswer:
       'ننظم مسارات الكهرباء ونقاطها قبل الإغلاق، ونفصل الدوائر ونرتب اللوحة بما يسهل الفحص والصيانة ويخدم توزيع الأحمال.',
@@ -242,7 +242,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.plumbing,
     title: 'أعمال السباكة',
     slug: 'اعمال-السباكة',
-    mediaKey: 'electrical-plumbing-dammam',
+    mediaKey: 'source-plumbing',
     summary:
       'تأسيس وصيانة شبكات تغذية وصرف المنازل والفلل مع اختبارات قبل إغلاق الجدران والأرضيات.',
     directAnswer:
@@ -262,7 +262,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.painting,
     title: 'دهانات داخلية وخارجية',
     slug: 'دهانات-داخلية-وخارجية',
-    mediaKey: 'gypsum-moisture-resistant',
+    mediaKey: 'generated-interior-exterior-painting',
     summary: 'دهانات للمنازل والفلل تبدأ بمعالجة وتجهيز السطح وتنتهي بطبقات متجانسة وتفاصيل نظيفة.',
     directAnswer:
       'نعالج الشروخ والتموجات ونجهز المعجون والبرايمر قبل أوجه الدهان؛ فالنتيجة النهائية تعتمد على السطح بقدر اعتمادها على نوع الطلاء.',
@@ -281,7 +281,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.tile,
     title: 'تركيب سيراميك وبورسلان',
     slug: 'تركيب-سيراميك-وبورسلان',
-    mediaKey: 'porcelain-dammam-gold-bath',
+    mediaKey: 'source-porcelain',
     summary: 'تركيب سيراميك وبورسلان للأرضيات والجدران مع ضبط الميول والفواصل والقصات النهائية.',
     directAnswer:
       'نراجع توزيع البلاط قبل التركيب، نحدد خطوط البداية والقصات، ونضبط الفواصل والميول خصوصًا في الحمامات والمناطق الرطبة.',
@@ -300,7 +300,7 @@ export const services: ServiceContent[] = [
     key: SERVICE_KEYS.gypsum,
     title: 'جبس بورد',
     slug: 'جبس-بورد',
-    mediaKey: 'gypsum-moisture-resistant',
+    mediaKey: 'source-gypsum-board',
     summary: 'تصميم وتنفيذ أسقف وقواطع جبس بورد مع فتحات إنارة وتفاصيل مخفية وتشطيب ناعم.',
     directAnswer:
       'نحدد مناسيب السقف وتوزيع الإنارة والخدمات أولًا، ثم ننفذ الهيكل والألواح والمعالجة للحصول على خطوط مستقيمة وتشطيب متماسك.',
@@ -322,7 +322,7 @@ export const areas = [
     key: 'dammam',
     title: 'الدمام',
     slug: 'الدمام',
-    mediaKey: 'demolition-dammam',
+    mediaKey: 'generated-area-urban-residential',
     angle:
       'نخدم مشاريع البناء والترميم والتشطيب في أحياء الدمام، مع سهولة تنسيق المعاينة وتتابع فرق التنفيذ داخل المدينة.',
   },
@@ -330,7 +330,7 @@ export const areas = [
     key: 'khobar',
     title: 'الخبر',
     slug: 'الخبر',
-    mediaKey: 'porcelain-khobar-niche',
+    mediaKey: 'generated-area-urban-residential',
     angle:
       'ننفذ في الخبر أعمال الفلل والمنازل التي تحتاج دقة في التشطيبات وتنسيقًا مبكرًا بين الكهرباء والسباكة والكسوات.',
   },
@@ -338,7 +338,7 @@ export const areas = [
     key: 'dhahran',
     title: 'الظهران',
     slug: 'الظهران',
-    mediaKey: 'porcelain-hidden-light-vanity',
+    mediaKey: 'generated-area-urban-residential',
     angle:
       'نوفر في الظهران تنفيذًا مرتبًا للمشاريع السكنية، من الترميم الجزئي إلى التشطيب المتكامل ومراجعة التفاصيل النهائية.',
   },
@@ -346,7 +346,7 @@ export const areas = [
     key: 'qatif',
     title: 'القطيف',
     slug: 'القطيف',
-    mediaKey: 'restoration-structural-modification',
+    mediaKey: 'generated-area-urban-residential',
     angle:
       'نصل إلى القطيف لأعمال المقاولات والترميم والخدمات الفنية، مع معاينة تحدد النطاق المناسب قبل بدء التنفيذ.',
   },
@@ -354,7 +354,7 @@ export const areas = [
     key: 'jubail',
     title: 'الجبيل',
     slug: 'الجبيل',
-    mediaKey: 'concrete-saw-eastern',
+    mediaKey: 'generated-area-industrial-residential',
     angle:
       'نخدم الجبيل في أعمال البناء والتشطيب وقص الخرسانة والكور، مع تجهيز المعدات والخطة بما يناسب موقع المشروع.',
   },
@@ -362,7 +362,7 @@ export const areas = [
     key: 'saihat',
     title: 'سيهات',
     slug: 'سيهات',
-    mediaKey: 'gypsum-moisture-resistant',
+    mediaKey: 'generated-area-urban-residential',
     angle:
       'تغطي خدماتنا في سيهات تجديد المنازل والفلل وتشطيباتها، مع ترتيب الأعمال لتقليل التعطل داخل العقار.',
   },
@@ -370,7 +370,7 @@ export const areas = [
     key: 'eastern-province',
     title: 'المنطقة الشرقية',
     slug: 'المنطقة-الشرقية',
-    mediaKey: 'building-plastering-video',
+    mediaKey: 'generated-area-eastern-coverage',
     angle:
       'نغطي مدن المنطقة الشرقية بخدمات مقاولات متكاملة، ونحدد فريق العمل والمعدات بحسب نوع المشروع وموقعه.',
   },
@@ -378,7 +378,7 @@ export const areas = [
     key: 'ahsa',
     title: 'الأحساء',
     slug: 'الاحساء',
-    mediaKey: 'porcelain-eastern-bath',
+    mediaKey: 'generated-area-eastern-coverage',
     angle:
       'نستقبل مشاريع الأحساء بعد مراجعة نطاقها وجدولها، وننسق الزيارات والتنفيذ لخدمات البناء والترميم والتشطيب.',
   },
@@ -386,7 +386,7 @@ export const areas = [
     key: 'ras-tanura',
     title: 'رأس تنورة',
     slug: 'راس-تنورة',
-    mediaKey: 'core-openings-dammam-khobar',
+    mediaKey: 'generated-area-industrial-residential',
     angle:
       'نقدم في رأس تنورة خدمات المقاولات والفتحات الخرسانية والتجديد، مع تحديد متطلبات الموقع والمعدات قبل التحرك.',
   },
@@ -394,7 +394,7 @@ export const areas = [
     key: 'buqayq',
     title: 'بقيق',
     slug: 'بقيق',
-    mediaKey: 'electrical-plumbing-dammam',
+    mediaKey: 'generated-area-industrial-residential',
     angle:
       'نخدم بقيق في الأعمال المدنية والكهرباء والسباكة والتشطيب عبر خطة تنفيذ واضحة تناسب حجم المشروع.',
   },
@@ -442,7 +442,7 @@ export const articles = [
       'خطوات عملية لمقارنة نطاق العمل، جدول التنفيذ، مسؤوليات التوريد، وآلية الاستلام قبل الاتفاق مع مقاول في الدمام.',
     categoryKey: 'construction',
     areaKey: 'dammam',
-    mediaKey: 'building-plastering-video',
+    mediaKey: 'generated-home-general-contracting',
     publishedAt: '2026-08-02T07:00:00.000Z',
     markdown: `اختيار المقاول لا يبدأ بمقارنة رقم نهائي فقط؛ يبدأ بتحويل المشروع إلى نطاق مفهوم يمكن قياسه ومراجعته. كلما كان المطلوب واضحًا، أصبح الحكم على العرض والتنفيذ أكثر عدلًا.
 
@@ -489,7 +489,7 @@ export const articles = [
       'دليل لترتيب أعمال ترميم الفلل ومعالجة أسباب التلف قبل التشطيبات لتقليل إعادة العمل والتكاليف المفاجئة.',
     categoryKey: 'restoration',
     areaKey: 'khobar',
-    mediaKey: 'restoration-old-villa',
+    mediaKey: 'source-restoration-old-villa',
     publishedAt: '2026-08-04T07:00:00.000Z',
     markdown: `ترميم الفيلا الناجح ليس مجموعة إصلاحات متفرقة. هو مشروع يبدأ بتشخيص الحالة، ثم إزالة محسوبة، ثم تأسيس واختبار، وأخيرًا تشطيبات تحمي ما تم إصلاحه.
 
@@ -534,7 +534,7 @@ export const articles = [
       'مقارنة مباشرة بين القص الماسي وفتحات الكور من حيث شكل الفتحة والاستخدام وتجهيز الموقع قبل التنفيذ.',
     categoryKey: 'concrete',
     areaKey: 'eastern-province',
-    mediaKey: 'concrete-saw-eastern',
+    mediaKey: 'generated-blog-concrete-comparison',
     publishedAt: '2026-08-06T07:00:00.000Z',
     markdown: `القص بالمنشار وفتحات الكور يستخدمان معدات ماسية، لكن لكل منهما نتيجة مختلفة. اختيار الطريقة يبدأ من شكل الفتحة ومقاسها وعمقها ومكانها، وليس من اسم المعدة فقط.
 
@@ -576,7 +576,7 @@ export const articles = [
       'قائمة تحقق عملية لمراجعة مسارات الكهرباء وشبكات المياه والصرف واختبارها قبل البلاط والجبس والدهانات.',
     categoryKey: 'mep',
     areaKey: 'dammam',
-    mediaKey: 'electrical-plumbing-dammam',
+    mediaKey: 'electrical-video-still',
     publishedAt: '2026-08-08T07:00:00.000Z',
     markdown: `قبل أن تغطي البلاطات والجبس والدهانات تمديدات الكهرباء والسباكة، توجد فرصة أخيرة لرؤية الشبكات وتصحيحها بسهولة. فحص منظم في هذه المرحلة أوفر من فك تشطيب مكتمل.
 
@@ -619,7 +619,7 @@ export const articles = [
       'من تخطيط التوزيع والقصات إلى الميول والفواصل: سبع نقاط ترفع جودة تركيب السيراميك والبورسلان.',
     categoryKey: 'interiors',
     areaKey: 'khobar',
-    mediaKey: 'porcelain-dammam-gold-bath',
+    mediaKey: 'source-porcelain',
     publishedAt: '2026-08-10T07:00:00.000Z',
     markdown: `البورسلان الجميل لا يضمن نتيجة جميلة وحده. جودة التركيب تظهر في الخطوط والقصات والزوايا والميول، وهي تفاصيل يجب التخطيط لها قبل تثبيت أول قطعة.
 

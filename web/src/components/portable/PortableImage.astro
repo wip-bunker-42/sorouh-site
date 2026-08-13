@@ -4,7 +4,6 @@ import ContentImage from '../ContentImage.astro'
 const { node } = Astro.props as { node: Record<string, any> }
 ---
 
-<figure class="portable-image">
+<div class="portable-image">
   <ContentImage image={node} width={1200} ratio={16 / 9} />
-  {node.caption && <figcaption>{node.caption}</figcaption>}
-</figure>
+</div>

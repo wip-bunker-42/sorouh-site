@@ -99,10 +99,9 @@ const videoSchema = (project.videos ?? [])
             <h2>تفاصيل من موقع المشروع</h2>
             <div>
               {project.gallery.map((image: any, index: number) => (
-                <figure>
+                <div class="gallery-item">
                   <ContentImage image={image} width={1000} ratio={index === 0 ? 4 / 3 : 1} />
-                  {image.caption && <figcaption>{image.caption}</figcaption>}
-                </figure>
+                </div>
               ))}
             </div>
           </>
@@ -245,7 +244,7 @@ const videoSchema = (project.videos ?? [])
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
-  .gallery figure {
+  .gallery-item {
     margin: 0;
     padding: 0.6rem;
     background: white;

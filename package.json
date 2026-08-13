@@ -25,6 +25,7 @@
     "audit:media": "tsx scripts/lib/audit-source-assets.ts",
     "typegen": "pnpm --filter @sorouh/studio typegen",
     "seed:sorouh": "pnpm --dir studio exec sanity exec ../scripts/seed-sorouh.ts --with-user-token --",
+    "media:semantic": "pnpm --dir studio exec sanity exec ../scripts/apply-semantic-media.ts --with-user-token --",
     "bootstrap:client": "pnpm --dir studio exec sanity exec ../scripts/bootstrap-client.ts --with-user-token"
   },
   "devDependencies": {

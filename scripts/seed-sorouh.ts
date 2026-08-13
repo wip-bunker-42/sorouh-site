@@ -7,7 +7,9 @@ import { getCliClient } from 'sanity/cli'
 
 import { sourceAssets } from '../content/sorouh/asset-manifest'
 import { projectDrafts } from '../content/sorouh/project-evidence'
+import { sorouhSemanticMediaPlan } from '../content/sorouh/semantic-media-plan'
 import { areas, articles, categories, services, siteCopy } from '../content/sorouh/site-content'
+import { buildManagedContentImage } from './lib/build-semantic-media-patches'
 
 const EXPECTED_PROJECT_ID = 'ki7bs4vk'
 const DATASET = 'production'
@@ -82,17 +84,25 @@ const imageSources = new Map(
     .filter((asset) => asset.mimeType.startsWith('image/'))
     .map((asset) => [asset.key, asset]),
 )
+const semanticAssets = new Map(sorouhSemanticMediaPlan.assets.map((asset) => [asset.key, asset]))
+const semanticPlacements = new Map(
+  sorouhSemanticMediaPlan.placements.map((placement) => [placement.target, placement]),
+)
 const uploaded = new Map<string, string>()
 const existingIds = new Set(await client.fetch<string[]>(`*[_id in path("**")]._id`))
 
 async function uploadImage(mediaKey: string): Promise<string> {
   const remembered = uploaded.get(mediaKey)
   if (remembered) return remembered
+  const semantic = semanticAssets.get(mediaKey)
   const source = imageSources.get(mediaKey)
-  if (!source) throw new Error(`No image source for ${mediaKey}`)
-  const buffer = await readFile(resolve(root, 'work/source-media/sorouh', source.sourcePath))
+  if (!semantic && !source) throw new Error(`No image source for ${mediaKey}`)
+  const sourcePath = semantic
+    ? resolve(root, semantic.path)
+    : resolve(root, 'work/source-media/sorouh', source!.sourcePath)
+  const buffer = await readFile(sourcePath)
   const asset = await client.assets.upload('image', buffer, {
-    filename: basename(source.sourcePath),
+    filename: basename(sourcePath),
     label: `sorouh:${mediaKey}`,
   })
   uploaded.set(mediaKey, asset._id)
@@ -100,7 +110,7 @@ async function uploadImage(mediaKey: string): Promise<string> {
 }
 
 const imageFallback: Record<string, string> = {
-  'building-plastering-video': 'restoration-structural-modification',
+  'building-plastering-video': 'building-plastering-video-still',
   'porcelain-video': 'porcelain-dammam-gold-bath',
   'concrete-saw-video': 'concrete-saw-eastern',
   'electrical-plumbing-video': 'electrical-plumbing-dammam',
@@ -114,6 +124,12 @@ async function contentImage(mediaKey: string, alt: string, caption?: string) {
     alt,
     ...(caption ? { caption } : {}),
   }
+}
+
+async function plannedContentImage(target: string) {
+  const placement = semanticPlacements.get(target)
+  if (!placement) throw new Error(`No semantic media placement for ${target}`)
+  return buildManagedContentImage(placement, await uploadImage(placement.assetKey))
 }
 
 const missingIds = (ids: string[]) => ids.filter((id) => !existingIds.has(id))
@@ -153,11 +169,7 @@ const docs: Record<string, unknown>[] = []
 for (const service of services) {
   const id = `service-${service.key}`
   if (existingIds.has(id)) continue
-  const hero = await contentImage(
-    service.mediaKey,
-    `${service.title} ضمن أعمال شركة صروح الشرقية`,
-    `نموذج من أعمال ${service.title}`,
-  )
+  const hero = await plannedContentImage(id)
   docs.push({
     _id: id,
     _type: 'service',
@@ -174,6 +186,7 @@ for (const service of services) {
     seo: seo(
       `${service.title} في المنطقة الشرقية | صروح الشرقية`,
       `${service.summary} تواصل للمعاينة وتحديد نطاق التنفيذ.`,
+      hero,
     ),
     redirectFrom: [],
   })
@@ -182,11 +195,7 @@ for (const service of services) {
 for (const area of areas) {
   const id = `area-${area.key}`
   if (existingIds.has(id)) continue
-  const image = await contentImage(
-    area.mediaKey,
-    `أعمال مقاولات وتشطيبات تخدم ${area.title}`,
-    `خدمات صروح الشرقية في ${area.title}`,
-  )
+  const image = await plannedContentImage(id)
   docs.push({
     _id: id,
     _type: 'serviceArea',
@@ -220,6 +229,7 @@ for (const area of areas) {
     seo: seo(
       `مقاول في ${area.title} | صروح الشرقية`,
       `شركة صروح الشرقية للمقاولات تقدم خدمات البناء والترميم والتشطيب في ${area.title}. اتصل أو تواصل عبر واتساب.`,
+      image,
     ),
     redirectFrom: [],
   })
@@ -246,16 +256,20 @@ for (const [projectIndex, project] of projectDrafts.entries()) {
   const id = `project-${project.sourceKey}`
   if (existingIds.has(id)) continue
   const gallery = []
-  for (const [index, mediaKey] of project.mediaKeys.entries()) {
-    if (!imageSources.has(mediaKey)) continue
-    gallery.push({
-      ...(await contentImage(
-        mediaKey,
-        `${project.title} — صورة من مرحلة التنفيذ ${index + 1}`,
-        project.result,
-      )),
-      _key: key('gallery', index),
-    })
+  if (semanticPlacements.has(id)) {
+    gallery.push({ ...(await plannedContentImage(id)), _key: 'semantic-media-primary' })
+  } else {
+    for (const [index, mediaKey] of project.mediaKeys.entries()) {
+      if (!imageSources.has(mediaKey)) continue
+      gallery.push({
+        ...(await contentImage(
+          mediaKey,
+          `${project.title} — صورة من مرحلة التنفيذ ${index + 1}`,
+          project.result,
+        )),
+        _key: key('gallery', index),
+      })
+    }
   }
   const videos = project.youtubeUrl
     ? [
@@ -305,11 +319,7 @@ const articleServices: Record<string, string[]> = {
 for (const article of articles) {
   const id = `post-${article.key}`
   if (existingIds.has(id)) continue
-  const featuredImage = await contentImage(
-    article.mediaKey,
-    `صورة بارزة لمقال ${article.title}`,
-    article.excerpt,
-  )
+  const featuredImage = await plannedContentImage(id)
   docs.push({
     _id: id,
     _type: 'post',
@@ -374,7 +384,8 @@ if (!existingIds.has('siteSettings'))
     ),
   })
 
-if (!existingIds.has('aboutPage'))
+if (!existingIds.has('aboutPage')) {
+  const aboutImage = await plannedContentImage('aboutPage')
   docs.push({
     _id: 'aboutPage',
     _type: 'aboutPage',
@@ -405,15 +416,14 @@ if (!existingIds.has('aboutPage'))
         description: 'اتصال وواتساب على مدار الساعة لتسهيل بدء الطلب ومتابعته.',
       },
     ],
-    image: await contentImage(
-      'restoration-structural-modification',
-      'فريق صروح الشرقية أثناء تنفيذ أعمال ترميم وتجهيز',
-    ),
+    image: aboutImage,
     seo: seo(
       'من نحن | شركة صروح الشرقية للمقاولات',
       'تعرف على منهج صروح الشرقية في تنفيذ وإدارة مشاريع البناء والترميم والتشطيب للمنازل والفلل بالمنطقة الشرقية.',
+      aboutImage,
     ),
   })
+}
 
 if (!existingIds.has('contactPage'))
   docs.push({
@@ -462,7 +472,8 @@ if (!existingIds.has('contactPage'))
     ),
   })
 
-if (!existingIds.has('homePage'))
+if (!existingIds.has('homePage')) {
+  const homeHero = await plannedContentImage('homePage')
   docs.push({
     _id: 'homePage',
     _type: 'homePage',
@@ -470,10 +481,7 @@ if (!existingIds.has('homePage'))
     heroTitle: 'نبني ونرمم ونشطب مشروعك في المنطقة الشرقية بإدارة واحدة',
     heroSummary:
       'شركة صروح الشرقية للمقاولات تنفذ أعمال المنازل والفلل في الدمام والخبر ومدن الشرقية، من المعاينة وتحديد النطاق إلى التنفيذ والمراجعة والتسليم.',
-    heroImage: await contentImage(
-      'porcelain-dammam-villa-decor',
-      'تشطيب بورسلان فاخر ضمن مشاريع صروح الشرقية في الدمام',
-    ),
+    heroImage: homeHero,
     introduction: portable(
       '## تنفيذ مرتب من الأساس إلى آخر تفصيلة\n\nنجمع خبرات البناء والترميم والخرسانة والكهرباء والسباكة والتشطيبات لتقليل التعارض بين البنود. يبدأ كل طلب بفهم الموقع والاحتياج ثم ترتيب المراحل ونقاط المراجعة.',
     ),
@@ -492,8 +500,10 @@ if (!existingIds.has('homePage'))
     seo: seo(
       'شركة صروح الشرقية للمقاولات | مقاول بالمنطقة الشرقية',
       'مقاولات عامة وترميم وتشطيب وقص خرسانة وكهرباء وسباكة في الدمام والخبر ومدن المنطقة الشرقية. تواصل على مدار الساعة.',
+      homeHero,
     ),
   })
+}
 
 const transaction = client.transaction()
 for (const document of docs) transaction.create(document as any)
