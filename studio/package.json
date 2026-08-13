@@ -10,7 +10,7 @@
     "check:types": "tsc --noEmit",
     "check:schema": "sanity schemas validate",
     "test": "vitest run",
-    "typegen": "sanity schemas extract --enforce-required-fields --path ../web/src/sanity/schema.json --force && sanity typegen generate --config-path schema-typegen.json",
+    "typegen": "sanity schemas extract --enforce-required-fields --path ../web/src/sanity/schema.json --force && sanity typegen generate",
     "deploy": "sanity deploy"
   },
   "dependencies": {
