@@ -10,6 +10,8 @@
 - [x] 128 unit tests و6 build tests و18 browser tests وAxe desktop/mobile.
 - [x] Wrangler dry-run Static Assets فقط.
 - [x] Sanity Schema وStudio منشوران.
-- [ ] ربط apex بعد إزالة سجل DNS القديم المتعارض.
-- [ ] www → apex وAlways Use HTTPS وCrawler Hints من Dashboard.
-- [ ] Search Console/Bing بعد عمل النطاق.
+- [x] ربط apex بـWorkers Static Assets بعد إزالة سجل DNS القديم المتعارض.
+- [x] www → apex بحالة 301 مع حفظ المسار والاستعلام، وتفعيل Always Use HTTPS.
+- [x] تعطيل Cloudflare Managed robots.txt وحماية/حجب روبوتات المحتوى حتى يبقى `robots.txt` سامحًا لجميع الروبوتات كما هو معتمد.
+- [ ] تفعيل Crawler Hints من Dashboard؛ لا توفره Cloudflare في OpenAPI الحالي.
+- [ ] إضافة ملكية Search Console/Bing وإرسال `https://sorouh.site/sitemap.xml` من حسابات المالك.
