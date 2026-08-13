@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ContentImage from '../../components/ContentImage.astro'
+import PortableContent from '../../components/PortableContent.astro'
+import ContactActions from '../../components/ContactActions.astro'
+import FaqList from '../../components/FaqList.astro'
+import ListingCard from '../../components/ListingCard.astro'
+import { loadSnapshot } from '../../lib/content/load-snapshot'
+export function getStaticPaths() {
+  const d = loadSnapshot()
+  return d.areas.map((area) => ({ params: { slug: area.slug }, props: { area } }))
+}
+const { area } = Astro.props as { area: any }
+const data = loadSnapshot()
+const projects = data.projects.filter((p) => p.serviceArea?._id === area._id).slice(0, 3)
+const nearby = data.areas.filter((a) => a._id !== area._id).slice(0, 6)
+---
+
+<BaseLayout
+  title={area.seo.metaTitle}
+  description={area.seo.metaDescription}
+  path={`/مناطق-الخدمة/${area.slug}/`}
+  canonicalOverride={area.seo.canonicalOverride}
+  noIndex={area.seo.noIndex}
+  breadcrumbs={[{ label: 'مناطق الخدمة', href: '/مناطق-الخدمة/' }, { label: area.title }]}
+  ><section class="area-hero">
+    <div class="container">
+      <div>
+        <p class="eyebrow">خدمات بناء وترميم وتشطيب</p><h1>مقاول في {area.title}</h1><p
+          class="lead"
+        >
+          {area.summary}
+        </p><ContactActions primary={data.siteSettings.primaryPhone} location="area_hero" />
+      </div><ContentImage image={area.image} width={1000} ratio={4 / 3} priority />
+    </div>
+  </section><section class="section">
+    <div class="container area-content">
+      <PortableContent value={area.intro} /><div class="services">
+        <p class="eyebrow">الخدمات المتاحة</p>{
+          area.featuredServices.map((service: any, index: number) => (
+            <a href={`/الخدمات/${service.slug}/`}>
+              <>
+                <b>{String(index + 1).padStart(2, '0')}</b>
+                <span>{service.title}</span>
+              </>
+              ←
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>{
+    projects.length > 0 && (
+      <section class="section-sm local-projects">
+        <div class="container">
+          <>
+            <p class="eyebrow">مشاريع في المنطقة</p>
+            <h2>أعمال مرتبطة بـ{area.title}</h2>
+            <div class="grid grid-3">
+              {projects.map((p) => (
+                <ListingCard
+                  href={`/مشاريعنا/${p.slug}/`}
+                  title={p.title}
+                  summary={p.summary}
+                  image={p.gallery?.[0]}
+                />
+              ))}
+            </div>
+          </>
+        </div>
+      </section>
+    )
+  }<section class="section">
+    <div class="narrow">
+      <p class="eyebrow">أسئلة محلية</p><h2>قبل طلب الخدمة في {area.title}</h2><FaqList
+        items={area.faqs}
+      />
+    </div>
+  </section><section class="nearby">
+    <div class="container">
+      <h2>مدن قريبة نخدمها</h2><div>
+        {nearby.map((item) => <a href={`/مناطق-الخدمة/${item.slug}/`}>{item.title}</a>)}
+      </div><ContactActions primary={data.siteSettings.primaryPhone} location="area_end" />
+    </div>
+  </section></BaseLayout
+>
+<style>
+  .area-hero {
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    background: linear-gradient(115deg, var(--navy-950) 62%, #713612);
+    color: white;
+  }
+  .area-hero > .container {
+    display: grid;
+    grid-template-columns: 1fr 0.8fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .area-hero h1 {
+    color: white;
+  }
+  .area-hero .lead {
+    color: #c8d4dd;
+  }
+  .area-hero :global(img) {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border: 10px solid white;
+  }
+  .area-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+  }
+  .services {
+    border-top: 1px solid var(--line);
+  }
+  .services a {
+    display: grid;
+    grid-template-columns: 45px 1fr 20px;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
+    text-decoration: none;
+  }
+  .services b {
+    color: var(--copper);
+  }
+  .local-projects {
+    background: #ece7df;
+  }
+  .nearby {
+    padding: 4rem 0;
+    background: var(--navy-900);
+    color: white;
+  }
+  .nearby h2 {
+    color: white;
+  }
+  .nearby > div > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .nearby a {
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 99px;
+    text-decoration: none;
+  }
+  @media (max-width: 800px) {
+    .area-hero > .container,
+    .area-content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

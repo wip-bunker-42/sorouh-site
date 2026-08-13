@@ -1,0 +1,57 @@
+---
+import { contactLinks } from '../lib/phone'
+type Props = {
+  primary: string
+  backup?: string
+  location: string
+  light?: boolean
+  compact?: boolean
+}
+const { primary, backup, location, light = false, compact = false } = Astro.props
+const first = contactLinks(primary)
+const second = backup ? contactLinks(backup) : null
+---
+
+<div class:list={['actions', { compact }]}>
+  <a
+    class="btn btn-primary"
+    href={first.whatsapp}
+    data-contact
+    data-contact-type="whatsapp"
+    data-contact-location={location}
+    aria-label="تواصل عبر واتساب مع صروح الشرقية">واتساب</a
+  >
+  <a
+    class:list={['btn', light ? 'btn-light' : 'btn-ghost']}
+    href={first.tel}
+    data-contact
+    data-contact-type="call"
+    data-contact-location={location}>اتصل الآن</a
+  >
+  {
+    second && compact && (
+      <a
+        class:list={['btn backup', light ? 'btn-light' : 'btn-ghost']}
+        href={second.tel}
+        data-contact
+        data-contact-type="call"
+        data-contact-location={location}
+      >
+        الرقم الاحتياطي
+      </a>
+    )
+  }
+</div>
+<style>
+  .compact {
+    margin-top: 0.6rem;
+  }
+  .compact .btn {
+    min-height: 43px;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.88rem;
+  }
+  .backup {
+    opacity: 0.86;
+  }
+</style>

@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ContactActions from '../components/ContactActions.astro'
+import FaqList from '../components/FaqList.astro'
+import { loadSnapshot } from '../lib/content/load-snapshot'
+import { contactLinks } from '../lib/phone'
+const data = loadSnapshot(),
+  page = data.contactPage,
+  s = data.siteSettings,
+  p = contactLinks(s.primaryPhone),
+  b = contactLinks(s.backupPhone)
+---
+
+<BaseLayout
+  title={page.seo.metaTitle}
+  description={page.seo.metaDescription}
+  path="/اتصل-بنا/"
+  breadcrumbs={[{ label: 'اتصل بنا' }]}
+  ><section class="contact-hero">
+    <div class="container contact-grid">
+      <div>
+        <p class="eyebrow">متاحون {s.availability}</p><h1>{page.title}</h1><p class="lead">
+          {page.lead}
+        </p><ContactActions
+          primary={s.primaryPhone}
+          backup={s.backupPhone}
+          location="contact_hero"
+          compact
+        />
+      </div><div class="numbers">
+        <article>
+          <span>الرقم الأساسي</span><strong dir="ltr">054 612 1683</strong><div>
+            <a
+              href={p.whatsapp}
+              data-contact
+              data-contact-type="whatsapp"
+              data-contact-location="contact_primary">واتساب</a
+            ><a
+              href={p.tel}
+              data-contact
+              data-contact-type="call"
+              data-contact-location="contact_primary">اتصال</a>
+          </div>
+        </article><article>
+          <span>الرقم الاحتياطي</span><strong dir="ltr">054 674 5928</strong><div>
+            <a
+              href={b.whatsapp}
+              data-contact
+              data-contact-type="whatsapp"
+              data-contact-location="contact_backup">واتساب</a
+            ><a
+              href={b.tel}
+              data-contact
+              data-contact-type="call"
+              data-contact-location="contact_backup">اتصال</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section><section class="section">
+    <div class="container contact-content">
+      <div>
+        <p class="eyebrow">نغطي المنطقة الشرقية</p><h2>أرسل المدينة ونوع العمل</h2><p class="lead">
+          {page.serviceAreaIntro}
+        </p><div class="city-list">
+          {data.areas.map((area) => <a href={`/مناطق-الخدمة/${area.slug}/`}>{area.title}</a>)}
+        </div>
+      </div><div><h2>قبل التواصل</h2><FaqList items={page.faqs} /></div>
+    </div>
+  </section></BaseLayout
+>
+<style>
+  .contact-hero {
+    padding: clamp(4rem, 9vw, 8rem) 0;
+    background: var(--navy-950);
+    color: white;
+  }
+  .contact-hero h1 {
+    color: white;
+  }
+  .contact-hero .lead {
+    color: #c6d3dd;
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 0.75fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .numbers {
+    display: grid;
+    gap: 1rem;
+  }
+  .numbers article {
+    padding: 1.5rem;
+    background: white;
+    color: var(--navy-950);
+    border-radius: var(--radius);
+  }
+  .numbers span,
+  .numbers strong {
+    display: block;
+  }
+  .numbers strong {
+    font-size: 2rem;
+    margin: 0.4rem 0;
+  }
+  .numbers div {
+    display: flex;
+    gap: 0.6rem;
+  }
+  .numbers a {
+    padding: 0.4rem 0.8rem;
+    color: #111;
+    background: var(--copper-bright);
+    border-radius: 99px;
+    text-decoration: none;
+    font-weight: 800;
+  }
+  .contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+  }
+  .city-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .city-list a {
+    padding: 0.35rem 0.8rem;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    text-decoration: none;
+  }
+  @media (max-width: 800px) {
+    .contact-grid,
+    .contact-content {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

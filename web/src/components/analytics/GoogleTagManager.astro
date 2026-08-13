@@ -1,0 +1,25 @@
+---
+import { parseGtmId } from '../../lib/analytics/gtm'
+const { placement } = Astro.props as { placement: 'head' | 'body' }
+const gtmId = parseGtmId(import.meta.env.PUBLIC_GTM_ID)
+---
+
+{gtmId && placement === 'head' && <script is:inline src="/gtm-loader.js" data-gtm-id={gtmId} />}
+{
+  gtmId && placement === 'body' && (
+    <>
+      <>
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`}
+            height="0"
+            width="0"
+            style="display:none;visibility:hidden"
+            title="Google Tag Manager"
+          />
+        </noscript>
+        <script is:inline src="/contact-events.js" />
+      </>
+    </>
+  )
+}

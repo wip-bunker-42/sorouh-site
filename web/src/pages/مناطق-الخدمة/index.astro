@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ListingCard from '../../components/ListingCard.astro'
+import { loadSnapshot } from '../../lib/content/load-snapshot'
+const data = loadSnapshot()
+---
+
+<BaseLayout
+  title="مناطق خدمة صروح الشرقية للمقاولات"
+  description="خدمات المقاولات والبناء والترميم والتشطيب في الدمام والخبر والظهران والقطيف والجبيل وسيهات والأحساء ورأس تنورة وبقيق."
+  path="/مناطق-الخدمة/"
+  breadcrumbs={[{ label: 'مناطق الخدمة' }]}
+  ><section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">الدمام والخبر ومدن الشرقية</p><h1>مناطق الخدمة</h1><p class="lead">
+        نصل إلى مشروعك بفريق ومعدات تناسب نوع العمل وموقعه داخل المنطقة الشرقية.
+      </p>
+    </div>
+  </section><section class="section">
+    <div class="container cards">
+      {
+        data.areas.map((area) => (
+          <ListingCard
+            href={`/مناطق-الخدمة/${area.slug}/`}
+            title={area.title}
+            summary={area.summary}
+            image={area.image}
+            eyebrow="خدمات صروح الشرقية"
+          />
+        ))
+      }
+    </div>
+  </section></BaseLayout
+>

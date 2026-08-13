@@ -1,0 +1,202 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ContentImage from '../../components/ContentImage.astro'
+import PortableContent from '../../components/PortableContent.astro'
+import ContactActions from '../../components/ContactActions.astro'
+import FaqList from '../../components/FaqList.astro'
+import ListingCard from '../../components/ListingCard.astro'
+import { loadSnapshot } from '../../lib/content/load-snapshot'
+export function getStaticPaths() {
+  const d = loadSnapshot()
+  return d.services.map((service) => ({ params: { slug: service.slug }, props: { service } }))
+}
+const { service } = Astro.props as { service: any }
+const data = loadSnapshot()
+const projects = data.projects
+  .filter((p) => p.services?.some((s: any) => s._id === service._id))
+  .slice(0, 3)
+const related = data.services.filter((s) => s._id !== service._id).slice(0, 4)
+const serviceSchema = {
+  '@type': 'Service',
+  '@id': `https://sorouh.site/الخدمات/${service.slug}/#service`,
+  name: service.title,
+  description: service.summary,
+  provider: { '@id': 'https://sorouh.site/#organization' },
+  areaServed: data.areas.map((a) => a.title),
+}
+---
+
+<BaseLayout
+  title={service.seo.metaTitle}
+  description={service.seo.metaDescription}
+  path={`/الخدمات/${service.slug}/`}
+  canonicalOverride={service.seo.canonicalOverride}
+  noIndex={service.seo.noIndex}
+  breadcrumbs={[{ label: 'الخدمات', href: '/الخدمات/' }, { label: service.title }]}
+  schema={serviceSchema}
+  ><section class="detail-hero">
+    <div class="container detail-grid">
+      <div>
+        <p class="eyebrow">خدمات صروح الشرقية</p><h1>{service.title}</h1><p class="lead">
+          {service.summary}
+        </p><ContactActions primary={data.siteSettings.primaryPhone} location="service_hero" />
+      </div><div class="hero-image">
+        <ContentImage image={service.heroImage} width={1000} ratio={4 / 3} priority />
+      </div>
+    </div>
+  </section><section class="section">
+    <div class="container content-grid">
+      <PortableContent value={service.body} /><aside class="surface">
+        <span>تشمل الخدمة</span><ul>
+          {service.deliverables.map((item: string) => <li>{item}</li>)}
+        </ul>
+      </aside>
+    </div>
+  </section><section class="section-sm process-band">
+    <div class="container">
+      <p class="eyebrow">خطوات التنفيذ</p><h2>مسار واضح من الطلب إلى التسليم</h2><ol>
+        {
+          service.process.map((step: string, index: number) => (
+            <li>
+              <>
+                <b>{String(index + 1).padStart(2, '0')}</b>
+                <span>{step}</span>
+              </>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>{
+    projects.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <>
+            <p class="eyebrow">مشاريع مرتبطة</p>
+            <h2>شاهد الخدمة على أرض الواقع</h2>
+            <div class="grid grid-3">
+              {projects.map((p) => (
+                <ListingCard
+                  href={`/مشاريعنا/${p.slug}/`}
+                  title={p.title}
+                  summary={p.summary}
+                  image={p.gallery?.[0]}
+                  eyebrow={p.serviceArea?.title}
+                />
+              ))}
+            </div>
+          </>
+        </div>
+      </section>
+    )
+  }<section class="section-sm faq">
+    <div class="narrow">
+      <p class="eyebrow">أسئلة عن الخدمة</p><h2>ما تحتاج معرفته</h2><FaqList items={service.faqs} />
+    </div>
+  </section><section class="related">
+    <div class="container">
+      <h2>خدمات تكمل مشروعك</h2><div>
+        {related.map((item) => <a href={`/الخدمات/${item.slug}/`}>{item.title} ←</a>)}
+      </div><ContactActions primary={data.siteSettings.primaryPhone} location="service_end" />
+    </div>
+  </section></BaseLayout
+>
+<style>
+  .detail-hero {
+    overflow: hidden;
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    background: var(--navy-950);
+    color: white;
+  }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 0.9fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .detail-hero h1 {
+    color: white;
+  }
+  .detail-hero .lead {
+    color: #c7d3dd;
+  }
+  .hero-image {
+    padding: 0.8rem;
+    background: white;
+    transform: rotate(1deg);
+  }
+  .hero-image :global(img) {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+  }
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 5rem;
+  }
+  .content-grid aside {
+    padding: 2rem;
+  }
+  .content-grid aside > span {
+    color: var(--copper);
+    font-weight: 850;
+  }
+  .content-grid li {
+    margin: 0.6rem 0;
+  }
+  .process-band {
+    background: #eae5dd;
+  }
+  .process-band ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    list-style: none;
+    padding: 0;
+  }
+  .process-band li {
+    padding: 1.5rem;
+    border-right: 1px solid #cbc5bc;
+  }
+  .process-band b,
+  .process-band span {
+    display: block;
+  }
+  .process-band b {
+    color: var(--copper);
+    font-size: 2rem;
+  }
+  .process-band span {
+    color: var(--navy-950);
+    font-weight: 800;
+  }
+  .faq {
+    background: white;
+  }
+  .related {
+    padding: 4rem 0;
+    color: white;
+    background: var(--navy-900);
+  }
+  .related h2 {
+    color: white;
+  }
+  .related > div > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .related a {
+    padding: 0.6rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 99px;
+    text-decoration: none;
+  }
+  @media (max-width: 800px) {
+    .detail-grid,
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

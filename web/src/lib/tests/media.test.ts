@@ -45,14 +45,23 @@ describe('buildSanityImage', () => {
 
   test('requires a valid image reference and dimensions', () => {
     expect(() =>
-      buildSanityImage({ asset: { _ref: '' } }, {
-        projectId: 'ki7bs4vk', dataset: 'production', widths: [480], displayWidth: 800,
-      }),
+      buildSanityImage(
+        { asset: { _ref: '' } },
+        {
+          projectId: 'ki7bs4vk',
+          dataset: 'production',
+          widths: [480],
+          displayWidth: 800,
+        },
+      ),
     ).toThrow('Sanity image asset reference is required')
 
     expect(() =>
       buildSanityImage(image, {
-        projectId: 'ki7bs4vk', dataset: 'production', widths: [], displayWidth: 0,
+        projectId: 'ki7bs4vk',
+        dataset: 'production',
+        widths: [],
+        displayWidth: 0,
       }),
     ).toThrow('displayWidth')
   })

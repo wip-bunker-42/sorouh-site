@@ -1,0 +1,32 @@
+---
+import GithubSlugger from 'github-slugger'
+import { blockText } from '../lib/toc'
+const { value } = Astro.props as { value: any[] }
+const slugger = new GithubSlugger()
+---
+
+<div class="prose">
+  {
+    value
+      .filter((block) => block._type === 'block')
+      .map((block) => {
+        const text = blockText(block)
+        if (block.style === 'h2') return <h2 id={slugger.slug(text)}>{text}</h2>
+        if (block.style === 'h3') return <h3 id={slugger.slug(text)}>{text}</h3>
+        if (block.style === 'blockquote') return <blockquote>{text}</blockquote>
+        if (block.listItem === 'bullet')
+          return (
+            <ul>
+              <li>{text}</li>
+            </ul>
+          )
+        if (block.listItem === 'number')
+          return (
+            <ol>
+              <li>{text}</li>
+            </ol>
+          )
+        return <p>{text}</p>
+      })
+  }
+</div>

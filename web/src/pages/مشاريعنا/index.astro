@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ListingCard from '../../components/ListingCard.astro'
+import { loadSnapshot } from '../../lib/content/load-snapshot'
+const data = loadSnapshot()
+---
+
+<BaseLayout
+  title="مشاريع صروح الشرقية للمقاولات"
+  description="شاهد مشاريع بناء وترميم وتشطيب وبورسلان وقص خرسانة وكور وكهرباء وسباكة نفذتها صروح الشرقية في المنطقة الشرقية."
+  path="/مشاريعنا/"
+  breadcrumbs={[{ label: 'مشاريعنا' }]}
+  ><section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">من المواد الخام إلى صفحات حالة كاملة</p><h1>مشاريعنا</h1><p class="lead">
+        نماذج موثقة من التنفيذ، تعرض نطاق كل مشروع ومراحله ونتيجته بدل الاكتفاء بصورة صامتة.
+      </p>
+    </div>
+  </section><section class="section">
+    <div class="container project-list">
+      {
+        data.projects.map((project) => (
+          <ListingCard
+            href={`/مشاريعنا/${project.slug}/`}
+            title={project.title}
+            summary={project.summary}
+            image={project.gallery?.[0]}
+            eyebrow={`${project.serviceArea?.title} • ${project.classification}`}
+          />
+        ))
+      }
+    </div>
+  </section></BaseLayout
+>
+<style>
+  .project-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  .project-list :global(.listing:nth-child(1)),
+  .project-list :global(.listing:nth-child(6)) {
+    grid-column: span 2;
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+  .project-list :global(.listing:nth-child(1) .visual),
+  .project-list :global(.listing:nth-child(6) .visual) {
+    aspect-ratio: 16/10;
+  }
+  @media (max-width: 800px) {
+    .project-list {
+      grid-template-columns: 1fr;
+    }
+    .project-list :global(.listing:nth-child(1)),
+    .project-list :global(.listing:nth-child(6)) {
+      grid-column: auto;
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

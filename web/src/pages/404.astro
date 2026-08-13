@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import ContactActions from '../components/ContactActions.astro'
+import { loadSnapshot } from '../lib/content/load-snapshot'
+const data = loadSnapshot()
+---
+
+<BaseLayout
+  title="الصفحة غير موجودة | صروح الشرقية"
+  description="تعذر العثور على الصفحة المطلوبة. انتقل إلى الرئيسية أو الخدمات أو تواصل مع صروح الشرقية."
+  path="/404.html"
+  noIndex
+  ><section class="not-found">
+    <div class="container">
+      <span>404</span><p class="eyebrow">هذا المسار غير موجود</p><h1>
+        خلّنا نرجعك للمسار الصحيح
+      </h1><p class="lead">
+        قد يكون الرابط تغير أو كُتب بطريقة غير صحيحة. تستطيع العودة للرئيسية، استعراض الخدمات، أو
+        التواصل معنا مباشرة.
+      </p><div class="actions">
+        <a class="btn btn-primary" href="/">الرئيسية</a><a class="btn btn-ghost" href="/الخدمات/"
+          >الخدمات</a>
+      </div><ContactActions primary={data.siteSettings.primaryPhone} location="not_found" />
+    </div>
+  </section></BaseLayout
+>
+<style>
+  .not-found {
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    padding: 5rem 0;
+    color: white;
+    background: var(--navy-950);
+  }
+  .not-found span {
+    display: block;
+    color: rgba(255, 255, 255, 0.08);
+    font-size: clamp(8rem, 25vw, 20rem);
+    font-weight: 950;
+    line-height: 0.7;
+  }
+  .not-found h1 {
+    color: white;
+    max-width: 12ch;
+    font-size: clamp(2.4rem, 5vw, 5rem);
+  }
+  .not-found .lead {
+    color: #c8d4dd;
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import ContentImage from './ContentImage.astro'
+type Props = { href: string; title: string; summary: string; image?: any; eyebrow?: string }
+const { href, title, summary, image, eyebrow } = Astro.props
+---
+
+<a class:list={['listing', { 'has-image': image }]} href={href}
+  >{
+    image && (
+      <div class="visual">
+        <ContentImage image={image} width={720} ratio={4 / 3} />
+      </div>
+    )
+  }<div class="copy">
+    {eyebrow && <span>{eyebrow}</span>}<h3>{title}</h3><p>{summary}</p><b>اعرف المزيد ←</b>
+  </div></a
+>
+<style>
+  .listing {
+    display: grid;
+    overflow: hidden;
+    color: inherit;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-decoration: none;
+  }
+  .visual {
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    background: var(--navy-900);
+  }
+  .visual :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .listing:hover .visual :global(img) {
+    transform: scale(1.035);
+  }
+  .copy {
+    display: flex;
+    flex-direction: column;
+    padding: 1.35rem;
+  }
+  .copy span {
+    color: var(--copper);
+    font-size: 0.78rem;
+    font-weight: 850;
+  }
+  .copy h3 {
+    margin: 0.2rem 0;
+  }
+  .copy p {
+    color: var(--muted);
+  }
+  .copy b {
+    margin-top: auto;
+    color: #98440c;
+    font-size: 0.88rem;
+  }
+</style>

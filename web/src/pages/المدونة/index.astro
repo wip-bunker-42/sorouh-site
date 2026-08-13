@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ListingCard from '../../components/ListingCard.astro'
+import { loadSnapshot } from '../../lib/content/load-snapshot'
+const data = loadSnapshot()
+---
+
+<BaseLayout
+  title="مدونة صروح الشرقية | أدلة المقاولات والتشطيب"
+  description="مقالات عملية عن المقاولات والبناء والترميم والتشطيب وقص الخرسانة والكهرباء والسباكة والديكور في المنطقة الشرقية."
+  path="/المدونة/"
+  breadcrumbs={[{ label: 'المدونة' }]}
+  ><section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">معلومة تساعدك قبل التنفيذ</p><h1>مدونة صروح الشرقية</h1><p class="lead">
+        أدلة مباشرة لفهم ترتيب العمل، طرح الأسئلة الصحيحة، واستلام التفاصيل المهمة في مشروع منزلك.
+      </p>
+    </div>
+  </section><section class="categories">
+    <div class="container">{data.categories.map((c) => <span>{c.title}</span>)}</div>
+  </section><section class="section">
+    <div class="container blog-grid">
+      {
+        data.posts.map((post) => (
+          <ListingCard
+            href={`/المدونة/${post.slug}/`}
+            title={post.title}
+            summary={post.excerpt}
+            image={post.featuredImage}
+            eyebrow={`${post.category?.title} • ${new Intl.DateTimeFormat('ar-SA', { dateStyle: 'medium' }).format(new Date(post.publishedAt))}`}
+          />
+        ))
+      }
+    </div>
+  </section></BaseLayout
+>
+<style>
+  .categories {
+    background: white;
+    border-bottom: 1px solid var(--line);
+  }
+  .categories > div {
+    display: flex;
+    gap: 0.5rem;
+    overflow: auto;
+    padding-block: 1rem;
+  }
+  .categories span {
+    white-space: nowrap;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    color: var(--muted);
+  }
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+  }
+  .blog-grid :global(.listing:first-child) {
+    grid-column: 1/-1;
+    grid-template-columns: 1fr 1fr;
+  }
+  .blog-grid :global(.listing:first-child .visual) {
+    aspect-ratio: 16/9;
+  }
+  @media (max-width: 700px) {
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+    .blog-grid :global(.listing:first-child) {
+      grid-column: auto;
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

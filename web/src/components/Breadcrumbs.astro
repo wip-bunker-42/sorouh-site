@@ -1,0 +1,20 @@
+---
+type Item = { label: string; href?: string }
+const { items } = Astro.props as { items: Item[] }
+---
+
+<nav class="container" aria-label="مسار التنقل">
+  <ol class="breadcrumb">
+    <li><a href="/">الرئيسية</a></li>{
+      items.map((item) => (
+        <li>
+          {item.href ? (
+            <a href={item.href}>{item.label}</a>
+          ) : (
+            <span aria-current="page">{item.label}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>

@@ -1,0 +1,18 @@
+---
+import SanityImage from './media/SanityImage.astro'
+type Props = { image: any; width?: number; ratio?: number; priority?: boolean; class?: string }
+const { image, width = 1200, ratio = 16 / 10, priority = false, class: className } = Astro.props
+---
+
+{
+  image?.asset && (
+    <SanityImage
+      image={image}
+      alt={image.alt}
+      width={width}
+      aspectRatio={ratio}
+      priority={priority}
+      class={className}
+    />
+  )
+}

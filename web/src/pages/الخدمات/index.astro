@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ListingCard from '../../components/ListingCard.astro'
+import { loadSnapshot } from '../../lib/content/load-snapshot'
+const data = loadSnapshot()
+---
+
+<BaseLayout
+  title="خدمات المقاولات والترميم والتشطيب | صروح الشرقية"
+  description="استكشف 13 خدمة للمنازل والفلل تشمل البناء والترميم والتشطيب والقص والكور والكهرباء والسباكة والدهانات والبورسلان والجبس."
+  path="/الخدمات/"
+  breadcrumbs={[{ label: 'الخدمات' }]}
+  ><section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">13 تخصصًا في مسار تنفيذ واحد</p><h1>خدمات المقاولات</h1><p class="lead">
+        اختر الخدمة التي تحتاجها، أو تواصل معنا لو كان مشروعك يجمع أكثر من بند ونساعدك في ترتيب
+        نطاقه.
+      </p>
+    </div>
+  </section><section class="section">
+    <div class="container cards">
+      {
+        data.services.map((service) => (
+          <ListingCard
+            href={`/الخدمات/${service.slug}/`}
+            title={service.title}
+            summary={service.summary}
+            image={service.heroImage}
+          />
+        ))
+      }
+    </div>
+  </section></BaseLayout
+>

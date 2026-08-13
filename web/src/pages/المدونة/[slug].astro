@@ -1,0 +1,262 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ContentImage from '../../components/ContentImage.astro'
+import PortableContent from '../../components/PortableContent.astro'
+import ContactActions from '../../components/ContactActions.astro'
+import ListingCard from '../../components/ListingCard.astro'
+import { loadSnapshot } from '../../lib/content/load-snapshot'
+import { extractToc } from '../../lib/toc'
+export function getStaticPaths() {
+  const d = loadSnapshot()
+  return d.posts.map((post) => ({ params: { slug: post.slug }, props: { post } }))
+}
+const { post } = Astro.props as { post: any }
+const data = loadSnapshot()
+const marker = post.body.findIndex((b: any) => b._type === 'cta')
+const before = marker >= 0 ? post.body.slice(0, marker) : post.body
+const after = marker >= 0 ? post.body.slice(marker + 1) : []
+const toc = extractToc(post.body)
+const canonical = `https://sorouh.site/المدونة/${post.slug}/`
+const encoded = encodeURIComponent(canonical)
+const shareText = encodeURIComponent(post.title)
+const related = data.posts
+  .filter(
+    (p) =>
+      p._id !== post._id &&
+      !p.seo.noIndex &&
+      (post.relatedPosts?.some((r: any) => r._id === p._id) ||
+        p.category?._id === post.category?._id),
+  )
+  .slice(0, 3)
+const published = new Intl.DateTimeFormat('ar-SA', { dateStyle: 'long' }).format(
+  new Date(post.publishedAt),
+)
+const modified = new Intl.DateTimeFormat('ar-SA', { dateStyle: 'long' }).format(
+  new Date(post._updatedAt),
+)
+const sameDay = post.publishedAt.slice(0, 10) === post._updatedAt.slice(0, 10)
+const articleSchema = {
+  '@type': 'Article',
+  '@id': `${canonical}#article`,
+  headline: post.title,
+  description: post.excerpt,
+  image: post.featuredImage?.asset?.url,
+  datePublished: post.publishedAt,
+  dateModified: post._updatedAt,
+  inLanguage: 'ar-SA',
+  author: { '@id': 'https://sorouh.site/#organization' },
+  publisher: { '@id': 'https://sorouh.site/#organization' },
+  mainEntityOfPage: { '@id': `${canonical}#webpage` },
+}
+---
+
+<BaseLayout
+  title={post.seo.metaTitle}
+  description={post.seo.metaDescription}
+  path={`/المدونة/${post.slug}/`}
+  breadcrumbs={[{ label: 'المدونة', href: '/المدونة/' }, { label: post.title }]}
+  schema={articleSchema}
+  ><article>
+    <header class="article-head">
+      <div class="narrow">
+        <p class="eyebrow">
+          {post.category?.title}{post.serviceArea && ` • ${post.serviceArea.title}`}
+        </p><h1>{post.title}</h1><p class="lead">{post.excerpt}</p><div class="meta">
+          <span>بقلم {post.author}</span><time datetime={post.publishedAt}>نُشر {published}</time>{
+            !sameDay && <time datetime={post._updatedAt}>حُدّث {modified}</time>
+          }
+        </div>
+      </div>
+    </header><div class="featured container">
+      <ContentImage image={post.featuredImage} width={1400} ratio={16 / 9} priority />
+    </div><div class="article-layout container">
+      {
+        toc.length >= 3 && (
+          <aside class="toc">
+            <>
+              <b>في هذا المقال</b>
+              <ol>
+                {toc.map((item) => (
+                  <li class:list={[{ sub: item.level === 3 }]}>
+                    <a href={`#${item.id}`}>{item.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </>
+          </aside>
+        )
+      }<div class="article-body">
+        <PortableContent value={before} /><div class="article-cta">
+          <h2>{post.body[marker]?.headline ?? 'تحتاج مقاولًا لمشروعك؟'}</h2><p>
+            {post.body[marker]?.body ?? 'تواصل معنا لترتيب المعاينة ومناقشة نطاق العمل.'}
+          </p><ContactActions primary={data.siteSettings.primaryPhone} location="article_mid" />
+        </div><PortableContent value={after} /><div class="share">
+          <b>شارك المقال</b><a
+            href={`https://wa.me/?text=${shareText}%20${encoded}`}
+            target="_blank"
+            rel="noopener">واتساب</a
+          ><a
+            href={`https://x.com/intent/post?text=${shareText}&url=${encoded}`}
+            target="_blank"
+            rel="noopener">X</a
+          ><button class="copy-link" data-url={canonical}>نسخ الرابط</button><span
+            aria-live="polite"></span>
+        </div><div class="article-cta final-cta">
+          <h2>{post.articleCta.headline}</h2><p>{post.articleCta.body}</p><ContactActions
+            primary={data.siteSettings.primaryPhone}
+            location="article_end"
+          />
+        </div>
+      </div>
+    </div>
+  </article>{
+    related.length > 0 && (
+      <section class="section related">
+        <div class="container">
+          <>
+            <p class="eyebrow">واصل القراءة</p>
+            <h2>مقالات مرتبطة</h2>
+            <div class="grid grid-3">
+              {related.map((p) => (
+                <ListingCard
+                  href={`/المدونة/${p.slug}/`}
+                  title={p.title}
+                  summary={p.excerpt}
+                  image={p.featuredImage}
+                />
+              ))}
+            </div>
+          </>
+        </div>
+      </section>
+    )
+  }<script>
+    document.querySelectorAll<HTMLButtonElement>('.copy-link').forEach((button) =>
+      button.addEventListener('click', async () => {
+        const status = button.nextElementSibling as HTMLElement
+        try {
+          await navigator.clipboard.writeText(button.dataset.url!)
+          status.textContent = 'تم نسخ الرابط'
+        } catch {
+          status.textContent = 'تعذر النسخ؛ انسخ الرابط من شريط العنوان'
+        }
+      }),
+    )
+  </script></BaseLayout
+>
+<style>
+  .article-head {
+    padding: clamp(4rem, 8vw, 7rem) 0 8rem;
+    background: var(--navy-950);
+    color: white;
+  }
+  .article-head h1 {
+    color: white;
+    font-size: clamp(2.4rem, 5vw, 4.6rem);
+    max-width: 17ch;
+  }
+  .article-head .lead {
+    color: #c9d5de;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.4rem;
+    color: #9fb1bf;
+    font-size: 0.86rem;
+  }
+  .featured {
+    margin-top: -5rem;
+  }
+  .featured :global(img) {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    border: 10px solid white;
+    box-shadow: var(--shadow);
+  }
+  .article-layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 760px);
+    justify-content: center;
+    gap: 4rem;
+    padding-block: 4rem;
+  }
+  .toc {
+    position: sticky;
+    top: 1rem;
+    align-self: start;
+    padding: 1.2rem;
+    border-right: 3px solid var(--copper);
+    background: white;
+  }
+  .toc ol {
+    padding-right: 1.2rem;
+  }
+  .toc li {
+    margin: 0.5rem 0;
+  }
+  .toc .sub {
+    margin-right: 1rem;
+    font-size: 0.88rem;
+  }
+  .toc a {
+    text-decoration: none;
+    color: #52606c;
+  }
+  .article-cta {
+    margin: 2.8rem 0;
+    padding: 2rem;
+    color: white;
+    background: linear-gradient(120deg, var(--navy-900), #512b17);
+    border-radius: var(--radius);
+  }
+  .article-cta h2 {
+    margin-top: 0;
+    color: white;
+    font-size: 1.8rem;
+  }
+  .article-cta p {
+    color: #d5dfe7;
+  }
+  .share {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 3rem 0;
+    padding-block: 1rem;
+    border-block: 1px solid var(--line);
+  }
+  .share a,
+  .share button {
+    border: 1px solid var(--line);
+    background: white;
+    padding: 0.45rem 0.8rem;
+    border-radius: 99px;
+    text-decoration: none;
+    font: inherit;
+    cursor: pointer;
+  }
+  .share span {
+    color: var(--success);
+    font-size: 0.85rem;
+  }
+  .final-cta {
+    margin-bottom: 0;
+  }
+  .related {
+    background: #ece7df;
+  }
+  @media (max-width: 850px) {
+    .article-layout {
+      grid-template-columns: 1fr;
+    }
+    .toc {
+      position: static;
+    }
+    .article-head {
+      padding-bottom: 6rem;
+    }
+  }
+</style>

@@ -1,0 +1,419 @@
+---
+import '../styles/global.css'
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import ContactActions from '../components/ContactActions.astro'
+import { loadSnapshot } from '../lib/content/load-snapshot'
+import { canonicalUrl } from '../lib/url'
+import { contactLinks } from '../lib/phone'
+import GoogleTagManager from '../components/analytics/GoogleTagManager.astro'
+
+type Crumb = { label: string; href?: string }
+type Props = {
+  title: string
+  description: string
+  path: string
+  image?: string
+  noIndex?: boolean
+  canonicalOverride?: string
+  breadcrumbs?: Crumb[]
+  schema?: Record<string, unknown> | Record<string, unknown>[]
+}
+const {
+  title,
+  description,
+  path,
+  image = '/brand/og-default.jpg',
+  noIndex = false,
+  canonicalOverride,
+  breadcrumbs = [],
+  schema,
+} = Astro.props
+const snapshot = loadSnapshot()
+const settings = snapshot.siteSettings
+const canonical = canonicalUrl(path, canonicalOverride).href
+const primary = contactLinks(settings.primaryPhone)
+const pageId = `${canonical}#webpage`
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': 'WebSite',
+    '@id': 'https://sorouh.site/#website',
+    url: 'https://sorouh.site/',
+    name: settings.companyName,
+    inLanguage: 'ar-SA',
+    publisher: { '@id': 'https://sorouh.site/#organization' },
+  },
+  {
+    '@type': 'GeneralContractor',
+    '@id': 'https://sorouh.site/#organization',
+    name: settings.companyName,
+    url: 'https://sorouh.site/',
+    logo: { '@type': 'ImageObject', url: 'https://sorouh.site/brand/logo.png' },
+    telephone: [settings.primaryPhone, settings.backupPhone],
+    openingHours: 'Mo-Su 00:00-23:59',
+    areaServed: snapshot.areas.map((area) => ({ '@type': 'City', name: area.title })),
+  },
+  {
+    '@type': 'WebPage',
+    '@id': pageId,
+    url: canonical,
+    name: title,
+    description,
+    inLanguage: 'ar-SA',
+    isPartOf: { '@id': 'https://sorouh.site/#website' },
+    about: { '@id': 'https://sorouh.site/#organization' },
+  },
+]
+if (breadcrumbs.length)
+  graph.push({
+    '@type': 'BreadcrumbList',
+    '@id': `${canonical}#breadcrumb`,
+    itemListElement: [{ label: 'الرئيسية', href: '/' }, ...breadcrumbs].map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.label,
+      item: item.href ? canonicalUrl(item.href).href : canonical,
+    })),
+  })
+if (schema) graph.push(...(Array.isArray(schema) ? schema : [schema]))
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replaceAll(
+  '<',
+  '\\u003c',
+)
+---
+
+<!doctype html>
+<html lang="ar-SA" dir="rtl">
+  <head>
+    <GoogleTagManager placement="head" />
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width" />
+    <title>{title}</title><meta name="description" content={description} />
+    <meta
+      name="robots"
+      content={noIndex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'}
+    />
+    <link rel="canonical" href={canonical} /><link rel="icon" href="/brand/logo-mark.png" />
+    <meta property="og:type" content="website" /><meta property="og:locale" content="ar_SA" /><meta
+      property="og:site_name"
+      content={settings.companyName}
+    />
+    <meta property="og:title" content={title} /><meta
+      property="og:description"
+      content={description}
+    /><meta property="og:url" content={canonical} /><meta
+      property="og:image"
+      content={new URL(image, canonical).href}
+    /><meta property="og:image:width" content="1200" /><meta
+      property="og:image:height"
+      content="630"
+    />
+    <meta name="twitter:card" content="summary_large_image" /><meta
+      name="twitter:title"
+      content={title}
+    /><meta name="twitter:description" content={description} /><meta
+      name="twitter:image"
+      content={new URL(image, canonical).href}
+    />
+    <script is:inline type="application/ld+json" set:html={jsonLd} />
+  </head>
+  <body>
+    <GoogleTagManager placement="body" />
+    <a class="skip-link" href="#main">انتقل إلى المحتوى</a>
+    <header class="site-header">
+      <div class="top">
+        <div class="container top-inner">
+          <span>متاحون {settings.availability}</span><a
+            href={primary.tel}
+            data-contact
+            data-contact-type="call"
+            data-contact-location="header">{settings.primaryPhone}</a>
+        </div>
+      </div>
+      <div class="container nav-wrap">
+        <a class="brand" href="/" aria-label="صروح الشرقية — الرئيسية"
+          ><img
+            src="/brand/logo.webp"
+            width="64"
+            height="64"
+            alt="شعار شركة صروح الشرقية للمقاولات"
+          /><span><b>صروح الشرقية</b><small>للمقاولات</small></span></a
+        >
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="main-nav"
+          ><span></span><span></span><span></span><span class="sr-only">فتح القائمة</span></button
+        >
+        <nav id="main-nav" class="main-nav" aria-label="التنقل الرئيسي">
+          <a href="/من-نحن/">من نحن</a><a href="/الخدمات/">الخدمات</a><a href="/مشاريعنا/"
+            >مشاريعنا</a
+          ><a href="/مناطق-الخدمة/">مناطق الخدمة</a><a href="/المدونة/">المدونة</a><a
+            href="/اتصل-بنا/">اتصل بنا</a
+          ><a
+            class="header-wa"
+            href={primary.whatsapp}
+            data-contact
+            data-contact-type="whatsapp"
+            data-contact-location="header">واتساب</a>
+        </nav>
+      </div>
+    </header>
+    {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <img src="/brand/logo.webp" width="82" height="82" alt="شعار صروح الشرقية" /><h2>
+            {settings.companyName}
+          </h2><p>
+            {settings.tagline}. تنفيذ للمنازل والفلل في الدمام والخبر ومدن المنطقة الشرقية.
+          </p><ContactActions
+            primary={settings.primaryPhone}
+            backup={settings.backupPhone}
+            location="footer"
+            compact
+          />
+        </div><div>
+          <h3>الخدمات</h3>{
+            snapshot.services
+              .slice(0, 7)
+              .map((service) => <a href={`/الخدمات/${service.slug}/`}>{service.title}</a>)
+          }
+        </div><div>
+          <h3>مناطق الخدمة</h3>{
+            snapshot.areas
+              .slice(0, 7)
+              .map((area) => <a href={`/مناطق-الخدمة/${area.slug}/`}>{area.title}</a>)
+          }
+        </div><div>
+          <h3>استكشف</h3><a href="/مشاريعنا/">مشاريعنا</a><a href="/المدونة/">المقالات</a><a
+            href="/اتصل-بنا/">اتصل بنا</a
+          ><p class="availability">{settings.availability}</p>
+        </div>
+      </div><div class="container copyright">
+        © {new Date().getFullYear()} شركة صروح الشرقية للمقاولات
+      </div>
+    </footer>
+    <div class="mobile-contact" aria-label="تواصل سريع">
+      <a
+        href={primary.whatsapp}
+        data-contact
+        data-contact-type="whatsapp"
+        data-contact-location="mobile_bar">واتساب</a
+      ><a
+        href={primary.tel}
+        data-contact
+        data-contact-type="call"
+        data-contact-location="mobile_bar">اتصال</a>
+    </div>
+    <script>
+      const button = document.querySelector<HTMLButtonElement>('.menu-button')
+      const nav = document.querySelector<HTMLElement>('#main-nav')
+      button?.addEventListener('click', () => {
+        const open = button.getAttribute('aria-expanded') === 'true'
+        button.setAttribute('aria-expanded', String(!open))
+        nav?.toggleAttribute('data-open', !open)
+      })
+      nav?.addEventListener('click', (event) => {
+        if ((event.target as HTMLElement).closest('a')) {
+          button?.setAttribute('aria-expanded', 'false')
+          nav.removeAttribute('data-open')
+        }
+      })
+    </script>
+  </body>
+</html>
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+  .site-header {
+    position: relative;
+    z-index: 20;
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+  }
+  .top {
+    background: var(--navy-950);
+    color: #d8e2ea;
+    font-size: 0.8rem;
+  }
+  .top-inner {
+    min-height: 34px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .top a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .nav-wrap {
+    min-height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--navy-950);
+  }
+  .brand img {
+    border-radius: 12px;
+  }
+  .brand span {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+  }
+  .brand b {
+    font-size: 1.05rem;
+  }
+  .brand small {
+    color: var(--copper);
+    font-weight: 750;
+  }
+  .main-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+  }
+  .main-nav a {
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 750;
+    color: #263645;
+  }
+  .main-nav a:hover {
+    color: #a94e0f;
+  }
+  .header-wa {
+    background: var(--copper);
+    color: #111 !important;
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+  }
+  .menu-button {
+    display: none;
+    background: none;
+    border: 0;
+    width: 45px;
+    height: 45px;
+    padding: 10px;
+  }
+  .menu-button span:not(.sr-only) {
+    display: block;
+    height: 2px;
+    background: var(--navy-950);
+    margin: 5px;
+  }
+  .site-footer {
+    background: var(--navy-950);
+    color: #b9c8d4;
+    padding: 4rem 0 1rem;
+  }
+  .site-footer h2,
+  .site-footer h3 {
+    color: white;
+  }
+  .site-footer h2 {
+    font-size: 1.35rem;
+    margin: 0.8rem 0;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+  }
+  .footer-grid > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .footer-grid a {
+    display: block;
+    margin: 0.2rem 0;
+    text-decoration: none;
+  }
+  .availability {
+    color: var(--copper-bright);
+  }
+  .copyright {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    margin-top: 3rem;
+    padding-top: 1rem;
+    font-size: 0.8rem;
+  }
+  .mobile-contact {
+    display: none;
+  }
+  @media (max-width: 900px) {
+    .menu-button {
+      display: block;
+    }
+    .main-nav {
+      display: none;
+      position: absolute;
+      top: 84px;
+      inset-inline: 1rem;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 1rem;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+    .main-nav[data-open] {
+      display: flex;
+    }
+    .main-nav a {
+      padding: 0.55rem;
+    }
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .mobile-contact {
+      position: fixed;
+      z-index: 50;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      bottom: 0;
+      inset-inline: 0;
+      min-height: 64px;
+      padding: 0.55rem max(0.7rem, env(safe-area-inset-right))
+        max(0.55rem, env(safe-area-inset-bottom));
+      gap: 0.6rem;
+      background: rgba(7, 22, 41, 0.97);
+    }
+    .mobile-contact a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #111;
+      background: var(--copper-bright);
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 850;
+    }
+    .mobile-contact a:last-child {
+      color: white;
+      background: var(--navy-800);
+    }
+  }
+  @media (max-width: 560px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+    .brand span {
+      display: none;
+    }
+    .top-inner {
+      font-size: 0.72rem;
+    }
+  }
+</style>

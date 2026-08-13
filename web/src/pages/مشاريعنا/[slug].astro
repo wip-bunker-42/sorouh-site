@@ -1,0 +1,282 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import ContentImage from '../../components/ContentImage.astro'
+import PortableContent from '../../components/PortableContent.astro'
+import ContactActions from '../../components/ContactActions.astro'
+import YouTubeEmbed from '../../components/media/YouTubeEmbed.astro'
+import ListingCard from '../../components/ListingCard.astro'
+import { loadSnapshot } from '../../lib/content/load-snapshot'
+export function getStaticPaths() {
+  const d = loadSnapshot()
+  return d.projects.map((project) => ({ params: { slug: project.slug }, props: { project } }))
+}
+const { project } = Astro.props as { project: any }
+const data = loadSnapshot()
+const related = data.projects
+  .filter(
+    (p) =>
+      p._id !== project._id &&
+      p.services?.some((s: any) => project.services?.some((x: any) => x._id === s._id)),
+  )
+  .slice(0, 3)
+const hero = project.gallery?.[0]
+const videoSchema = (project.videos ?? []).map((v: any) => {
+  const id = new URL(v.url).pathname.split('/').filter(Boolean).at(-1)
+  return {
+    '@type': 'VideoObject',
+    name: v.title,
+    description: v.description,
+    thumbnailUrl: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
+    uploadDate: v.uploadDate,
+    embedUrl: `https://www.youtube.com/embed/${id}`,
+  }
+})
+---
+
+<BaseLayout
+  title={project.seo.metaTitle}
+  description={project.seo.metaDescription}
+  path={`/مشاريعنا/${project.slug}/`}
+  breadcrumbs={[{ label: 'مشاريعنا', href: '/مشاريعنا/' }, { label: project.title }]}
+  schema={videoSchema}
+  ><section class="project-hero">
+    <div class="container">
+      <div>
+        <p class="eyebrow">{project.serviceArea?.title} • {project.classification}</p><h1>
+          {project.title}
+        </h1><p class="lead">{project.summary}</p><ContactActions
+          primary={data.siteSettings.primaryPhone}
+          location="project_hero"
+        />
+      </div>{
+        hero ? (
+          <ContentImage image={hero} width={1200} ratio={4 / 3} priority />
+        ) : (
+          <div class="video-mark">
+            مشروع موثق بالفيديو<span>↓</span>
+          </div>
+        )
+      }
+    </div>
+  </section><section class="facts">
+    <div class="container">
+      <div><span>التصنيف</span><b>{project.classification}</b></div><div>
+        <span>المدينة</span><a href={`/مناطق-الخدمة/${project.serviceArea?.slug}/`}
+          >{project.serviceArea?.title}</a>
+      </div><div>
+        <span>الخدمات</span>{
+          project.services.map((s: any) => <a href={`/الخدمات/${s.slug}/`}>{s.title}</a>)
+        }
+      </div>
+    </div>
+  </section><section class="section">
+    <div class="container scope-grid">
+      <div>
+        <PortableContent value={project.workDescription} /><h2>النتيجة</h2><p class="lead">
+          {project.result}
+        </p>
+      </div><aside>
+        <p class="eyebrow">نطاق التنفيذ</p><ul>
+          {project.scope.map((item: string) => <li>{item}</li>)}
+        </ul><p class="eyebrow">مراحل العمل</p><ol>
+          {
+            project.stages.map((item: string, index: number) => (
+              <li>
+                <b>{index + 1}</b>
+                {item}
+              </li>
+            ))
+          }
+        </ol>
+      </aside>
+    </div>
+  </section>{
+    project.gallery?.length > 0 && (
+      <section class="gallery section-sm">
+        <div class="container">
+          <>
+            <p class="eyebrow">صور التنفيذ</p>
+            <h2>تفاصيل من موقع المشروع</h2>
+            <div>
+              {project.gallery.map((image: any, index: number) => (
+                <figure>
+                  <ContentImage image={image} width={1000} ratio={index === 0 ? 4 / 3 : 1} />
+                  {image.caption && <figcaption>{image.caption}</figcaption>}
+                </figure>
+              ))}
+            </div>
+          </>
+        </div>
+      </section>
+    )
+  }{
+    project.videos?.map((video: any) => (
+      <section class="video-section section">
+        <div class="narrow">
+          <>
+            <p class="eyebrow">فيديو المشروع</p>
+            <h2>{video.title}</h2>
+            <p>{video.description}</p>
+            <YouTubeEmbed url={video.url} title={video.title} />
+          </>
+        </div>
+      </section>
+    ))
+  }{
+    related.length > 0 && (
+      <section class="section related">
+        <div class="container">
+          <>
+            <h2>مشاريع مرتبطة</h2>
+            <div class="grid grid-3">
+              {related.map((p) => (
+                <ListingCard
+                  href={`/مشاريعنا/${p.slug}/`}
+                  title={p.title}
+                  summary={p.summary}
+                  image={p.gallery?.[0]}
+                />
+              ))}
+            </div>
+            <ContactActions primary={data.siteSettings.primaryPhone} location="project_end" light />
+          </>
+        </div>
+      </section>
+    )
+  }</BaseLayout
+>
+<style>
+  .project-hero {
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    background: var(--navy-950);
+    color: white;
+  }
+  .project-hero > .container {
+    display: grid;
+    grid-template-columns: 1fr 0.85fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .project-hero h1 {
+    color: white;
+    font-size: clamp(2.3rem, 5vw, 4.5rem);
+  }
+  .project-hero .lead {
+    color: #c9d5df;
+  }
+  .project-hero :global(img) {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border: 10px solid white;
+  }
+  .video-mark {
+    display: grid;
+    place-items: center;
+    min-height: 320px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 1.4rem;
+    font-weight: 850;
+  }
+  .video-mark span {
+    color: var(--copper);
+    font-size: 3rem;
+  }
+  .facts {
+    background: white;
+    border-bottom: 1px solid var(--line);
+  }
+  .facts > .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+  }
+  .facts .container > div {
+    padding: 1.3rem;
+    border-left: 1px solid var(--line);
+  }
+  .facts span,
+  .facts b {
+    display: block;
+  }
+  .facts span {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .facts a {
+    display: inline-block;
+    margin-left: 0.6rem;
+    color: #9c470e;
+    font-weight: 800;
+  }
+  .scope-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 5rem;
+  }
+  .scope-grid aside {
+    padding: 2rem;
+    background: #ece7df;
+  }
+  .scope-grid li {
+    margin: 0.7rem 0;
+  }
+  .scope-grid ol {
+    list-style: none;
+    padding: 0;
+  }
+  .scope-grid ol li {
+    display: flex;
+    gap: 0.7rem;
+  }
+  .scope-grid ol b {
+    display: grid;
+    place-items: center;
+    min-width: 28px;
+    height: 28px;
+    color: white;
+    background: var(--navy-900);
+    border-radius: 50%;
+  }
+  .gallery {
+    background: #e9e4dc;
+  }
+  .gallery > div > div {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  .gallery figure {
+    margin: 0;
+    padding: 0.6rem;
+    background: white;
+  }
+  .gallery :global(img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  .gallery figcaption {
+    padding: 0.6rem;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+  .video-section {
+    background: white;
+  }
+  .related {
+    background: #f5f1eb;
+  }
+  @media (max-width: 800px) {
+    .project-hero > .container,
+    .scope-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .facts > .container {
+      grid-template-columns: 1fr;
+    }
+    .gallery > div > div {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
