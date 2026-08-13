@@ -2,6 +2,7 @@ import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 
+import { createSlugAwarePublishAction } from './src/actions/capture-slug-redirect'
 import { filterSingletonActions, filterSingletonTemplates } from './src/constants'
 import { dataset, projectId } from './src/environment'
 import { schemaTypes } from './src/schemaTypes'
@@ -18,6 +19,9 @@ export default defineConfig({
     templates: (templates) => filterSingletonTemplates(templates),
   },
   document: {
-    actions: (actions, context) => filterSingletonActions(actions, context.schemaType),
+    actions: (actions, context) =>
+      filterSingletonActions(actions, context.schemaType).map((action) =>
+        action.action === 'publish' ? createSlugAwarePublishAction(action, context) : action,
+      ),
   },
 })
