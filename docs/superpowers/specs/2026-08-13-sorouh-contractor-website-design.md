@@ -59,7 +59,7 @@
 - `site: "https://sorouh.site"` و`trailingSlash: "always"` ثابتان في إعداد Astro، لكي تولّد الروابط الداخلية والـcanonical والـsitemap بصيغة الشرطة المائلة نفسها.
 - لا نستخدم Astro Cloudflare Adapter ولا SSR ولا Worker script؛ مجلد `dist` هو الأصل المنشور.
 - محتوى الصفحات الأساسي، روابط التنقل، الفيديوهات، البيانات المنظمة والـmetadata موجودة في HTML الناتج.
-- JavaScript للمتصفح يُستخدم فقط للتفاعلات الضرورية الصغيرة، مثل فتح قائمة الهاتف ونسخ رابط المقال. لا توجد مكتبة UI ثقيلة.
+- JavaScript للمتصفح يُستخدم فقط للتفاعلات الضرورية الصغيرة، مثل فتح قائمة الهاتف ونسخ رابط المقال، إضافة إلى Google Tag Manager عند تفعيله اختياريًا. لا توجد مكتبة UI ثقيلة.
 
 ### 3.3 Sanity
 
@@ -182,6 +182,7 @@
 - تنقل Studio منظم: الإعدادات والصفحات الأساسية، الخدمات، المناطق، المشاريع، المدونة، ثم أدوات تقنية للمطور فقط.
 - العميل يستطيع تعديل الأرقام، نصوص CTA، الصور، الخدمات، المناطق، المشاريع، المقالات والفئات وحقول SEO الآمنة.
 - العميل لا يرى إدارة redirects التقنية ولا أسرار النشر ولا إعدادات الدومين.
+- Google Tag Manager إعداد تقني في بيئة البناء وليس حقلًا داخل Sanity، حتى لا يستطيع المحرر تغييره بالخطأ.
 - `canonicalOverride` و`noIndex` في مجموعة «إعدادات SEO متقدمة» مع وصف وتحذير، بينما self-canonical هو الوضع الافتراضي.
 - حقول SEO تعرض عدادات وإرشادات تحريرية، لكن الحدود التحذيرية لا تجبر الكاتب على صياغة رديئة لمجرد رقم ثابت.
 - validations تمنع slug فارغًا، فئة مفقودة، صورة محتوى بلا alt، أو فيديو بلا metadata اللازمة للفهرسة.
@@ -287,7 +288,18 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - نتحقق من ملكية Google Search Console وBing Webmaster Tools ونرسل sitemap بعد الإطلاق.
 - Cloudflare Crawler Hints مفعّل لإشارات IndexNow إلى Bing والمحركات المشاركة؛ لا نعتمد عليه لـGoogle.
 - Google يعتمد على sitemap وSearch Console والربط الداخلي و`lastmod` الدقيق.
-- عناصر الاتصال والواتساب تحمل data attributes ثابتة لتسهيل إضافة analytics مستقبلًا دون تغيير المكونات. لا نضيف منصة تتبع أو cookies غير مطلوبة عند الإطلاق.
+- عناصر الاتصال والواتساب تحمل data attributes ثابتة لتسهيل القياس دون تغيير المكونات. يبقى GTM الاختياري معطلًا عند الإطلاق ما لم يُعتمد Container ID؛ لذلك لا نضيف طلبات تتبع أو cookies من الموقع افتراضيًا.
+
+### 8.7 Google Tag Manager الاختياري
+
+- يجهز Starter مكون GTM اختياريًا، ويظل معطلًا افتراضيًا.
+- التفعيل يتم بوضع Container ID في متغير البناء `PUBLIC_GTM_ID` بصيغة `GTM-...` داخل Cloudflare Workers Builds ثم إعادة البناء، دون تعديل الكود أو Sanity.
+- عند غياب المتغير لا يظهر script أو iframe أو `dataLayer` خاص بـGTM، ولا يخرج أي طلب إلى Google.
+- عند وجود قيمة صحيحة يوضع المقطع الرسمي الأول مرة واحدة أعلى `<head>` قدر الإمكان، ويوضع `noscript` الرسمي مباشرة بعد فتح `<body>` في `BaseLayout`، فيظهران في كل الصفحات.
+- قيمة غير مطابقة لصيغة Container ID تفشل البناء برسالة واضحة بدل نشر تتبع مكسور.
+- عند التفعيل، تدفع نقرات الاتصال والواتساب حدثًا عامًا إلى `dataLayer` باسم `contact_click`، مع `contact_type` و`contact_location` فقط. لا نرسل رقم الهاتف أو اسم المستخدم أو أي بيانات شخصية.
+- محتوى الحاوية والـtags التي تُضاف داخل GTM تدار لاحقًا من حساب Google Tag Manager. لا نبني Consent Banner أو Google Ads أو GA4 داخل الموقع قبل طلبها وتحديد متطلباتها.
+- الاختبارات تغطي حالة التعطيل، التفعيل، ID غير الصحيح، عدم تكرار المقاطع، وبيانات أحداث الاتصال والواتساب.
 
 ## 9. الصور والفيديو والوسائط الحالية
 
@@ -306,8 +318,11 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - أهداف Core Web Vitals عند القياس الميداني: LCP أقل من 2.5 ثانية، INP أقل من 200ms، CLS أقل من 0.1 عند الشريحة 75.
 - لا hydration لمكونات ساكنة، ولا carousel ثقيل، ولا autoplay video.
 - WCAG 2.2 AA: contrast، focus واضح، Skip Link، لوحة مفاتيح، أسماء وصول للأيقونات، وتسميات عربية واضحة.
-- `_headers` يولّد أثناء البناء: security headers المناسبة لموقع ثابت، وسياسة cache طويلة للأصول ذات hashes، وcache أقصر أو revalidation لملفات HTML/XML.
-- CSP تسمح فقط بالمصادر المطلوبة، بما فيها Sanity Image CDN وYouTube embed، دون `unsafe-eval`.
+- `_headers` يركز على cache طويلة للأصول ذات hashes وcache أقصر أو revalidation لملفات HTML/XML، مع `X-Content-Type-Options` و`Referrer-Policy` فقط كإعدادين ثابتين بسيطين.
+- نصوص Astro العادية تُعرض عبر `{value}` ليستفيد الموقع من escaping الافتراضي، دون طبقة sanitization عامة أو escaping مزدوج.
+- محتوى Sanity الغني يُعرض عبر `astro-portabletext` ومكونات مخصصة للصور والروابط وCTA والفيديو؛ لا نحوّل Portable Text إلى HTML خام.
+- لا يستخدم `set:html` مع أي محتوى تحريري قادم من Sanity. يقتصر على مخرجات مولدة وموثوقة تحتاج نصًا خامًا مثل JSON-LD، بعد serialization مناسب للسياق.
+- `RSS customData` يبنى من القيم المعتمدة مع XML escaping، ولا يقبل HTML تحريريًا خامًا.
 - لا أسرار Sanity أو Cloudflare في الكود أو إعدادات Studio العامة. المتغيرات العامة تحتوي project ID وdataset فقط؛ tokens في أسرار CI.
 - Dependency updates ومراجعة دورية دون تحديثات تلقائية تكسر الإنتاج.
 
@@ -319,6 +334,7 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - Schemas والمكونات وقوالب الاستعلامات وTypeGen.
 - design tokens قابلة للتغيير برمجيًا.
 - generators للـmetadata وJSON-LD وsitemap وRSS وredirects وheaders.
+- مكون Google Tag Manager اختياري يعتمد على متغير بناء، مع أحداث `dataLayer` عامة قابلة لإعادة الاستخدام بين العملاء.
 - اختبارات الجودة وتعليمات إنشاء مشروع عميل جديد.
 - Bootstrap ينشئ البنية والـsingletons الفارغة اللازمة فقط، بلا مقالات أو خدمات أو مناطق أو نصوص تسويقية.
 
@@ -376,6 +392,7 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - فحص الروابط الداخلية ووجود صفحة 404 وتحويلات `_redirects` الداخلية دون loops أو خلطها بتحويلات البروتوكول والـhost.
 - فحص HTML: title وdescription وcanonical وH1 وlang/dir وalt وأبعاد الصور والـiframe.
 - اختبارات متصفح للـHeader، قائمة الهاتف، الشريط الثابت، أزرار الاتصال والواتساب والمشاركة ونسخ الرابط.
+- اختبارات GTM تتأكد أن غياب `PUBLIC_GTM_ID` ينتج صفر markup وطلبات تتبع، وأن القيمة الصحيحة تضيف المقطعين مرة واحدة وتدفع أحداث الاتصال دون بيانات شخصية.
 - axe accessibility على الصفحات النموذجية.
 
 ### 14.2 تدقيق قبل الإنتاج
@@ -400,7 +417,7 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - المحتوى والوسائط الأولية المستوردة والمرتبطة.
 - README عربي: التشغيل المحلي، إدارة المحتوى، النشر، rollback، تغيير الدومين، وإضافة عميل جديد من Starter.
 - دليل محرر قصير للعميل يشرح الأرقام والمشروعات والمقالات والصور وSEO الآمن.
-- قائمة إعدادات خارجية موثقة: GitHub، Sanity، Workers Builds، Deploy Hook، custom domain، Always Use HTTPS، Bulk Redirect لـ`www`، Preview URLs العامة، Search Console، Bing، وCrawler Hints.
+- قائمة إعدادات خارجية موثقة: GitHub، Sanity، Workers Builds، Deploy Hook، custom domain، Always Use HTTPS، Bulk Redirect لـ`www`، Preview URLs العامة، GTM الاختياري، Search Console، Bing، وCrawler Hints.
 
 ## 16. قرارات عدم البناء
 
@@ -430,6 +447,7 @@ Hero مباشر يوضح النشاط والمنطقة، CTA مزدوج، إحص
 - [Cloudflare Preview URLs](https://developers.cloudflare.com/workers/versions-and-deployments/preview-urls/): المعاينات عامة عند تفعيلها، وهو السلوك المقبول لهذا المشروع.
 - [Cloudflare Deploy Hooks](https://developers.cloudflare.com/workers/ci-cd/builds/deploy-hooks/): إعادة البناء من headless CMS.
 - [Cloudflare Crawler Hints](https://developers.cloudflare.com/cache/advanced-configuration/crawler-hints/): إشارات IndexNow على جميع الخطط.
+- [Google Tag Manager web container installation](https://support.google.com/tagmanager/answer/14847097): موضع مقطعي `<head>` و`noscript` الرسميين في كل صفحة.
 - [Sanity Studio hosting](https://www.sanity.io/docs/studio/deployment): `sanity deploy` والاستضافة على `*.sanity.studio`.
 - [Sanity TypeGen](https://www.sanity.io/docs/apis-and-sdks/sanity-typegen) و[Querying content in Astro](https://www.sanity.io/docs/astro/query-content-astro): استعلامات `defineQuery` في ملفات TypeScript مستقلة وأنواع مولدة.
 - [Sanity Schemas CLI](https://www.sanity.io/docs/cli-reference/cli-schema): أوامر التحقق والاستخراج الحالية هي `sanity schemas validate` و`sanity schemas extract`.
