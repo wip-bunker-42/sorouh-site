@@ -6,6 +6,8 @@
 
 عند دمج تغيير يمس `studio/` في `main` يشغّل GitHub Actions الأمر `sanity deploy --yes --schema-required`. المصادقة داخل Environment اسمه `sanity-production` عبر `SANITY_AUTH_TOKEN` محدود بدور `deploy-studio`، ومعه `SANITY_STUDIO_PROJECT_ID` و`SANITY_STUDIO_DATASET`. يمكن إعادة النشر يدويًا من تبويب Actions عبر `workflow_dispatch`.
 
+عند نشر أو تحديث أو حذف وثيقة منشورة في dataset `production`، يرسل Sanity Webhook باسم `Cloudflare Production Rebuild` طلبًا إلى Cloudflare Deploy Hook باسم `Sanity Production Publish` لإعادة بناء `main`. المسودات ونسخ Content Releases غير المنشورة لا تشغّل البناء؛ يبدأ النشر فقط عند الضغط على Publish أو Unpublish.
+
 ## Cloudflare
 
 Worker اسمه `sorouh-site`، Static Assets فقط، `force-trailing-slash` و404 page. نفّذ build ثم `wrangler deploy --dry-run` ثم deploy. ملفات `_headers` تعطي HTML revalidation وأصول Astro immutable.
