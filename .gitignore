@@ -12,8 +12,7 @@ test-results/
 web/src/data/site-snapshot.json
 web/src/sanity/schema.json
 web/public/_redirects
-work/source-media/
-work/screenshots/
+work/
 *.mp4
 *.mov
 *.avi

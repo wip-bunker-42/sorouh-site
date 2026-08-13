@@ -1,0 +1,51 @@
+---
+import { buildSanityImage, type SanityImageSource } from '../../lib/sanity-image'
+
+type Props = {
+  image: SanityImageSource
+  alt: string
+  width: number
+  aspectRatio?: number
+  widths?: number[]
+  sizes?: string
+  class?: string
+  priority?: boolean
+  quality?: number
+}
+
+const {
+  image,
+  alt,
+  width,
+  aspectRatio,
+  widths = [360, 540, 768, 1024, 1280, 1600],
+  sizes = '(min-width: 72rem) 72rem, 100vw',
+  class: className,
+  priority = false,
+  quality,
+} = Astro.props
+
+if (!alt.trim()) throw new Error('SanityImage requires meaningful Arabic alt text')
+
+const result = buildSanityImage(image, {
+  projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
+  dataset: import.meta.env.PUBLIC_SANITY_DATASET || 'production',
+  widths,
+  displayWidth: width,
+  aspectRatio,
+  quality,
+})
+---
+
+<img
+  src={result.src}
+  srcset={result.srcset}
+  {sizes}
+  {alt}
+  width={result.width}
+  height={result.height}
+  class={className}
+  loading={priority ? 'eager' : 'lazy'}
+  fetchpriority={priority ? 'high' : 'auto'}
+  decoding={priority ? 'sync' : 'async'}
+/>

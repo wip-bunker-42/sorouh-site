@@ -22,6 +22,7 @@
     "test:e2e": "pnpm --filter @sorouh/web test:e2e",
     "test:build": "pnpm --filter @sorouh/web test:build",
     "validate:dist": "pnpm --filter @sorouh/web validate:dist",
+    "audit:media": "tsx scripts/lib/audit-source-assets.ts",
     "typegen": "pnpm --filter @sorouh/studio typegen",
     "seed:sorouh": "tsx scripts/seed-sorouh.ts"
   },

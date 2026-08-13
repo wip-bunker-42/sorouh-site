@@ -1,0 +1,335 @@
+{
+  "summary": {
+    "auditedSourceFiles": 30,
+    "projectGroups": 11,
+    "projectImagesAssigned": 14,
+    "youtubeVideosAssigned": 4,
+    "localMp4Excluded": 4,
+    "exactDuplicatesExcluded": 0,
+    "unassignedUsableAssets": 0,
+    "visualInspectionArtifacts": [
+      "work/screenshots/contact-sheet-1.jpg",
+      "work/screenshots/contact-sheet-2.jpg"
+    ]
+  },
+  "entries": [
+    {
+      "sourceKey": "sorouh-building-plastering-01",
+      "field": "areaKey",
+      "chosenValue": "eastern-province",
+      "evidence": ["مجلد بناء ولياسة بلا مدينة صريحة", "صورة YouTube تعرض مبنى سكنيًا"],
+      "confidence": "low"
+    },
+    {
+      "sourceKey": "sorouh-building-plastering-01",
+      "field": "classification",
+      "chosenValue": "بناء ولياسة",
+      "evidence": ["اسم المجلد 1_بناء_ولياسة", "النص الداخلي: بناء ولياسه"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-building-plastering-01",
+      "field": "stages",
+      "chosenValue": "تجهيز المباني، تنفيذ اللياسة، المراجعة",
+      "evidence": ["المحتوى المرئي لفيديو IK7jw0fu3zE", "تسلسل العمل المعتاد الظاهر"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-building-plastering-01",
+      "field": "result",
+      "chosenValue": "أسطح مهيأة للتشطيبات الخارجية",
+      "evidence": ["لقطة YouTube للمبنى بعد تقدم أعمال الواجهة"],
+      "confidence": "medium"
+    },
+
+    {
+      "sourceKey": "sorouh-porcelain-khobar-01",
+      "field": "areaKey",
+      "chosenValue": "khobar",
+      "evidence": ["اسم الملف يتضمن الخبر"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-porcelain-khobar-01",
+      "field": "classification",
+      "chosenValue": "تركيب بورسلان للحمامات",
+      "evidence": ["اسم المجلد", "الصورة تظهر حمامًا مكتملًا ونيش دش"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-porcelain-khobar-01",
+      "field": "stages",
+      "chosenValue": "القياس، تجهيز النيش، التركيب، المراجعة",
+      "evidence": ["مواضع القص والنيش الظاهرة بالصورة"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-porcelain-khobar-01",
+      "field": "result",
+      "chosenValue": "حمام ببورسلان رخامي وفواصل منتظمة",
+      "evidence": ["الصورة النهائية porcelain-khobar-niche"],
+      "confidence": "high"
+    },
+
+    {
+      "sourceKey": "sorouh-luxury-porcelain-dammam-01",
+      "field": "areaKey",
+      "chosenValue": "dammam",
+      "evidence": ["صورتان تحملان اسم الدمام", "مجموعة بصرية متجانسة بعروق ذهبية"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-luxury-porcelain-dammam-01",
+      "field": "classification",
+      "chosenValue": "تشطيبات بورسلان فاخرة",
+      "evidence": ["البورسلان الرخامي والإكسسوارات الذهبية والإضاءة المخفية"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-luxury-porcelain-dammam-01",
+      "field": "stages",
+      "chosenValue": "التخطيط، تجهيز الخدمات، التركيب، التشطيب",
+      "evidence": ["ست وسائط توضح الأرضية والجدران والمغسلة والتفاصيل"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-luxury-porcelain-dammam-01",
+      "field": "result",
+      "chosenValue": "حمام فاخر بهوية رخاميّة وإضاءة مخفية",
+      "evidence": ["الصور النهائية الخمس", "فيديو esZBNafjbQw"],
+      "confidence": "high"
+    },
+
+    {
+      "sourceKey": "sorouh-porcelain-khobar-02",
+      "field": "areaKey",
+      "chosenValue": "khobar",
+      "evidence": ["اسم الملف يتضمن الخبر"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-porcelain-khobar-02",
+      "field": "classification",
+      "chosenValue": "تركيب سيراميك وبورسلان",
+      "evidence": ["اسم المجلد", "الصورة تظهر تكسية منطقة مغسلة"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-porcelain-khobar-02",
+      "field": "stages",
+      "chosenValue": "القياس، القص، التركيب، التنظيف",
+      "evidence": ["الفتحات والفواصل والإضاءة الظاهرة"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-porcelain-khobar-02",
+      "field": "result",
+      "chosenValue": "منطقة مغسلة بتكسية متناسقة وإضاءة مخفية",
+      "evidence": ["الصورة النهائية porcelain-khobar-bathroom"],
+      "confidence": "high"
+    },
+
+    {
+      "sourceKey": "sorouh-gypsum-board-01",
+      "field": "areaKey",
+      "chosenValue": "eastern-province",
+      "evidence": ["اسم الملف يتضمن الشرقية"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-gypsum-board-01",
+      "field": "classification",
+      "chosenValue": "أسقف جبس بورد مقاومة للرطوبة",
+      "evidence": ["اسم الملف صريح", "الصورة تظهر سقف جبس أثناء التنفيذ"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-gypsum-board-01",
+      "field": "stages",
+      "chosenValue": "المناسيب، الهيكل، الألواح، معالجة الفواصل",
+      "evidence": ["الهيكل والألواح والفتحات ظاهرة بالصورة"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-gypsum-board-01",
+      "field": "result",
+      "chosenValue": "سقف مستوٍ جاهز للمعجون والدهان",
+      "evidence": ["حالة السقف المتقدمة في الصورة"],
+      "confidence": "medium"
+    },
+
+    {
+      "sourceKey": "sorouh-structural-restoration-01",
+      "field": "areaKey",
+      "chosenValue": "eastern-province",
+      "evidence": ["اسم الملف يتضمن الشرقية"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-structural-restoration-01",
+      "field": "classification",
+      "chosenValue": "ترميم وتعديل مبانٍ قائمة",
+      "evidence": ["اسم الملف يذكر التكسير والتعديل والترميم"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-structural-restoration-01",
+      "field": "stages",
+      "chosenValue": "الحماية، الإزالة، التنظيف، التجهيز",
+      "evidence": ["الصورة توثق مرحلة التكسير داخل نطاق قائم"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-structural-restoration-01",
+      "field": "result",
+      "chosenValue": "موقع مهيأ لإعادة البناء والتشطيب",
+      "evidence": ["نطاق الإزالة الظاهر وحالة الموقع"],
+      "confidence": "medium"
+    },
+
+    {
+      "sourceKey": "sorouh-old-villa-restoration-01",
+      "field": "areaKey",
+      "chosenValue": "khobar",
+      "evidence": ["اسم الملف يذكر الدمام والخبر ولا يحدد إحداهما"],
+      "confidence": "low"
+    },
+    {
+      "sourceKey": "sorouh-old-villa-restoration-01",
+      "field": "classification",
+      "chosenValue": "ترميم فلل قديمة",
+      "evidence": ["اسم الملف صريح", "الصورة تظهر مبنى قائمًا تحت الإزالة"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-old-villa-restoration-01",
+      "field": "stages",
+      "chosenValue": "المعاينة، إزالة المتضرر، التجهيز لإعادة البناء",
+      "evidence": ["حالة الفيلا والأنقاض الظاهرة"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-old-villa-restoration-01",
+      "field": "result",
+      "chosenValue": "فيلا مهيأة لاستكمال الإصلاح والتشطيب",
+      "evidence": ["مرحلة الإزالة الموثقة بالصورة"],
+      "confidence": "medium"
+    },
+
+    {
+      "sourceKey": "sorouh-demolition-dammam-01",
+      "field": "areaKey",
+      "chosenValue": "dammam",
+      "evidence": ["اسم الملف يتضمن الدمام"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-demolition-dammam-01",
+      "field": "classification",
+      "chosenValue": "هدم وتجهيز مواقع الترميم",
+      "evidence": ["اسم الملف", "الصورة تظهر معدات هدم ومبنى قائمًا"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-demolition-dammam-01",
+      "field": "stages",
+      "chosenValue": "تجهيز المحيط، الهدم، ترحيل الأنقاض، التسوية",
+      "evidence": ["المعدة والأنقاض ونطاق العمل الظاهر"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-demolition-dammam-01",
+      "field": "result",
+      "chosenValue": "موقع مفتوح جاهز لمرحلة إعادة البناء",
+      "evidence": ["حالة الموقع بعد تقدم الإزالة"],
+      "confidence": "medium"
+    },
+
+    {
+      "sourceKey": "sorouh-core-openings-01",
+      "field": "areaKey",
+      "chosenValue": "dammam",
+      "evidence": ["اسم الملف يذكر الدمام والخبر بلا تحديد", "اختيار الدمام للتحرير الأولي"],
+      "confidence": "low"
+    },
+    {
+      "sourceKey": "sorouh-core-openings-01",
+      "field": "classification",
+      "chosenValue": "فتحات كور وتخريم خرسانة",
+      "evidence": ["اسم المجلد والملف", "الصورة تظهر فتحات دائرية منفذة"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-core-openings-01",
+      "field": "stages",
+      "chosenValue": "تحديد المواقع، تثبيت المعدة، التخريم، التنظيف",
+      "evidence": ["شكل الفتحات ومعدات العمل في الصورة"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-core-openings-01",
+      "field": "result",
+      "chosenValue": "فتحات منتظمة جاهزة لتمديد الخدمات",
+      "evidence": ["الفتحات الدائرية المكتملة في الصورة"],
+      "confidence": "high"
+    },
+
+    {
+      "sourceKey": "sorouh-concrete-saw-01",
+      "field": "areaKey",
+      "chosenValue": "eastern-province",
+      "evidence": ["اسم الملف يتضمن الشرقية"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-concrete-saw-01",
+      "field": "classification",
+      "chosenValue": "قص خرسانة بالمنشار الماسي",
+      "evidence": ["اسم الملف", "الصورة والفيديو يظهران منشار قص جدار"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-concrete-saw-01",
+      "field": "stages",
+      "chosenValue": "التحديد، تثبيت المنشار، القطع، إزالة الجزء",
+      "evidence": ["الصورة وفيديو H8w3JVB4P48"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-concrete-saw-01",
+      "field": "result",
+      "chosenValue": "فتحة خرسانية بأطراف منتظمة",
+      "evidence": ["أثر القص الواضح في الوسائط"],
+      "confidence": "high"
+    },
+
+    {
+      "sourceKey": "sorouh-electrical-plumbing-01",
+      "field": "areaKey",
+      "chosenValue": "dammam",
+      "evidence": ["اسم الصورة يتضمن الدمام", "مقاطع المجموعة تذكر الدمام والخبر والشرقية"],
+      "confidence": "medium"
+    },
+    {
+      "sourceKey": "sorouh-electrical-plumbing-01",
+      "field": "classification",
+      "chosenValue": "تأسيس كهرباء وسباكة للفلل",
+      "evidence": ["اسم المجلد", "الصورة ومقاطع الفيديو المحلية توثق الشبكتين"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-electrical-plumbing-01",
+      "field": "stages",
+      "chosenValue": "التخطيط، تمديد السباكة، تمديد الكهرباء، الفحص",
+      "evidence": ["أربع لقطات فيديو محلية والصورة", "فيديو _8Y1ACr_tus"],
+      "confidence": "high"
+    },
+    {
+      "sourceKey": "sorouh-electrical-plumbing-01",
+      "field": "result",
+      "chosenValue": "شبكات منظمة جاهزة للإغلاق والتشطيب",
+      "evidence": ["المسارات المنظمة ولوحة الكهرباء والإضاءة في اللقطات"],
+      "confidence": "medium"
+    }
+  ]
+}
