@@ -23,6 +23,7 @@ export function validateKeywordTargets(
   livePaths: ReadonlySet<string>,
 ): { active: number; candidates: number } {
   const activeKeywords = new Map<string, string>()
+  const activeOwners = new Set<string>()
   let active = 0
   let candidates = 0
 
@@ -50,6 +51,10 @@ export function validateKeywordTargets(
       }
       activeKeywords.set(normalized, target.id)
     }
+    if (activeOwners.has(target.ownerPath)) {
+      throw new Error(`Duplicate owner path: ${target.ownerPath}`)
+    }
+    activeOwners.add(target.ownerPath)
   }
 
   return { active, candidates }
