@@ -23,6 +23,7 @@
     "test:build": "pnpm --filter @sorouh/web test:build",
     "validate:dist": "pnpm --filter @sorouh/web validate:dist",
     "verify:production": "tsx scripts/verify-production.ts",
+    "seo:validate-targets": "tsx scripts/validate-seo-keyword-targets.ts",
     "audit:media": "tsx scripts/lib/audit-source-assets.ts",
     "typegen": "pnpm --filter @sorouh/studio typegen",
     "seed:sorouh": "pnpm --dir studio exec sanity exec ../scripts/seed-sorouh.ts --with-user-token --",
