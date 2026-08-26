@@ -380,19 +380,18 @@ for (const article of articles) {
   })
 }
 
-const logo = await contentImage('brand-logo-source', 'شعار شركة صروح الشرقية للمقاولات')
-const ogBuffer = await readFile(resolve(root, 'web/public/brand/og-default.jpg'))
-const ogAsset = await client.assets.upload('image', ogBuffer, {
-  filename: 'sorouh-og-default.jpg',
-  label: 'sorouh:og-default',
-})
-const defaultShareImage = {
-  _type: 'contentImage',
-  asset: { _type: 'reference', _ref: ogAsset._id },
-  alt: 'شركة صروح الشرقية للمقاولات — مقاولات وترميم وتشطيب',
-}
-
-if (!existingIds.has('siteSettings'))
+if (!existingIds.has('siteSettings')) {
+  const logo = await contentImage('brand-logo-source', 'شعار شركة صروح الشرقية للمقاولات')
+  const ogBuffer = await readFile(resolve(root, 'web/public/brand/og-default.jpg'))
+  const ogAsset = await client.assets.upload('image', ogBuffer, {
+    filename: 'sorouh-og-default.jpg',
+    label: 'sorouh:og-default',
+  })
+  const defaultShareImage = {
+    _type: 'contentImage',
+    asset: { _type: 'reference', _ref: ogAsset._id },
+    alt: 'شركة صروح الشرقية للمقاولات — مقاولات وترميم وتشطيب',
+  }
   docs.push({
     _id: 'siteSettings',
     _type: 'siteSettings',
@@ -410,6 +409,7 @@ if (!existingIds.has('siteSettings'))
       defaultShareImage,
     ),
   })
+}
 
 if (!existingIds.has('aboutPage')) {
   const aboutImage = await plannedContentImage('aboutPage')

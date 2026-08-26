@@ -54,6 +54,16 @@ describe('production build', () => {
     expect($('meta[name="robots"]').attr('content')).toContain('index, follow')
   })
 
+  it('renders the selective local service route with canonical and service schema', () => {
+    const path = 'الخدمات/ترميم-منازل-وفلل/الدمام/index.html'
+    expect(existsSync(join(dist, path))).toBe(true)
+    const $ = load(read(path))
+    expect($('link[rel="canonical"]').attr('href')).toBe(
+      new URL('/الخدمات/ترميم-منازل-وفلل/الدمام/', 'https://sorouh.site').href,
+    )
+    expect($('script[type="application/ld+json"]').text()).toContain('Service')
+  })
+
   it('ships only verified YouTube publication dates and valid redirect paths', () => {
     const videos = read('sitemap-videos.xml')
     expect(videos).toContain('<video:publication_date>2026-08-12</video:publication_date>')
