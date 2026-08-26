@@ -7,6 +7,7 @@ import { canonicalUrl } from '../lib/url'
 import { contactLinks } from '../lib/phone'
 import GoogleTagManager from '../components/analytics/GoogleTagManager.astro'
 import { SITE_ORIGIN } from '../config/site'
+import { buildBaseSchema } from '../lib/seo/schema'
 
 type Crumb = { label: string; href?: string }
 type Props = {
@@ -33,49 +34,19 @@ const snapshot = loadSnapshot()
 const settings = snapshot.siteSettings
 const canonical = canonicalUrl(path, canonicalOverride).href
 const primary = contactLinks(settings.primaryPhone)
-const pageId = `${canonical}#webpage`
 const graph: Record<string, unknown>[] = [
-  {
-    '@type': 'WebSite',
-    '@id': `${SITE_ORIGIN}/#website`,
-    url: `${SITE_ORIGIN}/`,
-    name: settings.companyName,
-    inLanguage: 'ar-SA',
-    publisher: { '@id': `${SITE_ORIGIN}/#organization` },
-  },
-  {
-    '@type': 'GeneralContractor',
-    '@id': `${SITE_ORIGIN}/#organization`,
-    name: settings.companyName,
-    url: `${SITE_ORIGIN}/`,
-    logo: { '@type': 'ImageObject', url: `${SITE_ORIGIN}/brand/logo.png` },
-    telephone: [settings.primaryPhone, settings.backupPhone],
-    openingHours: 'Mo-Su 00:00-23:59',
-    areaServed: snapshot.areas.map((area) => ({ '@type': 'City', name: area.title })),
-  },
-  {
-    '@type': 'WebPage',
-    '@id': pageId,
-    url: canonical,
-    name: title,
+  ...buildBaseSchema({
+    origin: SITE_ORIGIN,
+    canonical,
+    title,
     description,
-    inLanguage: 'ar-SA',
-    isPartOf: { '@id': `${SITE_ORIGIN}/#website` },
-    about: { '@id': `${SITE_ORIGIN}/#organization` },
-  },
+    companyName: settings.companyName,
+    phones: [settings.primaryPhone, settings.backupPhone],
+    areas: snapshot.areas.map((area) => area.title),
+    breadcrumbs,
+  }),
+  ...(schema ? (Array.isArray(schema) ? schema : [schema]) : []),
 ]
-if (breadcrumbs.length)
-  graph.push({
-    '@type': 'BreadcrumbList',
-    '@id': `${canonical}#breadcrumb`,
-    itemListElement: [{ label: 'الرئيسية', href: '/' }, ...breadcrumbs].map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.label,
-      item: item.href ? canonicalUrl(item.href).href : canonical,
-    })),
-  })
-if (schema) graph.push(...(Array.isArray(schema) ? schema : [schema]))
 const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replaceAll(
   '<',
   '\\u003c',
