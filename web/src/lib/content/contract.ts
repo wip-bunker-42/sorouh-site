@@ -85,6 +85,14 @@ export function validateRenderContract(snapshot: NormalizedSnapshot): Normalized
       ['image'],
       ['intro', 'featuredServices', 'faqs'],
     )
+  for (const landing of snapshot.serviceAreaLandings)
+    requireDocument(
+      `serviceAreaLanding:${landing._id}`,
+      landing,
+      ['title', 'summary'],
+      ['service', 'serviceArea', 'heroImage'],
+      ['intro', 'deliverables', 'process', 'faqs'],
+    )
   for (const project of snapshot.projects)
     requireDocument(
       `project:${project._id}`,

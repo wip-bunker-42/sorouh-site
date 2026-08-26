@@ -11,6 +11,7 @@ export type RawSnapshot = {
   contactPage: RawDocument
   services: RawDocument[]
   areas: RawDocument[]
+  serviceAreaLandings: RawDocument[]
   projects: RawDocument[]
   categories: RawDocument[]
   posts: RawDocument[]
@@ -19,7 +20,15 @@ export type RawSnapshot = {
 }
 
 const SINGLETONS = ['siteSettings', 'homePage', 'aboutPage', 'contactPage'] as const
-const COLLECTIONS = ['services', 'areas', 'projects', 'categories', 'posts', 'redirects'] as const
+const COLLECTIONS = [
+  'services',
+  'areas',
+  'serviceAreaLandings',
+  'projects',
+  'categories',
+  'posts',
+  'redirects',
+] as const
 
 function isRecord(value: unknown): value is Record<string, any> {
   return Boolean(value) && typeof value === 'object' && !Array.isArray(value)

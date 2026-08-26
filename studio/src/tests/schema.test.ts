@@ -38,6 +38,7 @@ describe('Sanity content model', () => {
       'contactPage',
       'service',
       'serviceArea',
+      'serviceAreaLanding',
       'project',
       'category',
       'post',
@@ -101,6 +102,20 @@ describe('Sanity content model', () => {
     )
     expect(field?.validation).toBeTypeOf('function')
     expect(String(field?.validation)).not.toContain('max(13)')
+  })
+
+  test('requires complete selective local service pages', () => {
+    expectRequiredFields('serviceAreaLanding', [
+      'title',
+      'summary',
+      'service',
+      'serviceArea',
+      'heroImage',
+      'intro',
+      'deliverables',
+      'process',
+      'faqs',
+    ])
   })
 
   test('requires a complete visitor-facing project and at least one media item', () => {

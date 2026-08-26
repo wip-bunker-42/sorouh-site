@@ -19,6 +19,7 @@ export type NormalizedSnapshot = Omit<
   | 'contactPage'
   | 'services'
   | 'areas'
+  | 'serviceAreaLandings'
   | 'projects'
   | 'categories'
   | 'posts'
@@ -29,6 +30,7 @@ export type NormalizedSnapshot = Omit<
   contactPage: NormalizedDocument
   services: NormalizedDocument[]
   areas: NormalizedDocument[]
+  serviceAreaLandings: NormalizedDocument[]
   projects: NormalizedDocument[]
   categories: NormalizedDocument[]
   posts: NormalizedDocument[]
@@ -172,6 +174,9 @@ export function normalizeSnapshot(raw: RawSnapshot, now = new Date()): Normalize
   const areas = publishedOnly(raw.areas).map((document) =>
     normalizeDocument(document, defaultImage),
   )
+  const serviceAreaLandings = publishedOnly(raw.serviceAreaLandings).map((document) =>
+    normalizeDocument(document, defaultImage),
+  )
   const projects = publishedOnly(raw.projects).map((document) =>
     normalizeDocument(document, defaultImage),
   )
@@ -194,6 +199,21 @@ export function normalizeSnapshot(raw: RawSnapshot, now = new Date()): Normalize
   const categoryIds = new Set(categories.map((document) => document._id))
   const postIds = new Set(posts.map((document) => document._id))
   const warnings: string[] = []
+
+  const localPairs = new Set<string>()
+  for (const landing of serviceAreaLandings) {
+    const serviceId = referenceId(landing.service)
+    const areaId = referenceId(landing.serviceArea)
+    if (!serviceId || !serviceIds.has(serviceId)) {
+      throw new Error(`ServiceAreaLanding ${landing._id} is missing required service reference`)
+    }
+    if (!areaId || !areaIds.has(areaId)) {
+      throw new Error(`ServiceAreaLanding ${landing._id} is missing required serviceArea reference`)
+    }
+    const pair = `${serviceId}/${areaId}`
+    if (localPairs.has(pair)) throw new Error(`Duplicate serviceAreaLanding pair: ${pair}`)
+    localPairs.add(pair)
+  }
 
   for (const project of projects) validateProject(project, serviceIds, areaIds)
 
@@ -224,6 +244,7 @@ export function normalizeSnapshot(raw: RawSnapshot, now = new Date()): Normalize
     contactPage,
     services,
     areas,
+    serviceAreaLandings,
     projects,
     categories,
     posts,
