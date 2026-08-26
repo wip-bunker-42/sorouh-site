@@ -31,6 +31,8 @@
     "seo:expand": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-seo-expansion.ts -- --apply",
     "seo:keyword-wave:dry": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-keyword-content-wave.ts -- --dry-run",
     "seo:keyword-wave": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-keyword-content-wave.ts -- --apply",
+    "seo:editorial-wave:dry": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-editorial-content-wave.ts -- --dry-run",
+    "seo:editorial-wave": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-editorial-content-wave.ts -- --apply",
     "media:semantic": "pnpm --dir studio exec sanity exec ../scripts/apply-semantic-media.ts --with-user-token --",
     "bootstrap:client": "pnpm --dir studio exec sanity exec ../scripts/bootstrap-client.ts --with-user-token"
   },

@@ -23,10 +23,15 @@ describe('production verification', () => {
       }
       if (url === 'https://sorouh.site/sitemap-pages.xml') {
         return new Response(
-          '<urlset><loc>https://sorouh.site/</loc><loc>https://sorouh.site/الخدمات/عزل-الاسطح/</loc><loc>https://sorouh.site/الخدمات/كشف-ومعالجة-تسربات-المياه/</loc><loc>https://sorouh.site/الخدمات/بناء-الملاحق/</loc><loc>https://sorouh.site/الخدمات/الهدم-والازالة/</loc><loc>https://sorouh.site/الخدمات/ترميم-منازل-وفلل/الدمام/</loc><loc>https://sorouh.site/الخدمات/عزل-الاسطح/الدمام/</loc><loc>https://sorouh.site/الخدمات/اعمال-السباكة/الدمام/</loc><loc>https://sorouh.site/الخدمات/اعمال-الكهرباء/الدمام/</loc><loc>https://sorouh.site/الخدمات/دهانات-داخلية-وخارجية/الخبر/</loc><loc>https://sorouh.site/الخدمات/دهانات-داخلية-وخارجية/الاحساء/</loc></urlset>',
+          '<urlset><loc>https://sorouh.site/</loc><loc>https://sorouh.site/الخدمات/عزل-الاسطح/</loc><loc>https://sorouh.site/الخدمات/كشف-ومعالجة-تسربات-المياه/</loc><loc>https://sorouh.site/الخدمات/بناء-الملاحق/</loc><loc>https://sorouh.site/الخدمات/الهدم-والازالة/</loc><loc>https://sorouh.site/الخدمات/ترميم-منازل-وفلل/الدمام/</loc><loc>https://sorouh.site/الخدمات/عزل-الاسطح/الدمام/</loc><loc>https://sorouh.site/الخدمات/اعمال-السباكة/الدمام/</loc><loc>https://sorouh.site/الخدمات/اعمال-الكهرباء/الدمام/</loc><loc>https://sorouh.site/الخدمات/دهانات-داخلية-وخارجية/الخبر/</loc><loc>https://sorouh.site/الخدمات/دهانات-داخلية-وخارجية/الاحساء/</loc><loc>https://sorouh.site/المدونة/دليل-اختيار-عزل-الاسطح/</loc><loc>https://sorouh.site/المدونة/علامات-تسرب-المياه-قبل-الترميم/</loc><loc>https://sorouh.site/المدونة/تخطيط-الجبس-بورد-قبل-الاغلاق/</loc><loc>https://sorouh.site/المدونة/تجهيز-الجدران-قبل-الدهان/</loc><loc>https://sorouh.site/المدونة/قائمة-بناء-ملحق-للفيلا/</loc></urlset>',
         )
       }
-      if (url.startsWith('https://sorouh.site/الخدمات/')) return html(new URL(url).href)
+      if (
+        url.startsWith('https://sorouh.site/الخدمات/') ||
+        url.startsWith('https://sorouh.site/المدونة/')
+      ) {
+        return html(new URL(url).href)
+      }
       if (url === 'https://www.sorouh.site/') {
         return new Response(null, {
           status: 301,
@@ -38,9 +43,9 @@ describe('production verification', () => {
 
     await expect(verifyProduction({ fetcher, attempts: 1, retryDelayMs: 0 })).resolves.toEqual({
       origin: 'https://sorouh.site',
-      checkedUrls: 14,
+      checkedUrls: 19,
     })
-    expect(fetcher.mock.calls).toHaveLength(14)
+    expect(fetcher.mock.calls).toHaveLength(19)
     expect(fetcher.mock.calls.every(([, init]) => init?.signal instanceof AbortSignal)).toBe(true)
   })
 
