@@ -95,6 +95,14 @@ describe('Sanity content model', () => {
     expectRequiredFields('contentImage', ['alt'])
   })
 
+  test('does not cap featured services at the launch inventory', () => {
+    const field = (rawType('serviceArea').fields ?? []).find(
+      (item) => item.name === 'featuredServices',
+    )
+    expect(field?.validation).toBeTypeOf('function')
+    expect(String(field?.validation)).not.toContain('max(13)')
+  })
+
   test('requires a complete visitor-facing project and at least one media item', () => {
     expectRequiredFields('project', [
       'title',

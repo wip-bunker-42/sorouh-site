@@ -33,7 +33,7 @@ export const serviceArea = defineType({
       type: 'array',
       group: 'content',
       of: [defineArrayMember({ type: 'reference', to: [{ type: 'service' }] })],
-      validation: (rule) => rule.required().min(4).max(13).unique(),
+      validation: (rule) => rule.required().min(4).unique(),
     }),
     defineField({
       name: 'image',

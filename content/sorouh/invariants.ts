@@ -15,7 +15,7 @@ export const CONTACT = {
   },
 } as const
 
-export const CONTENT_COUNTS = {
+export const CONTENT_MINIMUMS = {
   services: 13,
   areas: 10,
   categories: 5,
