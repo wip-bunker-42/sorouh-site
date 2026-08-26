@@ -11,9 +11,13 @@ const data = normalizeSnapshot(validateRawSnapshot(loadSnapshot(fixturePath)))
 describe('static discovery', () => {
   test('lists every canonical public page and real update timestamps', () => {
     const entries = pageEntries(data)
-    expect(entries).toHaveLength(10)
+    expect(entries).toHaveLength(11)
     expect(entries.filter((e) => e.lastmod).every((e) => e.lastmod?.startsWith('2026-'))).toBe(true)
     expect(sitemapPages(data)).not.toMatch(/changefreq|priority/)
+  })
+  test('lists selective service-area landing pages once', () => {
+    const entries = pageEntries(data)
+    expect(entries.map((entry) => entry.path)).toContain('/الخدمات/مقاولات-عامة/الدمام/')
   })
   test('emits an indexed YouTube video with verified metadata', () => {
     const output = sitemapVideos(data)

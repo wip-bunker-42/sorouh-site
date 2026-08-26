@@ -18,6 +18,9 @@ const projects = data.projects
   .filter((p) => !p.seo.noIndex && p.services?.some((s: any) => s._id === service._id))
   .slice(0, 3)
 const related = data.services.filter((s) => s._id !== service._id && !s.seo.noIndex).slice(0, 4)
+const localLandings = data.serviceAreaLandings.filter(
+  (landing) => !landing.seo.noIndex && landing.service._id === service._id,
+)
 const serviceSchema = buildServiceSchema({
   origin: SITE_ORIGIN,
   path: `/الخدمات/${service.slug}/`,
@@ -88,6 +91,22 @@ const serviceSchema = buildServiceSchema({
               ))}
             </div>
           </>
+        </div>
+      </section>
+    )
+  }{
+    localLandings.length > 0 && (
+      <section class="section-sm local-links">
+        <div class="container">
+          <p class="eyebrow">الخدمة حسب المدينة</p>
+          <h2>{service.title} في مدن المنطقة الشرقية</h2>
+          <div>
+            {localLandings.map((landing) => (
+              <a href={`/الخدمات/${service.slug}/${landing.serviceArea.slug}/`}>
+                {landing.title} ←
+              </a>
+            ))}
+          </div>
         </div>
       </section>
     )
@@ -174,6 +193,20 @@ const serviceSchema = buildServiceSchema({
   }
   .faq {
     background: white;
+  }
+  .local-links {
+    background: #ece7df;
+  }
+  .local-links > div > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .local-links a {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    text-decoration: none;
   }
   .related {
     padding: 4rem 0;
