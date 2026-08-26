@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest'
 
 import {
-  CONTENT_COUNTS,
+  CONTENT_MINIMUMS,
   CONTACT,
   DIRECTION,
   LOCALE,
@@ -24,7 +24,7 @@ describe('Sorouh immutable project facts', () => {
     expect(CONTACT.backup).toEqual({ local: '0546745928', international: '+966546745928' })
   })
 
-  test('locks the approved content inventory', () => {
-    expect(CONTENT_COUNTS).toEqual({ services: 13, areas: 10, categories: 5 })
+  test('locks the approved content minimums', () => {
+    expect(CONTENT_MINIMUMS).toEqual({ services: 13, areas: 10, categories: 5 })
   })
 })
