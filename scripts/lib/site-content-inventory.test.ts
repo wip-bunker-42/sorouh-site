@@ -14,4 +14,23 @@ describe('Sorouh content inventory', () => {
     expect(categories.length).toBeGreaterThanOrEqual(5)
     expect(services.length).toBeGreaterThanOrEqual(13)
   })
+
+  test('includes every newly confirmed service with complete commercial content', () => {
+    const required = [
+      'roof-insulation',
+      'water-leak-detection',
+      'annex-construction',
+      'demolition-removal',
+    ]
+    for (const key of required) {
+      const service = services.find((item) => item.key === key)
+      expect(service, key).toBeDefined()
+      expect(service!.summary.length).toBeGreaterThan(50)
+      expect(service!.directAnswer.length).toBeGreaterThan(80)
+      expect(service!.deliverables.length).toBeGreaterThanOrEqual(4)
+      expect(service!.process.length).toBeGreaterThanOrEqual(4)
+      expect(service!.quality.length).toBeGreaterThanOrEqual(3)
+      expect(service!.faqs.length).toBeGreaterThanOrEqual(3)
+    }
+  })
 })
