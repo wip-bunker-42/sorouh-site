@@ -39,9 +39,9 @@ describe('keyword content wave', () => {
   })
 
   test('rejects recreating an existing landing key', () => {
-    expect(() => validateKeywordContentWave(keywordContentWave, new Set(['painter-khobar']))).toThrow(
-      'Existing landing must be improved, not recreated: painter-khobar',
-    )
+    expect(() =>
+      validateKeywordContentWave(keywordContentWave, new Set(['painter-khobar'])),
+    ).toThrow('Existing landing must be improved, not recreated: painter-khobar')
   })
 
   test('rejects a duplicate service and area relation', () => {

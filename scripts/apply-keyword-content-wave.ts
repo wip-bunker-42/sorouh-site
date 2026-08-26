@@ -105,13 +105,15 @@ for (const document of plan.creates) transaction.create(document as any)
 for (const patch of plan.patches) transaction.patch(patch.id, { set: patch.set })
 await transaction.commit({ visibility: 'sync' })
 
-const expectedIds = [...plan.creates.map((document) => document._id as string), ...plan.patches.map((patch) => patch.id)]
+const expectedIds = [
+  ...plan.creates.map((document) => document._id as string),
+  ...plan.patches.map((patch) => patch.id),
+]
 const verifiedDocuments = await client.fetch<
   Array<{ _id: string; title?: string; serviceId?: string; areaId?: string }>
->(
-  `*[_id in $ids]{_id, title, "serviceId": service._ref, "areaId": serviceArea._ref}`,
-  { ids: expectedIds },
-)
+>(`*[_id in $ids]{_id, title, "serviceId": service._ref, "areaId": serviceArea._ref}`, {
+  ids: expectedIds,
+})
 for (const document of plan.creates) {
   const actual = verifiedDocuments.find((item) => item._id === document._id)
   const service = document.service as { _ref?: string }

@@ -19,10 +19,7 @@ test('builds canonical routes for approved service-area content', () => {
   )
 
   expect(routes).toEqual(
-    new Set([
-      '/الخدمات/اعمال-السباكة/الدمام/',
-      '/الخدمات/دهانات-داخلية-وخارجية/الخبر/',
-    ]),
+    new Set(['/الخدمات/اعمال-السباكة/الدمام/', '/الخدمات/دهانات-داخلية-وخارجية/الخبر/']),
   )
 })
 

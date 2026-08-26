@@ -159,7 +159,8 @@ export const KEYWORD_RESEARCH_FINDINGS = [
     avgMonthlySearches: 2400,
     competition: 'LOW',
     disposition: 'candidate',
-    rationale: 'الطلب مرتفع لكن لا تُنشأ مدينة جديدة قبل ظهور بيانات الانطباعات أو الحاجة المحلية المميزة.',
+    rationale:
+      'الطلب مرتفع لكن لا تُنشأ مدينة جديدة قبل ظهور بيانات الانطباعات أو الحاجة المحلية المميزة.',
   },
   {
     phrase: 'قص خرسانة الدمام',

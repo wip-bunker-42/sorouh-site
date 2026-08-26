@@ -37,7 +37,9 @@ const block = (text: string, index: number, style: 'h2' | 'normal') => ({
   _key: `intro-${String(index + 1).padStart(2, '0')}`,
   style,
   markDefs: [],
-  children: [{ _type: 'span', _key: `intro-span-${String(index + 1).padStart(2, '0')}`, text, marks: [] }],
+  children: [
+    { _type: 'span', _key: `intro-span-${String(index + 1).padStart(2, '0')}`, text, marks: [] },
+  ],
 })
 const seo = (title: string, summary: string, heroImage?: ContentImage) => ({
   _type: 'seo',
@@ -60,7 +62,8 @@ export function buildKeywordContentWavePlan(
     }
 
     const service = input.serviceDocuments.get(entry.serviceKey)
-    if (!service) throw new Error(`Missing service document for keyword content: ${entry.serviceKey}`)
+    if (!service)
+      throw new Error(`Missing service document for keyword content: ${entry.serviceKey}`)
     const area = input.areaDocuments.get(entry.areaKey)
     if (!area) throw new Error(`Missing area document for keyword content: ${entry.areaKey}`)
 
@@ -108,7 +111,10 @@ export function buildKeywordContentWavePlan(
     })
   }
 
-  const plannedIds = new Set([...creates.map((item) => item._id as string), ...patches.map((item) => item.id)])
+  const plannedIds = new Set([
+    ...creates.map((item) => item._id as string),
+    ...patches.map((item) => item.id),
+  ])
   const unchanged = [...input.existingIds]
     .filter((id) => id.startsWith('service-area-') && !plannedIds.has(id))
     .sort()

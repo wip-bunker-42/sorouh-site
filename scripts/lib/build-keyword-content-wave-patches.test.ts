@@ -39,7 +39,10 @@ const input = (): KeywordContentWavePlannerInput => ({
   ],
   serviceDocuments: new Map([
     ['plumbing', { id: 'service-plumbing', heroImage: { _type: 'contentImage', alt: 'سباكة' } }],
-    ['electrical', { id: 'service-electrical', heroImage: { _type: 'contentImage', alt: 'كهرباء' } }],
+    [
+      'electrical',
+      { id: 'service-electrical', heroImage: { _type: 'contentImage', alt: 'كهرباء' } },
+    ],
   ]),
   areaDocuments: new Map([['dammam', { id: 'area-dammam' }]]),
   existingLandingDocuments: new Map([
