@@ -1,0 +1,199 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import ContactActions from '../../../components/ContactActions.astro'
+import ContentImage from '../../../components/ContentImage.astro'
+import FaqList from '../../../components/FaqList.astro'
+import ListingCard from '../../../components/ListingCard.astro'
+import PortableContent from '../../../components/PortableContent.astro'
+import { SITE_ORIGIN } from '../../../config/site'
+import { loadSnapshot } from '../../../lib/content/load-snapshot'
+import { buildServiceSchema } from '../../../lib/seo/schema'
+
+export function getStaticPaths() {
+  return loadSnapshot().serviceAreaLandings.map((landing) => ({
+    params: { service: landing.service.slug, area: landing.serviceArea.slug },
+    props: { landing },
+  }))
+}
+
+const { landing } = Astro.props as { landing: any }
+const data = loadSnapshot()
+const servicePath = `/الخدمات/${landing.service.slug}/`
+const areaPath = `/مناطق-الخدمة/${landing.serviceArea.slug}/`
+const path = `/الخدمات/${landing.service.slug}/${landing.serviceArea.slug}/`
+const projects = data.projects
+  .filter(
+    (project) =>
+      !project.seo.noIndex &&
+      project.serviceArea?._id === landing.serviceArea._id &&
+      project.services?.some((service: any) => service._id === landing.service._id),
+  )
+  .slice(0, 3)
+const serviceSchema = buildServiceSchema({
+  origin: SITE_ORIGIN,
+  path,
+  name: landing.title,
+  description: landing.summary,
+  areas: [landing.serviceArea.title],
+})
+---
+
+<BaseLayout
+  title={landing.seo.metaTitle}
+  description={landing.seo.metaDescription}
+  path={path}
+  canonicalOverride={landing.seo.canonicalOverride}
+  noIndex={landing.seo.noIndex}
+  image={landing.seo.shareImage?.asset?.url}
+  breadcrumbs={[
+    { label: 'الخدمات', href: '/الخدمات/' },
+    { label: landing.service.title, href: servicePath },
+    { label: landing.serviceArea.title },
+  ]}
+  schema={serviceSchema}
+>
+  <section class="hero">
+    <div class="container grid">
+      <div>
+        <p class="eyebrow">خدمة محلية في {landing.serviceArea.title}</p>
+        <h1>{landing.title}</h1>
+        <p class="lead">{landing.summary}</p>
+        <ContactActions primary={data.siteSettings.primaryPhone} location="local_service_hero" />
+      </div>
+      <ContentImage image={landing.heroImage} width={1000} ratio={4 / 3} priority />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container content-grid">
+      <PortableContent value={landing.intro} />
+      <aside class="surface">
+        <p class="eyebrow">يشمل نطاق الخدمة</p>
+        <ul>{landing.deliverables.map((item: string) => <li>{item}</li>)}</ul>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section-sm process">
+    <div class="container">
+      <p class="eyebrow">خطوات التنفيذ</p>
+      <h2>مسار واضح للعمل في {landing.serviceArea.title}</h2>
+      <ol>{landing.process.map((step: string) => <li>{step}</li>)}</ol>
+    </div>
+  </section>
+
+  {
+    projects.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <p class="eyebrow">مشاريع مرتبطة</p>
+          <h2>أعمال تجمع الخدمة والمنطقة</h2>
+          <div class="grid grid-3">
+            {projects.map((project) => (
+              <ListingCard
+                href={`/مشاريعنا/${project.slug}/`}
+                title={project.title}
+                summary={project.summary}
+                image={project.gallery?.[0]}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section faq">
+    <div class="narrow">
+      <p class="eyebrow">أسئلة شائعة</p>
+      <h2>عن {landing.service.title} في {landing.serviceArea.title}</h2>
+      <FaqList items={landing.faqs} />
+    </div>
+  </section>
+
+  <section class="links">
+    <div class="container">
+      <h2>استكشف المزيد</h2>
+      <div>
+        <a href={servicePath}>كل خدمات {landing.service.title}</a>
+        <a href={areaPath}>خدمات صروح في {landing.serviceArea.title}</a>
+      </div>
+      <ContactActions primary={data.siteSettings.primaryPhone} location="local_service_end" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: clamp(4rem, 8vw, 7rem) 0;
+    background: var(--navy-950);
+    color: white;
+  }
+  .grid,
+  .content-grid {
+    display: grid;
+    grid-template-columns: 1fr 0.85fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .hero h1 {
+    color: white;
+  }
+  .hero .lead {
+    color: #c7d3dd;
+  }
+  .hero :global(img) {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    border: 8px solid white;
+  }
+  .surface {
+    padding: 2rem;
+  }
+  .surface li {
+    margin: 0.6rem 0;
+  }
+  .process {
+    background: #ece7df;
+  }
+  .process ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 1rem;
+    padding: 0;
+    list-style: none;
+  }
+  .process li {
+    padding: 1.25rem;
+    border-right: 2px solid var(--copper);
+    background: white;
+    font-weight: 750;
+  }
+  .links {
+    padding: 4rem 0;
+    background: var(--navy-900);
+    color: white;
+  }
+  .links h2 {
+    color: white;
+  }
+  .links > div > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .links a {
+    padding: 0.6rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 99px;
+    text-decoration: none;
+  }
+  @media (max-width: 800px) {
+    .grid,
+    .content-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>

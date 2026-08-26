@@ -16,6 +16,9 @@ const projects = data.projects
   .filter((p) => !p.seo.noIndex && p.serviceArea?._id === area._id)
   .slice(0, 3)
 const nearby = data.areas.filter((a) => a._id !== area._id && !a.seo.noIndex).slice(0, 6)
+const localLandings = data.serviceAreaLandings.filter(
+  (landing) => !landing.seo.noIndex && landing.serviceArea._id === area._id,
+)
 ---
 
 <BaseLayout
@@ -78,6 +81,20 @@ const nearby = data.areas.filter((a) => a._id !== area._id && !a.seo.noIndex).sl
         </div>
       </section>
     )
+  }{
+    localLandings.length > 0 && (
+      <section class="section-sm local-links">
+        <div class="container">
+          <p class="eyebrow">خدمات متخصصة في {area.title}</p>
+          <h2>صفحات الخدمة المحلية</h2>
+          <div>
+            {localLandings.map((landing) => (
+              <a href={`/الخدمات/${landing.service.slug}/${area.slug}/`}>{landing.title} ←</a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
   }<section class="section">
     <div class="narrow">
       <p class="eyebrow">أسئلة محلية</p><h2>قبل طلب الخدمة في {area.title}</h2><FaqList
@@ -136,6 +153,20 @@ const nearby = data.areas.filter((a) => a._id !== area._id && !a.seo.noIndex).sl
   }
   .local-projects {
     background: #ece7df;
+  }
+  .local-links {
+    background: white;
+  }
+  .local-links > div > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .local-links a {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    text-decoration: none;
   }
   .nearby {
     padding: 4rem 0;
