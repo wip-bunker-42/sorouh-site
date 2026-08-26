@@ -1,0 +1,172 @@
+export type KeywordResearchFinding = {
+  phrase: string
+  geography: string
+  avgMonthlySearches: number
+  competition: 'LOW' | 'MEDIUM' | 'HIGH' | 'UNSPECIFIED'
+  disposition: 'active' | 'candidate' | 'monitor' | 'exclude'
+  rationale: string
+}
+
+export const KEYWORD_RESEARCH_SUMMARY = {
+  researchedAt: '2026-08-26',
+  source: 'Google Ads Keyword Planner API',
+  language: 'Arabic',
+  geographicScope: 'Eastern Province, Saudi Arabia',
+  scannedServiceCityPhrases: 126,
+  phrasesWithMeasuredDemand: 49,
+} as const
+
+export const KEYWORD_RESEARCH_FINDINGS = [
+  {
+    phrase: 'شركة مقاولات',
+    geography: 'المنطقة الشرقية',
+    avgMonthlySearches: 2900,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'عبارة تجارية عامة تتطابق مع صفحة المقاولات العامة الإقليمية.',
+  },
+  {
+    phrase: 'مقاول ترميم',
+    geography: 'المنطقة الشرقية',
+    avgMonthlySearches: 2900,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'طلب مباشر على الترميم؛ له صفحة خدمة إقليمية وصفحات محلية مميزة للطلب المدينة.',
+  },
+  {
+    phrase: 'صباغ الدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 3600,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'أعلى عبارة دهانات محلية في المسح وتستحق صفحة دمام مخصصة.',
+  },
+  {
+    phrase: 'عزل اسطح الدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 2400,
+    competition: 'MEDIUM',
+    disposition: 'active',
+    rationale: 'طلب محلي قوي لخدمة عزل مدعومة بالفعل.',
+  },
+  {
+    phrase: 'مقاول ترميم الدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 1600,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'نية شراء محلية واضحة لصفحة الترميم في الدمام.',
+  },
+  {
+    phrase: 'سباك الدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 880,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'طلب محلي كافٍ لصفحة سباكة مستقلة.',
+  },
+  {
+    phrase: 'جبس بورد الدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 590,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'يلائم خدمة الجبس بورد وصفحة دمام مميزة.',
+  },
+  {
+    phrase: 'بناء ملاحق الدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 480,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'يمتلك صفحة محلية قائمة، فتُحسّن بدل إنشاء بديل.',
+  },
+  {
+    phrase: 'صباغ الخبر',
+    geography: 'الخبر',
+    avgMonthlySearches: 880,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'طلب محلي قوي لصفحة دهانات الخبر.',
+  },
+  {
+    phrase: 'مقاول ترميم الخبر',
+    geography: 'الخبر',
+    avgMonthlySearches: 590,
+    competition: 'MEDIUM',
+    disposition: 'active',
+    rationale: 'صفحة الخبر موجودة وتُحسّن كمالك العبارة.',
+  },
+  {
+    phrase: 'سباك الخبر',
+    geography: 'الخبر',
+    avgMonthlySearches: 320,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'طلب مستقل يبرر صفحة سباكة الخبر دون تكرار صفحة الدمام.',
+  },
+  {
+    phrase: 'صباغ الاحساء',
+    geography: 'الأحساء',
+    avgMonthlySearches: 880,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'طلب دهانات محلي قوي في الأحساء.',
+  },
+  {
+    phrase: 'صباغ الجبيل',
+    geography: 'الجبيل',
+    avgMonthlySearches: 390,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'طلب محلي مثبت لخدمة قائمة.',
+  },
+  {
+    phrase: 'صباغ القطيف',
+    geography: 'القطيف',
+    avgMonthlySearches: 320,
+    competition: 'MEDIUM',
+    disposition: 'active',
+    rationale: 'طلب محلي مثبت لخدمة قائمة.',
+  },
+  {
+    phrase: 'كهربائي الدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 170,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'يدعم إنشاء صفحة كهرباء دمام لأن الخدمة متاحة والنية محلية مباشرة.',
+  },
+  {
+    phrase: 'مقاول بناء الدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 320,
+    competition: 'MEDIUM',
+    disposition: 'active',
+    rationale: 'طلب بناء محلي مباشر لخدمة مدعومة.',
+  },
+  {
+    phrase: 'مقاول هدم بالدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 390,
+    competition: 'LOW',
+    disposition: 'active',
+    rationale: 'طلب هدم محلي كافٍ لخدمة مدعومة مع نطاق واضح.',
+  },
+  {
+    phrase: 'كشف تسربات المياه',
+    geography: 'المنطقة الشرقية',
+    avgMonthlySearches: 2400,
+    competition: 'LOW',
+    disposition: 'candidate',
+    rationale: 'الطلب مرتفع لكن لا تُنشأ مدينة جديدة قبل ظهور بيانات الانطباعات أو الحاجة المحلية المميزة.',
+  },
+  {
+    phrase: 'قص خرسانة الدمام',
+    geography: 'الدمام',
+    avgMonthlySearches: 40,
+    competition: 'UNSPECIFIED',
+    disposition: 'monitor',
+    rationale: 'الطلب المقاس منخفض؛ تبقى خدمة القص الأساسية هي المالكة حتى تتغير البيانات.',
+  },
+] satisfies KeywordResearchFinding[]

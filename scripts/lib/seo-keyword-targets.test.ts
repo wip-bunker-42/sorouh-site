@@ -32,6 +32,31 @@ describe('SEO keyword targets', () => {
     ).toThrow('Keyword collision: ترميم الدمام')
   })
 
+  test('rejects two active targets that own the same service and area relation', () => {
+    expect(() =>
+      validateKeywordTargets(
+        [
+          target(),
+          target({
+            id: 'renovation-dammam-variant',
+            primaryKeyword: 'شركة ترميم بالدمام',
+            variants: [],
+          }),
+        ],
+        livePaths,
+      ),
+    ).toThrow('Duplicate owner path: /مناطق-الخدمة/الدمام/')
+  })
+
+  test('allows a non-active keyword to remain monitored without an owner path', () => {
+    expect(
+      validateKeywordTargets(
+        [target({ status: 'monitor', ownerPath: undefined, primaryKeyword: 'قص خرسانة الدمام' })],
+        new Set(),
+      ),
+    ).toEqual({ active: 0, candidates: 0 })
+  })
+
   test('rejects an active owner that is not a live route', () => {
     expect(() =>
       validateKeywordTargets([target({ ownerPath: '/الخدمات/غير-موجود/' })], livePaths),
