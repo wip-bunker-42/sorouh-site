@@ -103,17 +103,18 @@ describe('repository automation contracts', () => {
 
     const plainOutput = result.stdout.replace(/\u001b\[[0-9;]*m/g, '')
     expect(plainOutput).toMatch(/Test Files\s+2 passed/)
-    expect(plainOutput).toMatch(/Tests\s+25 passed/)
+    expect(plainOutput).toMatch(/Tests\s+27 passed/)
   }, 60_000)
 
   test('the release checklist records the current automated verification counts', () => {
     const checklist = read('docs/release-checklist.md')
 
-    expect(checklist).toContain('158 unit tests')
-    expect(checklist).toContain('6 build tests')
-    expect(checklist).toContain('22 browser tests')
-    expect(checklist).not.toContain('157 unit tests')
+    expect(checklist).toContain('180 unit tests')
+    expect(checklist).toContain('7 build tests')
+    expect(checklist).toContain('24 browser tests')
+    expect(checklist).not.toContain('158 unit tests')
     expect(checklist).not.toContain('128 unit tests')
+    expect(checklist).not.toContain('22 browser tests')
     expect(checklist).not.toContain('18 browser tests')
   })
 })
