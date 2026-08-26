@@ -20,12 +20,12 @@
     "@astrojs/rss": "4.0.19",
     "@fontsource-variable/noto-sans-arabic": "5.3.0",
     "@portabletext/types": "4.0.2",
-    "@sanity/client": "8.0.0",
+    "@sanity/client": "8.2.0",
     "@sanity/image-url": "2.1.1",
-    "astro": "7.2.1",
+    "astro": "7.2.4",
     "astro-portabletext": "0.13.0",
     "github-slugger": "2.0.0",
-    "groq": "6.9.2",
+    "groq": "6.10.1",
     "schema-dts": "2.0.0",
     "zod": "4.4.3"
   },
@@ -39,7 +39,7 @@
     "prettier-plugin-astro": "0.14.1",
     "tsx": "4.23.12",
     "typescript": "6.0.3",
-    "vitest": "4.1.10",
-    "wrangler": "4.122.0"
+    "vitest": "4.1.11",
+    "wrangler": "4.125.0"
   }
 }
