@@ -42,8 +42,11 @@ describe('production build', () => {
     expect($('script[type="application/ld+json"]').length).toBeGreaterThan(0)
   })
 
-  it('does not inject GTM when its optional environment variable is absent', () => {
-    expect(read('index.html')).not.toContain('googletagmanager.com')
+  it('includes the configured GTM container in the production build', () => {
+    const source = read('index.html')
+    const gtmId = 'GTM-MPNKM8RR'
+    expect(source).toContain(`data-gtm-id="${gtmId}"`)
+    expect(source).toContain(`https://www.googletagmanager.com/ns.html?id=${gtmId}`)
   })
 
   it('uses page-specific Sanity share images on editorial pages', () => {
