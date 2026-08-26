@@ -18,4 +18,5 @@
 - [x] www → apex بحالة 301 مع حفظ المسار والاستعلام، وتفعيل Always Use HTTPS.
 - [x] تعطيل Cloudflare Managed robots.txt وحماية/حجب روبوتات المحتوى حتى يبقى `robots.txt` سامحًا لجميع الروبوتات كما هو معتمد.
 - [x] تفعيل Crawler Hints للنطاق؛ أكدت Cloudflare تطبيق `crawlhints_enabled=true`.
-- [ ] إضافة ملكية Search Console/Bing وإرسال `https://sorouh.site/sitemap.xml` من حسابات المالك.
+- [x] ربط Search Console وBing وإرسال `https://sorouh.site/sitemap.xml` من حساب المالك.
+- [ ] إنشاء GA4 وGTM، ضبط `PUBLIC_GTM_ID` في Cloudflare، والتحقق من DebugView وفق `docs/analytics-setup.md`.
