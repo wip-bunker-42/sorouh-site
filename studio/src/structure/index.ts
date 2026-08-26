@@ -44,6 +44,7 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
       S.documentTypeListItem('service').title('الخدمات').icon(ControlsIcon),
       S.documentTypeListItem('serviceArea').title('مناطق الخدمة').icon(PinIcon),
+      S.documentTypeListItem('serviceAreaLanding').title('صفحات الخدمات المحلية').icon(PinIcon),
       S.documentTypeListItem('project').title('المشاريع').icon(ProjectsIcon),
       S.listItem()
         .title('المدونة')

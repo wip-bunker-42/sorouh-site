@@ -54,6 +54,57 @@
       "redirectFrom": []
     }
   ],
+  "serviceAreaLandings": [
+    {
+      "_id": "fixture-service-area-landing",
+      "_type": "serviceAreaLanding",
+      "_updatedAt": "2026-08-26T00:00:00.000Z",
+      "title": "مقاول مقاولات عامة في الدمام",
+      "summary": "صفحة محلية توضح تنفيذ أعمال المقاولات العامة في الدمام بنطاق واضح وخطوات منظمة.",
+      "service": { "_id": "fixture-service", "title": "مقاولات عامة", "slug": "مقاولات-عامة" },
+      "serviceArea": { "_id": "fixture-area", "title": "الدمام", "slug": "الدمام" },
+      "heroImage": {
+        "_type": "contentImage",
+        "_key": "local-image",
+        "alt": "تنفيذ أعمال مقاولات في الدمام",
+        "asset": {
+          "_id": "image-local",
+          "url": "https://cdn.sanity.io/images/fixture/production/local.jpg",
+          "metadata": { "dimensions": { "width": 1600, "height": 1000, "aspectRatio": 1.6 } }
+        }
+      },
+      "intro": [
+        {
+          "_type": "block",
+          "_key": "intro",
+          "children": [
+            { "_type": "span", "_key": "text", "text": "تنفيذ منظم لأعمال المقاولات في الدمام." }
+          ]
+        }
+      ],
+      "deliverables": ["معاينة الموقع", "تحديد النطاق", "تنفيذ الأعمال", "المراجعة والتسليم"],
+      "process": ["المعاينة", "التنفيذ", "المراجعة"],
+      "faqs": [
+        {
+          "_key": "faq-1",
+          "question": "هل تتوفر الخدمة في الدمام؟",
+          "answer": "نعم، بعد تحديد النطاق والمعاينة."
+        },
+        {
+          "_key": "faq-2",
+          "question": "كيف يبدأ العمل؟",
+          "answer": "بمعاينة الموقع وتوضيح البنود المطلوبة."
+        },
+        {
+          "_key": "faq-3",
+          "question": "هل تشمل الخدمة المراجعة؟",
+          "answer": "تتم مراجعة البنود ضمن نطاق العمل المتفق عليه."
+        }
+      ],
+      "seo": { "noIndex": false },
+      "redirectFrom": []
+    }
+  ],
   "projects": [
     {
       "_id": "fixture-project",

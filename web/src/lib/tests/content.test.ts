@@ -60,6 +60,41 @@ describe('published content snapshot', () => {
     )
   })
 
+  test('fails on duplicate service-area landing pairs', () => {
+    raw.serviceAreaLandings = [
+      {
+        _id: 'fixture-local-page',
+        _type: 'serviceAreaLanding',
+        _updatedAt: '2026-08-26T00:00:00.000Z',
+        title: 'مقاول مقاولات عامة في الدمام',
+        summary: 'صفحة محلية توضح تنفيذ أعمال المقاولات العامة في الدمام بنطاق واضح وخطوات منظمة.',
+        service: { _id: 'fixture-service', title: 'مقاولات عامة', slug: 'مقاولات-عامة' },
+        serviceArea: { _id: 'fixture-area', title: 'الدمام', slug: 'الدمام' },
+        heroImage: raw.projects[0].gallery[0],
+        intro: raw.projects[0].workDescription,
+        deliverables: ['معاينة الموقع', 'تحديد النطاق', 'تنفيذ الأعمال', 'المراجعة والتسليم'],
+        process: ['المعاينة', 'التنفيذ', 'المراجعة'],
+        faqs: [
+          { question: 'هل تتوفر الخدمة في الدمام؟', answer: 'نعم، بعد تحديد النطاق والمعاينة.' },
+          { question: 'كيف يبدأ العمل؟', answer: 'بمعاينة الموقع وتوضيح البنود المطلوبة.' },
+          {
+            question: 'هل تشمل الخدمة المراجعة؟',
+            answer: 'تتم مراجعة البنود ضمن نطاق العمل المتفق عليه.',
+          },
+        ],
+        seo: { noIndex: false },
+      },
+    ]
+    raw.serviceAreaLandings.push({
+      ...raw.serviceAreaLandings[0],
+      _id: 'duplicate-local-page',
+    })
+
+    expect(() => normalizeSnapshot(validateRawSnapshot(raw))).toThrow(
+      'Duplicate serviceAreaLanding pair: fixture-service/fixture-area',
+    )
+  })
+
   test('warns for missing optional related references', () => {
     raw.posts[0].relatedPosts = [{ _id: 'missing-related-post' }]
     const snapshot = normalizeSnapshot(validateRawSnapshot(raw))
