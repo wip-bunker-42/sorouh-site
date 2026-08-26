@@ -8,6 +8,7 @@ import { getCliClient } from 'sanity/cli'
 import { sourceAssets } from '../content/sorouh/asset-manifest'
 import { projectDrafts } from '../content/sorouh/project-evidence'
 import { sorouhSemanticMediaPlan } from '../content/sorouh/semantic-media-plan'
+import { serviceAreaLandings } from '../content/sorouh/service-area-landings'
 import { areas, articles, categories, services, siteCopy } from '../content/sorouh/site-content'
 import { buildManagedContentImage } from './lib/build-semantic-media-patches'
 
@@ -140,6 +141,7 @@ const plannedIds = [
   'contactPage',
   ...services.map((item) => `service-${item.key}`),
   ...areas.map((item) => `area-${item.key}`),
+  ...serviceAreaLandings.map((item) => `service-area-${item.key}`),
   ...categories.map((item) => `category-${item.key}`),
   ...projectDrafts.map((item) => `project-${item.sourceKey}`),
   ...articles.map((item) => `post-${item.key}`),
@@ -230,6 +232,31 @@ for (const area of areas) {
       `مقاول في ${area.title} | صروح الشرقية`,
       `شركة صروح الشرقية للمقاولات تقدم خدمات البناء والترميم والتشطيب في ${area.title}. اتصل أو تواصل عبر واتساب.`,
       image,
+    ),
+    redirectFrom: [],
+  })
+}
+
+for (const landing of serviceAreaLandings) {
+  const id = `service-area-${landing.key}`
+  if (existingIds.has(id)) continue
+  const heroImage = await plannedContentImage(`service-${landing.serviceKey}`)
+  docs.push({
+    _id: id,
+    _type: 'serviceAreaLanding',
+    title: landing.title,
+    summary: landing.summary,
+    service: ref(`service-${landing.serviceKey}`),
+    serviceArea: ref(`area-${landing.areaKey}`),
+    heroImage,
+    intro: portable(`## ${landing.title}\n\n${landing.localAngle}`),
+    deliverables: landing.deliverables,
+    process: landing.process,
+    faqs: landing.faqs.map((item, index) => faq(item.question, item.answer, index)),
+    seo: seo(
+      `${landing.title} | صروح الشرقية`,
+      `${landing.summary} تواصل للمعاينة وتحديد نطاق التنفيذ.`,
+      heroImage,
     ),
     redirectFrom: [],
   })
