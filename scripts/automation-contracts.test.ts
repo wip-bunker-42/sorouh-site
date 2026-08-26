@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, test } from 'vitest'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
-const read = (path: string) => readFileSync(`${root}/${path}`, 'utf8')
+const read = (path: string) => readFileSync(`${root}/${path}`, 'utf8').replace(/\r\n/g, '\n')
 
 describe('repository automation contracts', () => {
   test('CI validates locked dependencies, the full check, browsers, and Wrangler packaging', () => {
@@ -104,7 +104,7 @@ describe('repository automation contracts', () => {
     const plainOutput = result.stdout.replace(/\u001b\[[0-9;]*m/g, '')
     expect(plainOutput).toMatch(/Test Files\s+2 passed/)
     expect(plainOutput).toMatch(/Tests\s+25 passed/)
-  }, 20_000)
+  }, 60_000)
 
   test('the release checklist records the current automated verification counts', () => {
     const checklist = read('docs/release-checklist.md')

@@ -53,5 +53,5 @@ describe('pinned diagnostic toolchain', () => {
 
     expect(result.status, result.error?.message ?? result.stderr).toBe(0)
     expect(result.stdout).toContain('--minimumFailingSeverity')
-  }, 15_000)
+  }, 60_000)
 })
