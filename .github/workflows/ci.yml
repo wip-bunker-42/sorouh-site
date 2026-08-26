@@ -22,6 +22,7 @@ jobs:
       PUBLIC_SANITY_PROJECT_ID: ki7bs4vk
       PUBLIC_SANITY_DATASET: production
       PUBLIC_SITE_ORIGIN: https://sorouh.site
+      PUBLIC_GTM_ID: GTM-MPNKM8RR
       SANITY_STUDIO_PROJECT_ID: ki7bs4vk
       SANITY_STUDIO_DATASET: production
     steps:
