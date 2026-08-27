@@ -1,7 +1,8 @@
 export type AhrefsMetaDescriptionTarget = {
   documentId: string
-  documentType: 'serviceArea' | 'project' | 'post'
-  metaDescription: string
+  documentType: 'serviceArea' | 'serviceAreaLanding' | 'project' | 'post'
+  metaDescription?: string
+  metaTitle?: string
 }
 
 export const AHREFS_META_DESCRIPTION_TARGETS: readonly AhrefsMetaDescriptionTarget[] = [
@@ -47,6 +48,75 @@ export const AHREFS_META_DESCRIPTION_TARGETS: readonly AhrefsMetaDescriptionTarg
     metaDescription:
       'دليل عملي لتركيب السيراميك والبورسلان يشرح تخطيط التوزيع والقصات والميول والفواصل التي ترفع جودة التشطيب في المنازل والفلل.',
   },
+  {
+    documentId: 'service-area-electrical-dammam',
+    documentType: 'serviceAreaLanding',
+    metaDescription:
+      'كهربائي في الدمام لتأسيس نقاط الكهرباء والدوائر وتعديلها في المنازل، مع مراجعة مواقع الاستخدام واختبارها قبل إغلاق الجدران والأسقف.',
+  },
+  {
+    documentId: 'service-area-painter-khobar',
+    documentType: 'serviceAreaLanding',
+    metaDescription:
+      'دهانات منازل وفلل في الخبر بعد تجهيز الأسطح ومعالجة العيوب واختيار طبقات البطانة والطلاء بحسب نوع الجدار واستخدام المساحة.',
+  },
+  {
+    documentId: 'service-area-gypsum-dammam',
+    documentType: 'serviceAreaLanding',
+    metaDescription:
+      'تركيب جبس بورد في الدمام للأسقف والقواطع والفتحات الديكورية، مع ضبط المناسيب وتنسيق الإنارة والتكييف والخدمات المخفية.',
+  },
+  {
+    documentId: 'service-area-demolition-dammam',
+    documentType: 'serviceAreaLanding',
+    metaDescription:
+      'أعمال هدم وإزالة في الدمام ضمن نطاق واضح، تشمل حماية الأجزاء الباقية وترتيب مسار المخلفات وتجهيز الموقع قبل التنفيذ.',
+  },
+  {
+    documentId: 'service-area-painter-qatif',
+    documentType: 'serviceAreaLanding',
+    metaDescription:
+      'دهانات وتجديد جدران في القطيف بعد فحص الطلاء وتنظيف الأسطح ومعالجة المناطق المتضررة، ثم تنفيذ ألوان وتشطيبات متناسقة.',
+  },
+  {
+    documentId: 'service-area-painter-jubail',
+    documentType: 'serviceAreaLanding',
+    metaDescription:
+      'أعمال دهانات في الجبيل للمساحات السكنية، من فحص السطح وتحضير الحواف والزوايا إلى تطبيق الطبقات ومراجعة التجانس النهائي.',
+  },
+  {
+    documentId: 'service-area-plumbing-khobar',
+    documentType: 'serviceAreaLanding',
+    metaDescription:
+      'سباك في الخبر لتنظيم أعمال التغذية والصرف في المنازل والشقق، مع فحص المواقع المتأثرة واختبار الخطوط ضمن نطاق العمل.',
+  },
+  {
+    documentId: 'service-area-building-contractor-dammam',
+    documentType: 'serviceAreaLanding',
+    metaDescription:
+      'مقاول بناء في الدمام لأعمال المباني والتنفيذ المدني للمنازل والفلل، مع مراجعة المحاور والمناسيب والفتحات قبل انتقال المراحل.',
+  },
+  {
+    documentId: 'service-area-painter-ahsa',
+    documentType: 'serviceAreaLanding',
+    metaDescription:
+      'دهانات في الأحساء للمنازل والفلل تشمل تحضير الجدران والأسقف ومعالجة العيوب وتنفيذ الطلاء الداخلي أو الخارجي وفق حالة السطح.',
+  },
+  {
+    documentId: 'post-water-leak-before-renovation',
+    documentType: 'post',
+    metaTitle: 'علامات تسرب المياه قبل الترميم | صروح الشرقية',
+  },
+  {
+    documentId: 'post-wall-preparation-before-painting',
+    documentType: 'post',
+    metaTitle: 'تجهيز الجدران قبل الدهان | صروح الشرقية',
+  },
+  {
+    documentId: 'post-roof-insulation-guide',
+    documentType: 'post',
+    metaTitle: 'دليل اختيار عزل الأسطح | صروح الشرقية',
+  },
 ]
 
 type ReviewedDocument = {
@@ -56,7 +126,7 @@ type ReviewedDocument = {
 
 export type AhrefsMetaRemediationPatch = {
   documentId: string
-  set: { 'seo.metaDescription': string }
+  set: Partial<Record<'seo.metaDescription' | 'seo.metaTitle', string>>
 }
 
 export function buildAhrefsMetaRemediationPatches(
@@ -73,6 +143,11 @@ export function buildAhrefsMetaRemediationPatches(
     if (document._type !== target.documentType) {
       throw new Error(`Unexpected document type for ${target.documentId}: ${document._type}`)
     }
-    return { documentId: target.documentId, set: { 'seo.metaDescription': target.metaDescription } }
+    const set = {
+      ...(target.metaDescription ? { 'seo.metaDescription': target.metaDescription } : {}),
+      ...(target.metaTitle ? { 'seo.metaTitle': target.metaTitle } : {}),
+    }
+    if (Object.keys(set).length === 0) throw new Error(`Missing metadata for ${target.documentId}`)
+    return { documentId: target.documentId, set }
   })
 }
