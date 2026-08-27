@@ -33,6 +33,10 @@
     "seo:keyword-wave": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-keyword-content-wave.ts -- --apply",
     "seo:editorial-wave:dry": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-editorial-content-wave.ts -- --dry-run",
     "seo:editorial-wave": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-editorial-content-wave.ts -- --apply",
+    "seo:ahrefs-meta:dry": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-ahrefs-meta-remediation.ts -- --dry-run",
+    "seo:ahrefs-meta": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-ahrefs-meta-remediation.ts -- --apply",
+    "seo:indexnow:dry": "tsx scripts/submit-indexnow.ts --dry-run",
+    "seo:indexnow": "tsx scripts/submit-indexnow.ts --apply",
     "media:semantic": "pnpm --dir studio exec sanity exec ../scripts/apply-semantic-media.ts --with-user-token --",
     "bootstrap:client": "pnpm --dir studio exec sanity exec ../scripts/bootstrap-client.ts --with-user-token"
   },
