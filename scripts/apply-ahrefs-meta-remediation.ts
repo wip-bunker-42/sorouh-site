@@ -48,14 +48,19 @@ const transaction = client.transaction()
 for (const patch of patches) transaction.patch(patch.documentId, { set: patch.set })
 await transaction.commit({ visibility: 'sync' })
 
-const verified = await client.fetch<Array<{ _id: string; metaDescription?: string }>>(
-  `*[_id in $ids]{_id, "metaDescription": seo.metaDescription}`,
-  { ids },
-)
+const verified = await client.fetch<
+  Array<{ _id: string; metaDescription?: string; metaTitle?: string }>
+>(`*[_id in $ids]{_id, "metaDescription": seo.metaDescription, "metaTitle": seo.metaTitle}`, {
+  ids,
+})
 for (const target of AHREFS_META_DESCRIPTION_TARGETS) {
-  const actual = verified.find((document) => document._id === target.documentId)?.metaDescription
-  if (actual !== target.metaDescription)
+  const document = verified.find((item) => item._id === target.documentId)
+  if (target.metaDescription && document?.metaDescription !== target.metaDescription) {
     throw new Error(`Meta description verification failed: ${target.documentId}`)
+  }
+  if (target.metaTitle && document?.metaTitle !== target.metaTitle) {
+    throw new Error(`Meta title verification failed: ${target.documentId}`)
+  }
 }
 
 console.log(

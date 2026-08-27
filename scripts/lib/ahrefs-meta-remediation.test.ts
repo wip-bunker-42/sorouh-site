@@ -6,7 +6,7 @@ import {
 } from './ahrefs-meta-remediation'
 
 describe('buildAhrefsMetaRemediationPatches', () => {
-  test('creates exactly the seven reviewed meta-description patches', () => {
+  test('creates every reviewed metadata patch without exceeding Ahrefs length thresholds', () => {
     const documents = AHREFS_META_DESCRIPTION_TARGETS.map((target) => ({
       _id: target.documentId,
       _type: target.documentType,
@@ -15,7 +15,7 @@ describe('buildAhrefsMetaRemediationPatches', () => {
 
     const patches = buildAhrefsMetaRemediationPatches(documents)
 
-    expect(patches).toHaveLength(7)
+    expect(patches).toHaveLength(19)
     expect(patches).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -26,8 +26,21 @@ describe('buildAhrefsMetaRemediationPatches', () => {
           documentId: 'post-concrete-cutting-guide',
           set: { 'seo.metaDescription': expect.stringContaining('قص الخرسانة') },
         }),
+        expect.objectContaining({
+          documentId: 'service-area-electrical-dammam',
+          set: { 'seo.metaDescription': expect.stringContaining('كهربائي في الدمام') },
+        }),
+        expect.objectContaining({
+          documentId: 'post-roof-insulation-guide',
+          set: { 'seo.metaTitle': expect.stringContaining('عزل الأسطح') },
+        }),
       ]),
     )
+
+    for (const target of AHREFS_META_DESCRIPTION_TARGETS) {
+      if (target.metaDescription) expect(target.metaDescription.length).toBeLessThanOrEqual(155)
+      if (target.metaTitle) expect(target.metaTitle.length).toBeLessThanOrEqual(60)
+    }
   })
 
   test('refuses an incomplete or unexpected Sanity result set', () => {
