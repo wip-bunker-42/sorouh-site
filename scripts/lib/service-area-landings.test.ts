@@ -12,6 +12,18 @@ describe('approved service-area landing content', () => {
     ])
   })
 
+  test('keeps existing owner keys stable for improvement instead of recreation', () => {
+    const existingKeys = new Set(serviceAreaLandings.map((item) => item.key))
+    for (const key of [
+      'renovation-dammam',
+      'renovation-khobar',
+      'painter-dammam',
+      'annex-dammam',
+    ]) {
+      expect(existingKeys).toContain(key)
+    }
+  })
+
   test('keeps each local angle and summary unique', () => {
     expect(new Set(serviceAreaLandings.map((item) => item.summary)).size).toBe(
       serviceAreaLandings.length,

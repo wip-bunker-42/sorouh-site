@@ -1,6 +1,12 @@
 import { describe, expect, test } from 'vitest'
 
-import { areas, categories, SERVICE_KEYS, services } from '../../content/sorouh/site-content'
+import {
+  areas,
+  articles,
+  categories,
+  SERVICE_KEYS,
+  services,
+} from '../../content/sorouh/site-content'
 
 describe('Sorouh content inventory', () => {
   test('keeps every service key unique and represented by one service', () => {
@@ -31,6 +37,22 @@ describe('Sorouh content inventory', () => {
       expect(service!.process.length).toBeGreaterThanOrEqual(4)
       expect(service!.quality.length).toBeGreaterThanOrEqual(3)
       expect(service!.faqs.length).toBeGreaterThanOrEqual(3)
+    }
+  })
+
+  test('adds only the approved decision guides with related services', () => {
+    const required = [
+      'roof-insulation-guide',
+      'water-leak-before-renovation',
+      'gypsum-board-planning',
+      'wall-preparation-before-painting',
+      'annex-construction-checklist',
+    ]
+    for (const key of required) {
+      const article = articles.find((item) => item.key === key)
+      expect(article, key).toBeDefined()
+      expect(article!.excerpt.length).toBeGreaterThanOrEqual(70)
+      expect(article!.markdown).toContain('[[CTA]]')
     }
   })
 })
