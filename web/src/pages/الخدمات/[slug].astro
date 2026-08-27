@@ -6,6 +6,7 @@ import ContactActions from '../../components/ContactActions.astro'
 import FaqList from '../../components/FaqList.astro'
 import ListingCard from '../../components/ListingCard.astro'
 import { loadSnapshot } from '../../lib/content/load-snapshot'
+import { buildServiceSchema } from '../../lib/seo/schema'
 import { SITE_ORIGIN } from '../../config/site'
 export function getStaticPaths() {
   const d = loadSnapshot()
@@ -17,14 +18,16 @@ const projects = data.projects
   .filter((p) => !p.seo.noIndex && p.services?.some((s: any) => s._id === service._id))
   .slice(0, 3)
 const related = data.services.filter((s) => s._id !== service._id && !s.seo.noIndex).slice(0, 4)
-const serviceSchema = {
-  '@type': 'Service',
-  '@id': `${SITE_ORIGIN}/الخدمات/${service.slug}/#service`,
+const localLandings = data.serviceAreaLandings.filter(
+  (landing) => !landing.seo.noIndex && landing.service._id === service._id,
+)
+const serviceSchema = buildServiceSchema({
+  origin: SITE_ORIGIN,
+  path: `/الخدمات/${service.slug}/`,
   name: service.title,
   description: service.summary,
-  provider: { '@id': `${SITE_ORIGIN}/#organization` },
-  areaServed: data.areas.map((a) => a.title),
-}
+  areas: data.areas.map((area) => area.title),
+})
 ---
 
 <BaseLayout
@@ -88,6 +91,22 @@ const serviceSchema = {
               ))}
             </div>
           </>
+        </div>
+      </section>
+    )
+  }{
+    localLandings.length > 0 && (
+      <section class="section-sm local-links">
+        <div class="container">
+          <p class="eyebrow">الخدمة حسب المدينة</p>
+          <h2>{service.title} في مدن المنطقة الشرقية</h2>
+          <div>
+            {localLandings.map((landing) => (
+              <a href={`/الخدمات/${service.slug}/${landing.serviceArea.slug}/`}>
+                {landing.title} ←
+              </a>
+            ))}
+          </div>
         </div>
       </section>
     )
@@ -174,6 +193,20 @@ const serviceSchema = {
   }
   .faq {
     background: white;
+  }
+  .local-links {
+    background: #ece7df;
+  }
+  .local-links > div > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .local-links a {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    text-decoration: none;
   }
   .related {
     padding: 4rem 0;

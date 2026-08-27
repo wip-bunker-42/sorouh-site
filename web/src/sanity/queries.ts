@@ -80,6 +80,14 @@ export const SITE_SNAPSHOT_QUERY = defineQuery(/* groq */ `{
     image{${IMAGE_FIELDS}}, faqs[]{_key, question, answer},
     seo{${SEO_FIELDS}}, redirectFrom
   },
+  "serviceAreaLandings": *[_type == "serviceAreaLanding"] | order(title asc){
+    _id, _type, _updatedAt, title, summary,
+    service->{_id, title, "slug": slug.current},
+    serviceArea->{_id, title, "slug": slug.current},
+    heroImage{${IMAGE_FIELDS}}, intro[]{${PORTABLE_TEXT_FIELDS}},
+    deliverables, process, faqs[]{_key, question, answer},
+    seo{${SEO_FIELDS}}, redirectFrom
+  },
   "projects": *[_type == "project"] | order(featured desc, _updatedAt desc){
     _id, _type, _updatedAt, sourceKey, title, "slug": slug.current, summary,
     classification, workDescription[]{${PORTABLE_TEXT_FIELDS}}, scope, stages, result,

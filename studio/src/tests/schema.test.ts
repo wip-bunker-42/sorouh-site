@@ -38,6 +38,7 @@ describe('Sanity content model', () => {
       'contactPage',
       'service',
       'serviceArea',
+      'serviceAreaLanding',
       'project',
       'category',
       'post',
@@ -93,6 +94,28 @@ describe('Sanity content model', () => {
 
   test('requires Arabic alt text for every content image', () => {
     expectRequiredFields('contentImage', ['alt'])
+  })
+
+  test('does not cap featured services at the launch inventory', () => {
+    const field = (rawType('serviceArea').fields ?? []).find(
+      (item) => item.name === 'featuredServices',
+    )
+    expect(field?.validation).toBeTypeOf('function')
+    expect(String(field?.validation)).not.toContain('max(13)')
+  })
+
+  test('requires complete selective local service pages', () => {
+    expectRequiredFields('serviceAreaLanding', [
+      'title',
+      'summary',
+      'service',
+      'serviceArea',
+      'heroImage',
+      'intro',
+      'deliverables',
+      'process',
+      'faqs',
+    ])
   })
 
   test('requires a complete visitor-facing project and at least one media item', () => {

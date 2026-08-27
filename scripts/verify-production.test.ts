@@ -4,7 +4,7 @@ import { verifyProduction } from './verify-production'
 
 const html = (canonical: string) =>
   new Response(
-    `<html lang="ar" dir="rtl"><head><link rel="canonical" href="${canonical}"></head></html>`,
+    `<html lang="ar" dir="rtl"><head><link rel="canonical" href="${canonical}"><meta name="robots" content="index, follow"></head><body><h1>عنوان الصفحة</h1></body></html>`,
     {
       status: 200,
       headers: { 'content-type': 'text/html; charset=utf-8' },
@@ -22,8 +22,11 @@ describe('production verification', () => {
         )
       }
       if (url === 'https://sorouh.site/sitemap-pages.xml') {
-        return new Response('<urlset><loc>https://sorouh.site/</loc></urlset>')
+        return new Response(
+          '<urlset><loc>https://sorouh.site/</loc><loc>https://sorouh.site/الخدمات/عزل-الاسطح/</loc><loc>https://sorouh.site/الخدمات/كشف-ومعالجة-تسربات-المياه/</loc><loc>https://sorouh.site/الخدمات/بناء-الملاحق/</loc><loc>https://sorouh.site/الخدمات/الهدم-والازالة/</loc><loc>https://sorouh.site/الخدمات/ترميم-منازل-وفلل/الدمام/</loc></urlset>',
+        )
       }
+      if (url.startsWith('https://sorouh.site/الخدمات/')) return html(new URL(url).href)
       if (url === 'https://www.sorouh.site/') {
         return new Response(null, {
           status: 301,
@@ -35,9 +38,9 @@ describe('production verification', () => {
 
     await expect(verifyProduction({ fetcher, attempts: 1, retryDelayMs: 0 })).resolves.toEqual({
       origin: 'https://sorouh.site',
-      checkedUrls: 4,
+      checkedUrls: 9,
     })
-    expect(fetcher.mock.calls).toHaveLength(4)
+    expect(fetcher.mock.calls).toHaveLength(9)
     expect(fetcher.mock.calls.every(([, init]) => init?.signal instanceof AbortSignal)).toBe(true)
   })
 

@@ -31,6 +31,10 @@ export function pageEntries(data: NormalizedSnapshot): Entry[] {
   const docs: any[] = [
     ...data.services.map((d) => ({ ...d, path: `/الخدمات/${d.slug}/` })),
     ...data.areas.map((d) => ({ ...d, path: `/مناطق-الخدمة/${d.slug}/` })),
+    ...data.serviceAreaLandings.map((d) => ({
+      ...d,
+      path: `/الخدمات/${d.service.slug}/${d.serviceArea.slug}/`,
+    })),
     ...data.projects.map((d) => ({ ...d, path: `/مشاريعنا/${d.slug}/` })),
     ...data.posts.map((d) => ({ ...d, path: `/المدونة/${d.slug}/` })),
   ]
@@ -122,6 +126,18 @@ export function redirects(data: NormalizedSnapshot) {
     ...data.areas.map((doc) => `/مناطق-الخدمة/${doc.slug}/`),
     ...data.projects.map((doc) => `/مشاريعنا/${doc.slug}/`),
     ...data.posts.map((doc) => `/المدونة/${doc.slug}/`),
+    ...data.serviceAreaLandings.map(
+      (doc) => `/الخدمات/${doc.service.slug}/${doc.serviceArea.slug}/`,
+    ),
   ])
+  for (const landing of data.serviceAreaLandings) {
+    for (const old of landing.redirectFrom ?? []) {
+      records.push({
+        source: old.startsWith('/') ? old : `/الخدمات/${old}/`,
+        destination: `/الخدمات/${landing.service.slug}/${landing.serviceArea.slug}/`,
+        status: 301,
+      })
+    }
+  }
   return generateRedirects(records, liveRoutes)
 }

@@ -35,6 +35,28 @@ test('mobile menu and contact actions work', async ({ page, isMobile }) => {
   await expect(page.locator('a[href^="tel:+966546121683"]')).not.toHaveCount(0)
   await expect(page.locator('a[href^="https://wa.me/966546121683"]')).not.toHaveCount(0)
 })
+test('contact events attribute the action to its landing page', async ({ page }) => {
+  await page.addInitScript(() => {
+    ;(window as any).dataLayer = []
+    document.addEventListener(
+      'click',
+      (event) => {
+        if ((event.target as Element | null)?.closest('[data-contact]')) event.preventDefault()
+      },
+      true,
+    )
+  })
+  await page.goto('/الخدمات/مقاولات-عامة/')
+  await page.locator('[data-contact-type="whatsapp"]:visible').first().click()
+  const event = await page.evaluate(() =>
+    (window as any).dataLayer?.find((item: any) => item.event === 'contact_click'),
+  )
+  expect(event).toMatchObject({
+    event: 'contact_click',
+    contact_type: 'whatsapp',
+    page_path: encodeURI('/الخدمات/مقاولات-عامة/'),
+  })
+})
 test('article has toc shares CTAs and copy action', async ({ page }) => {
   await page.goto('/المدونة/كيف-تختار-مقاول-في-الدمام/')
   await expect(page.locator('.toc a')).toHaveCount(6)

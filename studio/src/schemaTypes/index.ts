@@ -7,6 +7,7 @@ import { project } from './documents/project'
 import { redirect } from './documents/redirect'
 import { service } from './documents/service'
 import { serviceArea } from './documents/serviceArea'
+import { serviceAreaLanding } from './documents/serviceAreaLanding'
 import { siteSettings } from './documents/siteSettings'
 import { contentImage } from './objects/contentImage'
 import { cta } from './objects/cta'
@@ -30,6 +31,7 @@ export const schemaTypes = [
   contactPage,
   service,
   serviceArea,
+  serviceAreaLanding,
   project,
   category,
   post,

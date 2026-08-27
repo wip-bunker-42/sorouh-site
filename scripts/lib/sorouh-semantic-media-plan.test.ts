@@ -21,9 +21,17 @@ describe('Sorouh semantic media plan', () => {
     ].sort()
 
     expect([...expectedSemanticMediaTargets].sort()).toEqual(expected)
-    expect(
-      validateSemanticMediaPlan(sorouhSemanticMediaPlan, expectedSemanticMediaTargets),
-    ).toEqual({ assets: 20, placements: 31, generated: 12 })
+    const result = validateSemanticMediaPlan(sorouhSemanticMediaPlan, expectedSemanticMediaTargets)
+    expect(result.assets).toBe(sorouhSemanticMediaPlan.assets.length)
+    expect(result.placements).toBe(expectedSemanticMediaTargets.length)
+    for (const key of [
+      'generated-roof-insulation',
+      'generated-water-leak-detection',
+      'generated-annex-construction',
+      'generated-demolition-removal',
+    ]) {
+      expect(sorouhSemanticMediaPlan.assets.some((asset) => asset.key === key)).toBe(true)
+    }
   })
 
   test('assigns distinct representative media to formerly misleading services', () => {

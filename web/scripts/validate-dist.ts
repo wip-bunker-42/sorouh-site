@@ -1,6 +1,7 @@
 import { readFile, readdir, stat } from 'node:fs/promises'
 import { resolve, relative } from 'node:path'
 import * as cheerio from 'cheerio'
+import { auditHtmlDocuments } from '../src/lib/seo/dist-audit'
 const root = resolve('dist')
 const required = [
   'index.html',
@@ -28,22 +29,12 @@ async function walk(dir: string): Promise<string[]> {
 }
 const files = await walk(root)
 const html = files.filter((f) => f.endsWith('.html'))
-const canonicals = new Set<string>()
-for (const file of html) {
-  const source = await readFile(file, 'utf8')
+const documents = await Promise.all(
+  html.map(async (file) => ({ name: relative(root, file), source: await readFile(file, 'utf8') })),
+)
+const audit = auditHtmlDocuments(documents, 'https://sorouh.site')
+for (const { name, source } of documents) {
   const $ = cheerio.load(source)
-  const name = relative(root, file)
-  if ($('html').attr('lang') !== 'ar-SA' || $('html').attr('dir') !== 'rtl')
-    throw new Error(`${name}: invalid lang/dir`)
-  if ($('main').length !== 1) throw new Error(`${name}: expected one main`)
-  if ($('h1').length !== 1) throw new Error(`${name}: expected one h1`)
-  if (!$('title').text().trim() || !$('meta[name="description"]').attr('content'))
-    throw new Error(`${name}: missing metadata`)
-  const canonical = $('link[rel="canonical"]').attr('href')
-  if (!canonical) throw new Error(`${name}: missing canonical`)
-  if (canonicals.has(canonical) && name !== '404.html')
-    throw new Error(`${name}: duplicate canonical`)
-  canonicals.add(canonical)
   $('img').each((_, el) => {
     if (!$(el).attr('alt') || !$(el).attr('width') || !$(el).attr('height'))
       throw new Error(`${name}: incomplete image`)
@@ -52,6 +43,9 @@ for (const file of html) {
     throw new Error(`${name}: placeholder content`)
 }
 if (files.some((file) => /\.mp4$/i.test(file))) throw new Error('MP4 leaked into dist')
+console.log(
+  `SEO audit: ${audit.indexablePages} indexable pages, ${audit.orphanPages} orphan pages.`,
+)
 console.log(
   `Validated dist: ${html.length} HTML pages, unique metadata/canonicals, complete images, no placeholders or MP4.`,
 )

@@ -1,13 +1,13 @@
 # Release checklist — Sorouh
 
-- [x] 13 خدمة و10 مناطق و11 مشروعًا و5 مقالات منشورة في Sanity.
-- [x] 47 صفحة HTML ثابتة، canonical فريد، JSON-LD، breadcrumbs.
+- [x] 17 خدمة و10 مناطق و11 مشروعًا و5 مقالات و5 صفحات خدمة محلية منشورة في Sanity.
+- [x] 56 صفحة HTML ثابتة، canonical فريد، JSON-LD، breadcrumbs، و0 صفحات يتيمة.
 - [x] Sitemap index/pages/videos وRSS وrobots وllms وقت البناء.
 - [x] صور responsive عبر Sanity CDN مع `auto=format` وalt وأبعاد.
 - [x] YouTube iframe حقيقي وlazy أسفل المقدمة.
 - [x] اتصال وواتساب فقط؛ الرقم الأساسي والاحتياطي و24/7.
 - [x] GTM اختياري ومعطل في أول نشر.
-- [x] 158 unit tests و6 build tests و22 browser tests وAxe desktop/mobile.
+- [x] 180 unit tests و7 build tests و24 browser tests وAxe desktop/mobile.
 - [x] GitHub Actions يشغّل التحقق الكامل وWrangler dry-run على `main` وكل Pull Request.
 - [x] نشر Sanity Studio والـSchema مؤتمت من `main` بتوكن `deploy-studio` محدود داخل GitHub Environment.
 - [x] Dependabot أسبوعي لاعتماديات pnpm وGitHub Actions.
@@ -18,4 +18,6 @@
 - [x] www → apex بحالة 301 مع حفظ المسار والاستعلام، وتفعيل Always Use HTTPS.
 - [x] تعطيل Cloudflare Managed robots.txt وحماية/حجب روبوتات المحتوى حتى يبقى `robots.txt` سامحًا لجميع الروبوتات كما هو معتمد.
 - [x] تفعيل Crawler Hints للنطاق؛ أكدت Cloudflare تطبيق `crawlhints_enabled=true`.
-- [ ] إضافة ملكية Search Console/Bing وإرسال `https://sorouh.site/sitemap.xml` من حسابات المالك.
+- [x] ربط Search Console وBing وإرسال `https://sorouh.site/sitemap.xml` من حساب المالك.
+- [x] نشر 5 صفحات محلية معتمدة والتحقق الخارجي من 9 نقاط تشمل الـcanonical والـsitemap والصفحات الجديدة.
+- [ ] إنشاء GA4 وGTM، ضبط `PUBLIC_GTM_ID` في Cloudflare، والتحقق من DebugView وفق `docs/analytics-setup.md`.

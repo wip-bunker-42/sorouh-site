@@ -17,7 +17,7 @@ export default defineConfig({
     { name: 'chromium-mobile', use: { ...devices['Pixel 7'], browserName: 'chromium' } },
   ],
   webServer: {
-    command: 'pnpm preview --host 127.0.0.1 --port 4321',
+    command: 'pnpm exec wrangler pages dev dist --ip 127.0.0.1 --port 4321',
     url: 'http://127.0.0.1:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

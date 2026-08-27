@@ -42,8 +42,11 @@ describe('production build', () => {
     expect($('script[type="application/ld+json"]').length).toBeGreaterThan(0)
   })
 
-  it('does not inject GTM when its optional environment variable is absent', () => {
-    expect(read('index.html')).not.toContain('googletagmanager.com')
+  it('includes the configured GTM container in the production build', () => {
+    const source = read('index.html')
+    const gtmId = 'GTM-MPNKM8RR'
+    expect(source).toContain(`data-gtm-id="${gtmId}"`)
+    expect(source).toContain(`https://www.googletagmanager.com/ns.html?id=${gtmId}`)
   })
 
   it('uses page-specific Sanity share images on editorial pages', () => {
@@ -52,6 +55,16 @@ describe('production build', () => {
       /^https:\/\/cdn\.sanity\.io\/images\/ki7bs4vk\/production\//,
     )
     expect($('meta[name="robots"]').attr('content')).toContain('index, follow')
+  })
+
+  it('renders the selective local service route with canonical and service schema', () => {
+    const path = 'الخدمات/ترميم-منازل-وفلل/الدمام/index.html'
+    expect(existsSync(join(dist, path))).toBe(true)
+    const $ = load(read(path))
+    expect($('link[rel="canonical"]').attr('href')).toBe(
+      new URL('/الخدمات/ترميم-منازل-وفلل/الدمام/', 'https://sorouh.site').href,
+    )
+    expect($('script[type="application/ld+json"]').text()).toContain('Service')
   })
 
   it('ships only verified YouTube publication dates and valid redirect paths', () => {
