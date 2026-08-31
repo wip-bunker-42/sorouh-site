@@ -15,21 +15,21 @@
     "deploy:ci": "sanity deploy --yes --schema-required"
   },
   "dependencies": {
-    "@sanity/client": "8.0.0",
+    "@sanity/client": "8.4.0",
     "@sanity/icons": "5.2.1",
     "@sanity/ui": "3.5.3",
-    "@sanity/vision": "6.9.2",
+    "@sanity/vision": "6.11.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "sanity": "6.9.2",
-    "styled-components": "6.5.2"
+    "sanity": "6.11.0",
+    "styled-components": "6.5.3"
   },
   "devDependencies": {
-    "@types/node": "26.2.0",
+    "@types/node": "26.4.0",
     "@types/react": "19.2.18",
-    "@types/react-dom": "19.2.4",
+    "@types/react-dom": "19.2.5",
     "tsx": "4.23.12",
     "typescript": "6.0.3",
-    "vitest": "4.1.10"
+    "vitest": "4.1.11"
   }
 }
