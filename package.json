@@ -42,15 +42,15 @@
   },
   "devDependencies": {
     "@portabletext/markdown": "1.4.6",
-    "@sanity/client": "8.0.0",
-    "@types/node": "26.2.0",
+    "@sanity/client": "8.4.0",
+    "@types/node": "26.4.1",
     "prettier": "3.9.6",
     "prettier-plugin-astro": "0.14.1",
-    "sanity": "6.9.2",
-    "sharp": "0.35.3",
-    "tsx": "4.23.12",
+    "sanity": "6.12.0",
+    "sharp": "0.35.4",
+    "tsx": "4.23.13",
     "typescript": "6.0.3",
-    "vitest": "4.1.10",
-    "zod": "4.4.3"
+    "vitest": "4.1.11",
+    "zod": "4.5.4"
   }
 }
