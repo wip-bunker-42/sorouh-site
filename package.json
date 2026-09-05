@@ -41,7 +41,7 @@
     "bootstrap:client": "pnpm --dir studio exec sanity exec ../scripts/bootstrap-client.ts --with-user-token"
   },
   "devDependencies": {
-    "@portabletext/markdown": "1.4.6",
+    "@portabletext/markdown": "2.0.0",
     "@sanity/client": "8.4.0",
     "@types/node": "26.4.1",
     "prettier": "3.9.6",
