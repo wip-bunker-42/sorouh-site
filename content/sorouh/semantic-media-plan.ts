@@ -1,17 +1,19 @@
 import type { SemanticMediaPlan } from '../../scripts/lib/semantic-media'
 
+import { keywordContentWave } from './seo/keyword-content-wave'
+import { serviceAreaLandings } from './service-area-landings'
 import { areas, articles, SERVICE_KEYS, services } from './site-content'
 
 const mediaDirectory = 'content/sorouh/semantic-media'
 const sourceDirectory = 'content/sorouh/semantic-media/source'
-
-const illustrative = (description: string) => `صورة توضيحية ${description}`
 
 export const expectedSemanticMediaTargets = [
   'homePage',
   'aboutPage',
   ...services.map((service) => `service-${service.key}`),
   ...areas.map((area) => `area-${area.key}`),
+  ...serviceAreaLandings.map((landing) => `service-area-${landing.key}`),
+  ...keywordContentWave.map((landing) => `service-area-${landing.key}`),
   ...articles.map((article) => `post-${article.key}`),
   'project-sorouh-building-plastering-01',
 ]
@@ -200,7 +202,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-home-general-contracting',
       topic: 'general-contracting',
       alt: 'موقع إنشاء فيلا حديثة تنفذ فيه أعمال المقاولات العامة في المنطقة الشرقية',
-      caption: illustrative('تعبر عن خدمات المقاولات العامة التي تقدمها صروح الشرقية'),
     },
     {
       target: 'aboutPage',
@@ -208,7 +209,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-about-site-team',
       topic: 'company-team',
       alt: 'فريق إشراف مقاولات يراجع مخططات التنفيذ داخل موقع سكني',
-      caption: illustrative('تعبر عن الإشراف الميداني وإدارة التنفيذ'),
     },
     {
       target: `service-${SERVICE_KEYS.general}`,
@@ -216,7 +216,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-service-general-contracting',
       topic: 'general-contracting',
       alt: 'تنفيذ متكامل لأعمال مقاولات في مشروع فيلا سكنية بالشرقية',
-      caption: illustrative('لخدمة المقاولات العامة'),
     },
     {
       target: `service-${SERVICE_KEYS.restoration}`,
@@ -231,7 +230,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-home-villa-finishing',
       topic: 'home-villa-finishing',
       alt: 'تشطيبات داخلية متكاملة لفيلا حديثة بخامات متناسقة',
-      caption: illustrative('لخدمة تشطيب المنازل والفلل'),
     },
     {
       target: `service-${SERVICE_KEYS.builder}`,
@@ -239,7 +237,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-building-contractor',
       topic: 'building-contractor',
       alt: 'مقاول بناء يشرف على تنفيذ الهيكل الإنشائي لفيلا سكنية',
-      caption: illustrative('لخدمة مقاول البناء'),
     },
     {
       target: `service-${SERVICE_KEYS.plastering}`,
@@ -247,7 +244,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-plastering',
       topic: 'plastering',
       alt: 'تنفيذ اللياسة وضبط استقامة جدار خارجي في مبنى سكني',
-      caption: illustrative('لخدمة أعمال اللياسة'),
     },
     {
       target: `service-${SERVICE_KEYS.concreteSaw}`,
@@ -269,7 +265,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-helicopter-screed',
       topic: 'helicopter-screed',
       alt: 'تنعيم صبة خرسانية بالمروحية داخل ساحة مشروع واسعة',
-      caption: illustrative('لخدمة صبة المروحة وصبة الميول'),
     },
     {
       target: `service-${SERVICE_KEYS.electrical}`,
@@ -291,7 +286,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-interior-exterior-painting',
       topic: 'interior-exterior-painting',
       alt: 'تنفيذ دهانات داخلية دقيقة في فيلا حديثة بالمنطقة الشرقية',
-      caption: illustrative('لخدمة الدهانات الداخلية والخارجية'),
     },
     {
       target: `service-${SERVICE_KEYS.tile}`,
@@ -313,7 +307,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-roof-insulation',
       topic: 'roof-insulation',
       alt: 'تنفيذ عزل مائي وحراري حول مصارف وحواف سطح فيلا سكنية',
-      caption: illustrative('لخدمة عزل الأسطح'),
     },
     {
       target: `service-${SERVICE_KEYS.leakDetection}`,
@@ -321,7 +314,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-water-leak-detection',
       topic: 'water-leak-detection',
       alt: 'فني يفحص موضع رطوبة في جدار داخلي بأجهزة قياس مخصصة',
-      caption: illustrative('لخدمة كشف ومعالجة تسربات المياه'),
     },
     {
       target: `service-${SERVICE_KEYS.annexConstruction}`,
@@ -329,7 +321,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-annex-construction',
       topic: 'annex-construction',
       alt: 'ملحق سكني تحت البناء بجوار فيلا مع فتحات وتمديدات مرتبة',
-      caption: illustrative('لخدمة بناء الملاحق'),
     },
     {
       target: `service-${SERVICE_KEYS.demolition}`,
@@ -337,7 +328,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-demolition-removal',
       topic: 'demolition-removal',
       alt: 'هدم داخلي منظم ورفع مخلفات ضمن مشروع ترميم سكني',
-      caption: illustrative('لخدمة الهدم والإزالة'),
     },
     ...areas.map((area) => {
       const industrial = ['jubail', 'ras-tanura', 'buqayq'].includes(area.key)
@@ -359,7 +349,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
         assetKey,
         topic,
         alt: `خدمات المقاولات للمنازل والفلل في ${area.title}`,
-        caption: illustrative(`تعبر عن نطاق خدمة المقاولات في ${area.title}`),
       }
     }),
     {
@@ -368,7 +357,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-home-general-contracting',
       topic: 'contractor-selection',
       alt: 'موقع مشروع سكني منظم يساعد على تقييم جودة مقاول البناء',
-      caption: illustrative('لمقال اختيار مقاول في الدمام'),
     },
     {
       target: 'post-villa-restoration-plan',
@@ -383,7 +371,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-blog-concrete-comparison',
       topic: 'concrete-comparison',
       alt: 'مقارنة بصرية بين قص الخرسانة بالمنشار وتنفيذ فتحة كور',
-      caption: illustrative('توضح الفرق بين قص الخرسانة وفتحات الكور'),
     },
     {
       target: 'post-mep-before-finishing',
@@ -405,7 +392,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-blog-roof-insulation-guide',
       topic: 'roof-insulation-guide',
       alt: 'سطح فيلا سكنية مجهز بمصارف ومواد عزل مائي قبل التنفيذ',
-      caption: illustrative('لمقال اختيار نظام عزل الأسطح'),
     },
     {
       target: 'post-water-leak-before-renovation',
@@ -413,7 +399,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-blog-water-leak-guide',
       topic: 'water-leak-guide',
       alt: 'فحص نقطة وصول لتمديدات مياه خلف جدار حمام مع أثر رطوبة محدود',
-      caption: illustrative('لمقال علامات تسرب المياه قبل الترميم'),
     },
     {
       target: 'post-gypsum-board-planning',
@@ -421,7 +406,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-blog-gypsum-board-planning',
       topic: 'gypsum-board-planning',
       alt: 'هيكل سقف جبس بورد مكشوف مع مسارات إنارة وخدمات مرتبة قبل الإغلاق',
-      caption: illustrative('لمقال تخطيط الجبس بورد قبل الإغلاق'),
     },
     {
       target: 'post-wall-preparation-before-painting',
@@ -429,7 +413,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-blog-wall-preparation-painting',
       topic: 'wall-preparation-painting',
       alt: 'تجهيز جدار داخلي بالمعجون والحماية قبل تطبيق الدهان',
-      caption: illustrative('لمقال تجهيز الجدران قبل الدهان'),
     },
     {
       target: 'post-annex-construction-checklist',
@@ -437,7 +420,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'generated-blog-annex-construction-checklist',
       topic: 'annex-construction-checklist',
       alt: 'أساسات ومباني ملحق سكني بجوار فيلا مع مسارات خدمات ظاهرة قبل الإغلاق',
-      caption: illustrative('لمقال قائمة بناء ملحق للفيلا'),
     },
     {
       target: 'project-sorouh-building-plastering-01',
@@ -448,3 +430,24 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
     },
   ],
 }
+
+const servicePlacements = new Map(
+  sorouhSemanticMediaPlan.placements
+    .filter((placement) => placement.role === 'service')
+    .map((placement) => [placement.target, placement]),
+)
+const managedServiceAreaLandings = [...serviceAreaLandings, ...keywordContentWave]
+
+sorouhSemanticMediaPlan.placements.push(
+  ...managedServiceAreaLandings.map((landing) => {
+    const parent = servicePlacements.get(`service-${landing.serviceKey}`)
+    if (!parent) throw new Error(`Missing parent service media: ${landing.serviceKey}`)
+
+    return {
+      ...parent,
+      target: `service-area-${landing.key}`,
+      role: 'service-area' as const,
+      caption: undefined,
+    }
+  }),
+)

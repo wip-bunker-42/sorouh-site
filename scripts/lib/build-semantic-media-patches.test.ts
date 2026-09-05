@@ -21,6 +21,7 @@ describe('buildSemanticMediaPatch', () => {
     ['homePage', 'page', ['heroImage', 'seo.shareImage']],
     ['aboutPage', 'page', ['image', 'seo.shareImage']],
     ['service-electrical', 'service', ['heroImage', 'seo.shareImage']],
+    ['service-area-renovation-dammam', 'service-area', ['heroImage', 'seo.shareImage']],
     ['area-dammam', 'area', ['image', 'seo.shareImage']],
     ['post-mep-before-finishing', 'post', ['featuredImage', 'seo.shareImage']],
   ] as const)('maps %s to its visual and social fields', (target, role, fields) => {
@@ -60,14 +61,14 @@ describe('buildSemanticMediaPatch', () => {
     expect(result.set['seo.shareImage']).not.toHaveProperty('_key')
   })
 
-  test('preserves the disclosure caption on generated visuals', () => {
+  test('preserves a meaningful caption when one is explicitly provided', () => {
     const result = buildSemanticMediaPatch(
-      placement({ caption: 'صورة توضيحية لخدمة أعمال الكهرباء' }),
+      placement({ caption: 'تفاصيل تأسيس الكهرباء داخل الفيلا' }),
       'generated-id',
     )
 
     expect(result.set.heroImage).toMatchObject({
-      caption: 'صورة توضيحية لخدمة أعمال الكهرباء',
+      caption: 'تفاصيل تأسيس الكهرباء داخل الفيلا',
     })
   })
 

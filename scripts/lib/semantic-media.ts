@@ -1,5 +1,5 @@
 export type MediaOrigin = 'source' | 'video-still' | 'generated'
-export type MediaRole = 'page' | 'service' | 'area' | 'post' | 'project'
+export type MediaRole = 'page' | 'service' | 'service-area' | 'area' | 'post' | 'project'
 
 export type SemanticMediaAsset = {
   key: string
@@ -50,8 +50,10 @@ export function validateSemanticMediaPlan(plan: SemanticMediaPlan, expectedTarge
     if (placement.role === 'project' && asset.origin === 'generated') {
       throw new Error(`Generated media cannot be used as project evidence: ${placement.target}`)
     }
-    if (asset.origin === 'generated' && !placement.caption?.includes('صورة توضيحية')) {
-      throw new Error(`Generated placement must use an illustrative caption: ${placement.target}`)
+    if (placement.caption?.includes('صورة توضيحية')) {
+      throw new Error(
+        `Generic illustrative captions are not visitor-facing content: ${placement.target}`,
+      )
     }
   }
 

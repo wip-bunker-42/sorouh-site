@@ -106,8 +106,9 @@ export function buildSemanticMediaPatch(
     if (placement.target === 'homePage') visualField = 'heroImage'
     else if (placement.target === 'aboutPage') visualField = 'image'
     else throw new Error(`Unsupported page media target: ${placement.target}`)
-  } else if (placement.role === 'service') visualField = 'heroImage'
-  else if (placement.role === 'area') visualField = 'image'
+  } else if (placement.role === 'service' || placement.role === 'service-area') {
+    visualField = 'heroImage'
+  } else if (placement.role === 'area') visualField = 'image'
   else visualField = 'featuredImage'
 
   return {

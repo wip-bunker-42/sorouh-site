@@ -24,7 +24,6 @@ const validPlan: SemanticMediaPlan = {
       assetKey: 'generated-electrical',
       topic: 'electrical',
       alt: 'فني ينفذ تأسيس الكهرباء داخل فيلا سكنية',
-      caption: 'صورة توضيحية لخدمة أعمال الكهرباء',
     },
     {
       target: 'project-plumbing',
@@ -79,19 +78,19 @@ describe('validateSemanticMediaPlan', () => {
     ).toThrow('Generated media cannot be used as project evidence: project-generated')
   })
 
-  test('requires generated editorial images to be disclosed as illustrative', () => {
+  test('rejects generic illustrative labels from visitor-facing captions', () => {
     expect(() =>
       validateSemanticMediaPlan(
         {
           ...validPlan,
           placements: [
-            { ...validPlan.placements[0]!, caption: 'تنفيذ أعمال الكهرباء' },
+            { ...validPlan.placements[0]!, caption: 'صورة توضيحية لخدمة أعمال الكهرباء' },
             validPlan.placements[1]!,
           ],
         },
         ['service-electrical', 'project-plumbing'],
       ),
-    ).toThrow('Generated placement must use an illustrative caption: service-electrical')
+    ).toThrow('Generic illustrative captions are not visitor-facing content: service-electrical')
   })
 
   test('rejects missing, duplicate, and unknown public image targets', () => {

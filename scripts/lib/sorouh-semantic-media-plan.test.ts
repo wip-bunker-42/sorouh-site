@@ -3,6 +3,8 @@ import { access } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 import { areas, articles, SERVICE_KEYS, services } from '../../content/sorouh/site-content'
+import { serviceAreaLandings } from '../../content/sorouh/service-area-landings'
+import { keywordContentWave } from '../../content/sorouh/seo/keyword-content-wave'
 import {
   expectedSemanticMediaTargets,
   sorouhSemanticMediaPlan,
@@ -16,6 +18,8 @@ describe('Sorouh semantic media plan', () => {
       'aboutPage',
       ...services.map((service) => `service-${service.key}`),
       ...areas.map((area) => `area-${area.key}`),
+      ...serviceAreaLandings.map((landing) => `service-area-${landing.key}`),
+      ...keywordContentWave.map((landing) => `service-area-${landing.key}`),
       ...articles.map((article) => `post-${article.key}`),
       'project-sorouh-building-plastering-01',
     ].sort()
@@ -58,6 +62,31 @@ describe('Sorouh semantic media plan', () => {
     expect(
       areaPlacements.every((placement) => placement.assetKey.startsWith('generated-area-')),
     ).toBe(true)
+  })
+
+  test('keeps generic illustrative labels out of public image captions', () => {
+    expect(
+      sorouhSemanticMediaPlan.placements.every(
+        (placement) => !placement.caption?.includes('صورة توضيحية'),
+      ),
+    ).toBe(true)
+  })
+
+  test('gives each local service landing its parent service visual without a caption', () => {
+    const placements = new Map(
+      sorouhSemanticMediaPlan.placements.map((placement) => [placement.target, placement]),
+    )
+
+    for (const landing of [...serviceAreaLandings, ...keywordContentWave]) {
+      const parent = placements.get(`service-${landing.serviceKey}`)
+      expect(placements.get(`service-area-${landing.key}`)).toMatchObject({
+        role: 'service-area',
+        assetKey: parent?.assetKey,
+        topic: parent?.topic,
+        alt: parent?.alt,
+        caption: undefined,
+      })
+    }
   })
 
   test('keeps seed content media keys aligned with the reviewed placement map', () => {

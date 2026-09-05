@@ -39,7 +39,11 @@ for (const { name, source } of documents) {
     if (!$(el).attr('alt') || !$(el).attr('width') || !$(el).attr('height'))
       throw new Error(`${name}: incomplete image`)
   })
-  if (/TODO|TBD|FIXME|example\.com|lorem|CHANGE_ME|سيتم الإضافة|href="#"/i.test(source))
+  if (
+    /TODO|TBD|FIXME|example\.com|lorem|CHANGE_ME|سيتم الإضافة|href="#"|صورة\s+(?:توضيحية|افتراضية|تجريبية)|illustrative\s+image/i.test(
+      source,
+    )
+  )
     throw new Error(`${name}: placeholder content`)
 }
 if (files.some((file) => /\.mp4$/i.test(file))) throw new Error('MP4 leaked into dist')

@@ -33,12 +33,12 @@ const generatedPlacements = [
   ],
 ] as const
 
-test('discloses every generated editorial image in visible HTML', async ({ page }) => {
+test('keeps generic illustration labels out of visible HTML', async ({ page }) => {
   for (const [path, alt] of generatedPlacements) {
     await page.goto(path)
     const figure = page.locator('figure', { has: page.locator(`img[alt="${alt}"]`) })
     await test.expect(figure).toHaveCount(1)
-    await test.expect(figure.locator('figcaption')).toContainText('صورة توضيحية')
+    await test.expect(figure.locator('figcaption')).toHaveCount(0)
   }
 })
 

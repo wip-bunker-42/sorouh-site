@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { load } from 'cheerio'
 import { describe, expect, it } from 'vitest'
@@ -7,6 +7,13 @@ const dist = join(import.meta.dirname, '../../dist')
 
 function read(relativePath: string) {
   return readFileSync(join(dist, relativePath), 'utf8')
+}
+
+function htmlFiles(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name)
+    return entry.isDirectory() ? htmlFiles(path) : path.endsWith('.html') ? [path] : []
+  })
 }
 
 describe('production build', () => {
@@ -65,6 +72,14 @@ describe('production build', () => {
       new URL('/الخدمات/ترميم-منازل-وفلل/الدمام/', 'https://sorouh.site').href,
     )
     expect($('script[type="application/ld+json"]').text()).toContain('Service')
+  })
+
+  it('keeps generic image labels out of every visitor-facing page', () => {
+    for (const file of htmlFiles(dist)) {
+      expect(readFileSync(file, 'utf8'), file).not.toMatch(
+        /صورة\s+(?:توضيحية|افتراضية|تجريبية)|illustrative\s+image/i,
+      )
+    }
   })
 
   it('ships only verified YouTube publication dates and valid redirect paths', () => {
