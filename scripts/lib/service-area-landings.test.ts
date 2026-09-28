@@ -8,7 +8,6 @@ describe('approved service-area landing content', () => {
       'painter-dammam',
       'renovation-dammam',
       'renovation-khobar',
-      'roof-insulation-ahsa',
     ])
   })
 

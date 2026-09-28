@@ -249,7 +249,9 @@ for (const landing of serviceAreaLandings) {
     service: ref(`service-${landing.serviceKey}`),
     serviceArea: ref(`area-${landing.areaKey}`),
     heroImage,
-    intro: portable(`## ${landing.title}\n\n${landing.localAngle}`),
+    intro: portable(
+      `## ${landing.title}\n\n${landing.localAngle}\n\n${(landing.planning ?? []).map((section) => `## ${section.title}\n\n${section.body}`).join('\n\n')}`,
+    ),
     deliverables: landing.deliverables,
     process: landing.process,
     faqs: landing.faqs.map((item, index) => faq(item.question, item.answer, index)),
@@ -440,7 +442,7 @@ if (!existingIds.has('aboutPage')) {
       {
         _key: 'value-4',
         title: 'تواصل مباشر',
-        description: 'اتصال وواتساب على مدار الساعة لتسهيل بدء الطلب ومتابعته.',
+        description: 'اتصال وواتساب لتنسيق المعاينة ومناقشة نطاق العمل.',
       },
     ],
     image: aboutImage,
@@ -479,7 +481,7 @@ if (!existingIds.has('contactPage'))
     faqs: [
       faq(
         'متى يمكنني التواصل؟',
-        'نستقبل الاتصال ورسائل واتساب على مدار الساعة طوال أيام الأسبوع.',
+        'تواصل عبر الاتصال أو واتساب لتنسيق المعاينة ومناقشة تفاصيل العمل.',
         0,
       ),
       faq(
@@ -526,7 +528,7 @@ if (!existingIds.has('homePage')) {
     ),
     seo: seo(
       'شركة صروح الشرقية للمقاولات | مقاول بالمنطقة الشرقية',
-      'مقاولات عامة وترميم وتشطيب وقص خرسانة وكهرباء وسباكة في الدمام والخبر ومدن المنطقة الشرقية. تواصل على مدار الساعة.',
+      'مقاولات عامة وترميم وتشطيب وقص خرسانة وكهرباء وسباكة في الدمام والخبر ومدن المنطقة الشرقية. تواصل لتنسيق المعاينة.',
       homeHero,
     ),
   })

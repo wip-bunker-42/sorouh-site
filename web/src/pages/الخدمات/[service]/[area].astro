@@ -21,14 +21,15 @@ const data = loadSnapshot()
 const servicePath = `/الخدمات/${landing.service.slug}/`
 const areaPath = `/مناطق-الخدمة/${landing.serviceArea.slug}/`
 const path = `/الخدمات/${landing.service.slug}/${landing.serviceArea.slug}/`
-const projects = data.projects
-  .filter(
-    (project) =>
-      !project.seo.noIndex &&
-      project.serviceArea?._id === landing.serviceArea._id &&
-      project.services?.some((service: any) => service._id === landing.service._id),
-  )
-  .slice(0, 3)
+const serviceProjects = data.projects.filter(
+  (project) =>
+    !project.seo.noIndex &&
+    project.services?.some((service: any) => service._id === landing.service._id),
+)
+const localProjects = serviceProjects.filter(
+  (project) => project.serviceArea?._id === landing.serviceArea._id,
+)
+const projects = (localProjects.length ? localProjects : serviceProjects).slice(0, 3)
 const serviceSchema = buildServiceSchema({
   origin: SITE_ORIGIN,
   path,
@@ -87,7 +88,7 @@ const serviceSchema = buildServiceSchema({
       <section class="section">
         <div class="container">
           <p class="eyebrow">مشاريع مرتبطة</p>
-          <h2>أعمال تجمع الخدمة والمنطقة</h2>
+          <h2>أعمال مرتبطة بهذه الخدمة</h2>
           <div class="grid grid-3">
             {projects.map((project) => (
               <ListingCard
@@ -95,6 +96,7 @@ const serviceSchema = buildServiceSchema({
                 title={project.title}
                 summary={project.summary}
                 image={project.gallery?.[0]}
+                eyebrow={project.serviceArea?.title}
               />
             ))}
           </div>

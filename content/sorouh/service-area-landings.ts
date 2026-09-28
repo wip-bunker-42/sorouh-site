@@ -1,4 +1,5 @@
 import { SERVICE_KEYS } from './site-content'
+import { qualifiedLandingSections, type LandingSection } from './qualified-service-content'
 
 type Faq = { question: string; answer: string }
 
@@ -9,6 +10,7 @@ export type ServiceAreaLandingContent = {
   areaKey: string
   summary: string
   localAngle: string
+  planning?: LandingSection[]
   deliverables: string[]
   process: string[]
   faqs: Faq[]
@@ -17,6 +19,7 @@ export type ServiceAreaLandingContent = {
 export const serviceAreaLandings: ServiceAreaLandingContent[] = [
   {
     key: 'renovation-dammam',
+    planning: qualifiedLandingSections['home-villa-renovation'],
     title: 'مقاول ترميم في الدمام للمنازل والفلل',
     serviceKey: SERVICE_KEYS.restoration,
     areaKey: 'dammam',
@@ -55,6 +58,7 @@ export const serviceAreaLandings: ServiceAreaLandingContent[] = [
   },
   {
     key: 'renovation-khobar',
+    planning: qualifiedLandingSections['home-villa-renovation'],
     title: 'مقاول ترميم في الخبر للفلل والشقق',
     serviceKey: SERVICE_KEYS.restoration,
     areaKey: 'khobar',
@@ -93,6 +97,7 @@ export const serviceAreaLandings: ServiceAreaLandingContent[] = [
   },
   {
     key: 'painter-dammam',
+    planning: qualifiedLandingSections['interior-exterior-painting'],
     title: 'صباغ في الدمام للدهانات الداخلية والخارجية',
     serviceKey: SERVICE_KEYS.painting,
     areaKey: 'dammam',
@@ -134,19 +139,19 @@ export const serviceAreaLandings: ServiceAreaLandingContent[] = [
     serviceKey: SERVICE_KEYS.annexConstruction,
     areaKey: 'dammam',
     summary:
-      'بناء ملاحق ومجالس وغرف خدمات في الدمام مع ضبط المناسيب وفتحات الكهرباء والسباكة والعزل والتشطيب.',
+      'بناء ملاحق ومجالس وغرف خدمات في الدمام مع ضبط المناسيب وفتحات الكهرباء والسباكة والتشطيب.',
     localAngle:
-      'نراجع علاقة الملحق بالعقار القائم ومسارات الحركة والخدمات قبل البناء، ثم ننسق نقاط الالتقاء والعزل والواجهات حتى يظهر الجزء الجديد متكاملًا مع الموقع.',
+      'نراجع علاقة الملحق بالعقار القائم ومسارات الحركة والخدمات قبل البناء، ثم ننسق نقاط الالتقاء والواجهات حتى يظهر الجزء الجديد متكاملًا مع الموقع.',
     deliverables: [
       'معاينة المساحة والاستخدام',
       'أعمال مدنية وبناء حسب النطاق',
       'تأسيس الكهرباء والسباكة والفتحات',
-      'عزل وتشطيب وربط بالعقار القائم',
+      'تشطيب وربط بالعقار القائم',
     ],
     process: [
       'مراجعة المساحة والمخططات',
       'تنفيذ الأعمال المدنية',
-      'تأسيس الخدمات والعزل',
+      'تأسيس الخدمات',
       'التشطيب والمراجعة',
     ],
     faqs: [
@@ -164,40 +169,6 @@ export const serviceAreaLandings: ServiceAreaLandingContent[] = [
         question: 'كيف تُربط خدمات الملحق بالمنزل؟',
         answer:
           'تُراجع نقاط الكهرباء والتغذية والصرف ومساراتها قبل البناء لتقليل التعارض والتعديلات اللاحقة.',
-      },
-    ],
-  },
-  {
-    key: 'roof-insulation-ahsa',
-    title: 'شركة عزل أسطح في الأحساء للعزل المائي والحراري',
-    serviceKey: SERVICE_KEYS.roofInsulation,
-    areaKey: 'ahsa',
-    summary:
-      'عزل أسطح في الأحساء لمعالجة تأثير الحرارة ومياه الأمطار عبر تجهيز السطح وضبط المصارف وتنفيذ نظام مائي أو حراري مناسب.',
-    localAngle:
-      'تحتاج أسطح الأحساء إلى مراجعة الميول والمصارف والفواصل ومناطق التقاء الجدران قبل اختيار طبقات العزل، ثم اختبار التصريف وحماية النظام بعد التنفيذ.',
-    deliverables: [
-      'فحص السطح والميول والمصارف',
-      'معالجة الفواصل وتجهيز القاعدة',
-      'تنفيذ العزل المائي أو الحراري المتفق عليه',
-      'اختبار التصريف وحماية الطبقات',
-    ],
-    process: ['المعاينة وتحديد النظام', 'التجهيز والمعالجات', 'تطبيق العزل', 'الاختبار والحماية'],
-    faqs: [
-      {
-        question: 'هل تنفذون عزلًا مائيًا وحراريًا في الأحساء؟',
-        answer:
-          'نحدد النظام المطلوب بعد معاينة السطح، ويمكن الجمع بين الحماية المائية والحرارية بحسب الحالة.',
-      },
-      {
-        question: 'هل تُراجع ميول السطح قبل العزل؟',
-        answer:
-          'نعم، تُفحص الميول والمصارف لأن تجمع المياه أو ضعف التصريف يؤثر في أداء نظام العزل.',
-      },
-      {
-        question: 'هل يحتاج السطح إلى إزالة الطبقات القديمة؟',
-        answer:
-          'يعتمد ذلك على تماسك الطبقات القائمة ونوعها ووجود تلف؛ تُحدد الإزالة أو المعالجة بعد الفحص.',
       },
     ],
   },

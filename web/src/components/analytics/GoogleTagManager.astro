@@ -4,8 +4,12 @@ const { placement } = Astro.props as { placement: 'head' | 'body' }
 const gtmId = parseGtmId(import.meta.env.PUBLIC_GTM_ID)
 ---
 
-{gtmId && placement === 'head' && <script is:inline src="/gtm-loader.js" data-gtm-id={gtmId} />}
-{placement === 'body' && <script is:inline src="/contact-events.js" />}
+{
+  gtmId && placement === 'head' && (
+    <script is:inline defer src="/gtm-loader.js" data-gtm-id={gtmId} />
+  )
+}
+{placement === 'body' && <script is:inline defer src="/contact-events.js" />}
 {
   gtmId && placement === 'body' && (
     <>

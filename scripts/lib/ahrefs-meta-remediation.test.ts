@@ -15,7 +15,7 @@ describe('buildAhrefsMetaRemediationPatches', () => {
 
     const patches = buildAhrefsMetaRemediationPatches(documents)
 
-    expect(patches).toHaveLength(19)
+    expect(patches).toHaveLength(18)
     expect(patches).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
@@ -31,8 +31,8 @@ describe('buildAhrefsMetaRemediationPatches', () => {
           set: { 'seo.metaDescription': expect.stringContaining('كهربائي في الدمام') },
         }),
         expect.objectContaining({
-          documentId: 'post-roof-insulation-guide',
-          set: { 'seo.metaTitle': expect.stringContaining('عزل الأسطح') },
+          documentId: 'post-water-leak-before-renovation',
+          set: { 'seo.metaTitle': expect.stringContaining('إصلاح السباكة') },
         }),
       ]),
     )

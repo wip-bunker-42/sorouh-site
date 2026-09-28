@@ -24,6 +24,12 @@ const inferredRelated = data.projects.filter(
 )
 const related = (explicitRelated.length ? explicitRelated : inferredRelated).slice(0, 3)
 const hero = project.gallery?.[0]
+const localServices = data.serviceAreaLandings.filter(
+  (landing) =>
+    !landing.seo.noIndex &&
+    landing.serviceArea._id === project.serviceArea?._id &&
+    project.services?.some((service: any) => service._id === landing.service._id),
+)
 const videoSchema = (project.videos ?? [])
   .map(videoObjectFromYouTube)
   .filter((item: any) => item !== null)
@@ -121,6 +127,23 @@ const videoSchema = (project.videos ?? [])
         </div>
       </section>
     ))
+  }{
+    localServices.length > 0 && (
+      <section class="section-sm">
+        <div class="container">
+          <h2>خدمات مرتبطة في {project.serviceArea.title}</h2>
+          <div class="grid grid-3">
+            {localServices.map((landing) => (
+              <ListingCard
+                href={`/الخدمات/${landing.service.slug}/${landing.serviceArea.slug}/`}
+                title={landing.title}
+                summary={landing.summary}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    )
   }{
     related.length > 0 && (
       <section class="section related">

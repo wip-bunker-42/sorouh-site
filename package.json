@@ -27,6 +27,7 @@
     "audit:media": "tsx scripts/lib/audit-source-assets.ts",
     "typegen": "pnpm --filter @sorouh/studio typegen",
     "seed:sorouh": "pnpm --dir studio exec sanity exec ../scripts/seed-sorouh.ts --with-user-token --",
+    "cms:service-cleanup": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-service-content-cleanup.ts --",
     "seo:expand:dry": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-seo-expansion.ts -- --dry-run",
     "seo:expand": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-seo-expansion.ts -- --apply",
     "seo:keyword-wave:dry": "pnpm --dir studio exec sanity exec --with-user-token ../scripts/apply-keyword-content-wave.ts -- --dry-run",
