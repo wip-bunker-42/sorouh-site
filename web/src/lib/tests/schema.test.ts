@@ -14,6 +14,12 @@ const context = {
 }
 
 describe('SEO schema graph', () => {
+  test('does not advertise round-the-clock availability without verified opening hours', () => {
+    const contractor = buildBaseSchema(context).find(
+      (entry) => entry['@type'] === 'GeneralContractor',
+    )
+    expect(contractor).not.toHaveProperty('openingHours')
+  })
   test('uses stable IDs and connects page, site, and contractor', () => {
     const graph = buildBaseSchema(context)
     expect(graph).toEqual(

@@ -46,8 +46,8 @@ export const KEYWORD_RESEARCH_FINDINGS = [
     geography: 'الدمام',
     avgMonthlySearches: 2400,
     competition: 'MEDIUM',
-    disposition: 'active',
-    rationale: 'طلب محلي قوي لخدمة عزل مدعومة بالفعل.',
+    disposition: 'exclude',
+    rationale: 'خدمة غير مقدمة بحسب تأكيد صاحب النشاط؛ لا تُنشأ لها صفحة أو مالك كلمة.',
   },
   {
     phrase: 'مقاول ترميم الدمام',
@@ -158,9 +158,8 @@ export const KEYWORD_RESEARCH_FINDINGS = [
     geography: 'المنطقة الشرقية',
     avgMonthlySearches: 2400,
     competition: 'LOW',
-    disposition: 'candidate',
-    rationale:
-      'الطلب مرتفع لكن لا تُنشأ مدينة جديدة قبل ظهور بيانات الانطباعات أو الحاجة المحلية المميزة.',
+    disposition: 'exclude',
+    rationale: 'خدمة غير مقدمة بحسب تأكيد صاحب النشاط؛ لا تُنشأ لها صفحة أو مالك كلمة.',
   },
   {
     phrase: 'قص خرسانة الدمام',

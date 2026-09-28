@@ -1,10 +1,12 @@
 ---
 import '../styles/global.css'
+import arabicFont from '@fontsource-variable/noto-sans-arabic/files/noto-sans-arabic-arabic-wght-normal.woff2?url'
 import Breadcrumbs from '../components/Breadcrumbs.astro'
 import ContactActions from '../components/ContactActions.astro'
 import { loadSnapshot } from '../lib/content/load-snapshot'
 import { canonicalUrl } from '../lib/url'
 import { contactLinks } from '../lib/phone'
+import { contactContextForPath } from '../lib/contact-context'
 import GoogleTagManager from '../components/analytics/GoogleTagManager.astro'
 import { SITE_ORIGIN } from '../config/site'
 import { buildBaseSchema } from '../lib/seo/schema'
@@ -33,7 +35,8 @@ const {
 const snapshot = loadSnapshot()
 const settings = snapshot.siteSettings
 const canonical = canonicalUrl(path, canonicalOverride).href
-const primary = contactLinks(settings.primaryPhone)
+const contactContext = contactContextForPath(path, snapshot)
+const primary = contactLinks(settings.primaryPhone, contactContext.message)
 const graph: Record<string, unknown>[] = [
   ...buildBaseSchema({
     origin: SITE_ORIGIN,
@@ -58,6 +61,7 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
   <head>
     <GoogleTagManager placement="head" />
     <meta charset="UTF-8" /><meta name="viewport" content="width=device-width" />
+    <link rel="preload" href={arabicFont} as="font" type="font/woff2" crossorigin="anonymous" />
     <title>{title}</title><meta name="description" content={description} />
     <meta
       name="robots"
@@ -87,13 +91,16 @@ const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': grap
     />
     <script is:inline type="application/ld+json" set:html={jsonLd} />
   </head>
-  <body>
+  <body
+    data-contact-service={contactContext.serviceSlug}
+    data-contact-area={contactContext.areaSlug}
+  >
     <GoogleTagManager placement="body" />
     <a class="skip-link" href="#main">انتقل إلى المحتوى</a>
     <header class="site-header">
       <div class="top">
         <div class="container top-inner">
-          <span>متاحون {settings.availability}</span><a
+          <span>{settings.availability}</span><a
             href={primary.tel}
             dir="ltr"
             data-contact

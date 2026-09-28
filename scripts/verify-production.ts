@@ -11,21 +11,28 @@ type VerifyOptions = {
 const ORIGIN = 'https://sorouh.site'
 const REQUEST_TIMEOUT_MS = 15_000
 const REQUIRED_SEO_URLS = [
-  '/الخدمات/عزل-الاسطح/',
-  '/الخدمات/كشف-ومعالجة-تسربات-المياه/',
-  '/الخدمات/بناء-الملاحق/',
-  '/الخدمات/الهدم-والازالة/',
   '/الخدمات/ترميم-منازل-وفلل/الدمام/',
-  '/الخدمات/عزل-الاسطح/الدمام/',
+  '/الخدمات/دهانات-داخلية-وخارجية/الدمام/',
+  '/الخدمات/جبس-بورد/الدمام/',
   '/الخدمات/اعمال-السباكة/الدمام/',
   '/الخدمات/اعمال-الكهرباء/الدمام/',
+  '/الخدمات/مقاول-بناء/الدمام/',
+  '/الخدمات/ترميم-منازل-وفلل/الخبر/',
   '/الخدمات/دهانات-داخلية-وخارجية/الخبر/',
-  '/الخدمات/دهانات-داخلية-وخارجية/الاحساء/',
-  '/المدونة/دليل-اختيار-عزل-الاسطح/',
+  '/الخدمات/اعمال-السباكة/الخبر/',
+  '/الخدمات/بناء-الملاحق/',
+  '/الخدمات/الهدم-والازالة/',
   '/المدونة/علامات-تسرب-المياه-قبل-الترميم/',
   '/المدونة/تخطيط-الجبس-بورد-قبل-الاغلاق/',
   '/المدونة/تجهيز-الجدران-قبل-الدهان/',
   '/المدونة/قائمة-بناء-ملحق-للفيلا/',
+] as const
+const WITHDRAWN_URLS = [
+  '/الخدمات/عزل-الاسطح/',
+  '/الخدمات/كشف-ومعالجة-تسربات-المياه/',
+  '/الخدمات/عزل-الاسطح/الدمام/',
+  '/الخدمات/عزل-الاسطح/الاحساء/',
+  '/المدونة/دليل-اختيار-عزل-الاسطح/',
 ] as const
 
 function assert(condition: unknown, message: string): asserts condition {
@@ -82,10 +89,21 @@ export async function verifyProduction({
         pagesXml.includes(`<loc>${ORIGIN}/</loc>`),
         'page sitemap does not include the home URL',
       )
+      const pageUrls = new Set(
+        [...pagesXml.matchAll(/<loc>\s*([^<]+?)\s*<\/loc>/g)].map(
+          (match) => new URL(match[1]!).href,
+        ),
+      )
+      for (const path of WITHDRAWN_URLS) {
+        assert(
+          !pageUrls.has(new URL(path, ORIGIN).href),
+          `page sitemap still includes withdrawn ${path}`,
+        )
+      }
       for (const path of REQUIRED_SEO_URLS) {
         const url = `${ORIGIN}${path}`
         const canonical = new URL(path, ORIGIN).href
-        assert(pagesXml.includes(`<loc>${url}</loc>`), `page sitemap does not include ${path}`)
+        assert(pageUrls.has(canonical), `page sitemap does not include ${path}`)
         const response = await request(url)
         assert(response.status === 200, `${path} returned ${response.status}`)
         const html = await response.text()
@@ -99,12 +117,16 @@ export async function verifyProduction({
         )
         assert((html.match(/<h1(?:\s[^>]*)?>/g) ?? []).length === 1, `${path} does not have one H1`)
       }
+      for (const path of WITHDRAWN_URLS) {
+        const response = await request(`${ORIGIN}${path}`, { redirect: 'manual' })
+        assert(response.status === 404, `withdrawn ${path} returned ${response.status}`)
+      }
 
       const www = await request('https://www.sorouh.site/', { redirect: 'manual' })
       assert(www.status === 301, `www redirect returned ${www.status}`)
       assert(www.headers.get('location') === `${ORIGIN}/`, 'www redirect target is not canonical')
 
-      return { origin: ORIGIN, checkedUrls: 4 + REQUIRED_SEO_URLS.length }
+      return { origin: ORIGIN, checkedUrls: 4 + REQUIRED_SEO_URLS.length + WITHDRAWN_URLS.length }
     },
     attempts,
     retryDelayMs,

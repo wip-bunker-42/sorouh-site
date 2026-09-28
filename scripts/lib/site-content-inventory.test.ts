@@ -22,12 +22,7 @@ describe('Sorouh content inventory', () => {
   })
 
   test('includes every newly confirmed service with complete commercial content', () => {
-    const required = [
-      'roof-insulation',
-      'water-leak-detection',
-      'annex-construction',
-      'demolition-removal',
-    ]
+    const required = ['annex-construction', 'demolition-removal']
     for (const key of required) {
       const service = services.find((item) => item.key === key)
       expect(service, key).toBeDefined()
@@ -42,7 +37,6 @@ describe('Sorouh content inventory', () => {
 
   test('adds only the approved decision guides with related services', () => {
     const required = [
-      'roof-insulation-guide',
       'water-leak-before-renovation',
       'gypsum-board-planning',
       'wall-preparation-before-painting',

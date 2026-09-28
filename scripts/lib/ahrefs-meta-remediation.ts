@@ -105,17 +105,12 @@ export const AHREFS_META_DESCRIPTION_TARGETS: readonly AhrefsMetaDescriptionTarg
   {
     documentId: 'post-water-leak-before-renovation',
     documentType: 'post',
-    metaTitle: 'علامات تسرب المياه قبل الترميم | صروح الشرقية',
+    metaTitle: 'رطوبة الجدران وإصلاح السباكة قبل الترميم | صروح الشرقية',
   },
   {
     documentId: 'post-wall-preparation-before-painting',
     documentType: 'post',
     metaTitle: 'تجهيز الجدران قبل الدهان | صروح الشرقية',
-  },
-  {
-    documentId: 'post-roof-insulation-guide',
-    documentType: 'post',
-    metaTitle: 'دليل اختيار عزل الأسطح | صروح الشرقية',
   },
 ]
 

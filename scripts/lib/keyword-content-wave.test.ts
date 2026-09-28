@@ -19,7 +19,6 @@ describe('keyword content wave', () => {
         'painter-qatif',
         'plumbing-dammam',
         'plumbing-khobar',
-        'roof-insulation-dammam',
       ].sort(),
     )
   })

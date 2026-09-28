@@ -1,4 +1,4 @@
-@import '@fontsource-variable/noto-sans-arabic';
+@import './fonts.css';
 
 :root {
   --navy-950: #071629;
@@ -91,6 +91,7 @@ a {
   letter-spacing: 0.08em;
 }
 .home-hero .eyebrow,
+.hero .eyebrow,
 .page-hero .eyebrow,
 .detail-hero .eyebrow,
 .area-hero .eyebrow,

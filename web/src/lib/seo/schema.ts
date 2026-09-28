@@ -31,7 +31,6 @@ export function buildBaseSchema(context: SchemaContext): Record<string, unknown>
       url: `${context.origin}/`,
       logo: { '@type': 'ImageObject', url: `${context.origin}/brand/logo.png` },
       telephone: context.phones,
-      openingHours: 'Mo-Su 00:00-23:59',
       areaServed: context.areas.map((name) => ({ '@type': 'City', name })),
     },
     {
