@@ -54,7 +54,9 @@ test('contact events attribute the action to its landing page', async ({ page })
   expect(event).toMatchObject({
     event: 'contact_click',
     contact_type: 'whatsapp',
-    page_path: encodeURI('/الخدمات/مقاولات-عامة/'),
+    page_path: '/الخدمات/مقاولات-عامة/',
+    service_slug: 'مقاولات-عامة',
+    area_slug: 'regional',
   })
 })
 test('article has toc shares CTAs and copy action', async ({ page }) => {
