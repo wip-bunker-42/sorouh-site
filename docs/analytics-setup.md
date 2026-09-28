@@ -1,38 +1,34 @@
-# إعداد GA4 وGTM لصروح
+# قياس التواصل لصروح
 
-يُفعّل القياس من Google Tag Manager فقط بعد إنشاء الحسابات ونشر Container صالح. الموقع لا يرسل رقم الهاتف أو رابط واتساب أو نص الرسالة ضمن بيانات الحدث.
+نستخدم الحسابات القائمة: حساب «شركة الصروح»، خاصية GA4 «الصروح»، تدفق «صروح موقع» على `https://sorouh.site`، وحاوية GTM «الصروح للمقاولات». القياس يوضح الاهتمام بالتواصل؛ الضغط على زر الاتصال أو واتساب لا يثبت اكتمال مكالمة أو وصول طلب مؤهل.
 
-## الأسماء المعتمدة
+## الأحداث والمعلمات
 
-- GA4 property: `Sorouh Site`
-- Web stream: `Sorouh Production` — `https://sorouh.site`
-- GTM container: `Sorouh Website` — Web
-- GA4 Configuration tag: `GA4 - Sorouh Production`
-- Custom event tag: `GA4 Event - contact_click`
-- Trigger: `Custom Event - contact_click`
-- Event name: `contact_click`
-- Event parameters: `contact_type`, `contact_location`, `page_path`
+الموقع يضع حدث `contact_click` في `dataLayer` مرة واحدة لكل نقرة، قبل تحميل GTM أو بعده. طابور الذاكرة يمنع فقد النقرات المبكرة، ولا يرسل بيانات بمفرده. يستقبل Tag «GA4 - Contact Click» الحدث من Trigger «Contact Click».
 
-في GA4 تُنشأ حدثان مشتقان ويُعلنان Key events:
+| المعلمة            | المصدر والغرض                                                        |
+| ------------------ | -------------------------------------------------------------------- |
+| `contact_type`     | `call` أو `whatsapp` من الزر                                         |
+| `contact_location` | موضع الزر مثل `local_service_hero`                                   |
+| `page_path`        | متغير GTM «Page Path»؛ مسار الصفحة دون الاستعلام                     |
+| `service_slug`     | Data Layer Variable، اسم الخدمة في المسار الموثق أو `general`        |
+| `area_slug`        | Data Layer Variable، المدينة في الصفحة المحلية الموثقة أو `regional` |
 
-- `call_click` عندما `contact_type` يساوي `call`.
-- `whatsapp_click` عندما `contact_type` يساوي `whatsapp`.
+لا يُضاف رقم الهاتف أو رابط واتساب أو نص الرسالة إلى معلمات الحدث. قياس الروابط الصادرة الآلي في Enhanced Measurement معطل لتجنب إرسال رابط واتساب. بقية خيارات Enhanced Measurement القائمة محفوظة.
 
-## إعداد GTM
+في GA4 حدثان مشتقان، مع نسخ معلمات المصدر:
 
-1. أنشئ Property وWeb stream بالأسماء أعلاه، ثم انسخ Measurement ID إلى Tag الإعداد في GTM.
-2. أنشئ Trigger من نوع Custom Event، Event name يساوي `contact_click`.
-3. أنشئ Tag من نوع Google Analytics: GA4 Event باسم `contact_click`، وأضف Event Parameters الثلاثة من Data Layer Variables بالأسماء نفسها.
-4. لا تنشئ Variable أو Parameter من `href` أو رقم هاتف أو محتوى رسالة واتساب.
-5. في Preview اختبر مواضع الاتصال: header، service hero، service end، area hero، area end، footer، mobile bar.
-6. لا تنشر Container قبل أن يظهر event واحد على الأقل بكل من `contact_type` و`contact_location` و`page_path` في Preview.
+- `call_click`: `event_name = contact_click` و`contact_type = call`.
+- `whatsapp_click`: `event_name = contact_click` و`contact_type = whatsapp`.
+
+كلاهما Key event، العد لكل حدث، دون قيمة مالية افتراضية. الأبعاد المخصصة على مستوى الحدث: «الخدمة المطلوبة» (`service_slug`)، «مدينة المشروع» (`area_slug`)، «وسيلة التواصل» (`contact_type`)، «موضع زر التواصل» (`contact_location`).
 
 ## النشر والتحقق
 
-1. أضف Container ID العام فقط بصيغة `GTM-...` في Cloudflare Workers Builds production variable باسم `PUBLIC_GTM_ID`.
-2. لا تضف القيمة إلى Git أو إلى `web/.env` المحلي.
-3. شغّل rebuild للإنتاج ثم افحص HTML: يظهر GTM loader وnoscript فقط عند وجود المتغير.
-4. نفّذ نقرة اتصال ونقرة واتساب في GTM Preview، ثم تحقق من GA4 DebugView وRealtime.
-5. راجع Enhanced Measurement واحتياجات الخصوصية/الكوكيز قبل إضافة أي Tag إضافي.
+1. استخدم الحاوية القائمة؛ لا تنشئ Tag إعداد GA4 إضافيًا يكرر `page_view`.
+2. في GTM Preview اختبر الاتصال وواتساب دون تنفيذ مكالمة أو إرسال رسالة. افحص أن كل تفاعل يولد `contact_click` واحدًا.
+3. تحقق من وصول الحدثين المشتقين والمعلمات إلى GA4 DebugView؛ اختبر أيضًا صفحة خدمة عامة حتى لا تُنسب تلقائيًا لمدينة معينة.
+4. انشر إصدار GTM بعد نجاح الفحص. ضع Container ID العام في Cloudflare Workers Builds production variable باسم `PUBLIC_GTM_ID` فقط، خارج Git و`web/.env`.
+5. أعد بناء الإنتاج وافحص وجود loader واحد وnoscript. عندما يكون المتغير فارغًا يغيب GTM markup، ويبقى طابور النقرات محليًا.
 
-عندما يكون `PUBLIC_GTM_ID` فارغًا لا يظهر GTM markup. يبقى مستمع `contact-events.js` خفيفًا في الصفحة، ولا ينشئ أو يرسل أي بيانات ما لم يوفّر GTM `dataLayer`.
+اختبار 28 سبتمبر 2026 أكد استلام نقرة اتصال ونقرة واتساب من معاينة صفحة الجبس في الدمام، مع `service_slug = جبس-بورد` و`area_slug = الدمام`. هذه نقرات اختبار وليست طلبات عملاء. التقارير العادية والأبعاد الجديدة تحتاج وقتًا للمعالجة؛ DebugView هو دليل الفحص الفوري.

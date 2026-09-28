@@ -75,7 +75,14 @@ export function buildKeywordContentWavePlan(
       service: reference(service.id),
       serviceArea: reference(area.id),
       heroImage: service.heroImage,
-      intro: [block(entry.title, 0, 'h2'), block(entry.localAngle, 1, 'normal')],
+      intro: [
+        block(entry.title, 0, 'h2'),
+        block(entry.localAngle, 1, 'normal'),
+        ...(entry.planning ?? []).flatMap((section, index) => [
+          block(section.title, 2 + index * 2, 'h2'),
+          block(section.body, 3 + index * 2, 'normal'),
+        ]),
+      ],
       deliverables: entry.deliverables,
       process: entry.process,
       faqs: entry.faqs.map((item, index) => faq(item, index, `faq-${entry.key}`)),

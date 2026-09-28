@@ -19,8 +19,6 @@ if (config.projectId !== EXPECTED_PROJECT_ID || config.dataset !== DATASET) {
 }
 
 const featuredServiceIds = [
-  `service-${SERVICE_KEYS.roofInsulation}`,
-  `service-${SERVICE_KEYS.leakDetection}`,
   `service-${SERVICE_KEYS.annexConstruction}`,
   `service-${SERVICE_KEYS.demolition}`,
 ]

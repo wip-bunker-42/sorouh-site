@@ -1,5 +1,6 @@
 import { SERVICE_KEYS } from '../site-content'
 import type { ServiceAreaLandingContent } from '../service-area-landings'
+import { qualifiedLandingSections } from '../qualified-service-content'
 
 type Faq = { question: string; answer: string }
 
@@ -22,49 +23,8 @@ export type KeywordContentImprovement = {
 
 export const keywordContentWave = [
   {
-    key: 'roof-insulation-dammam',
-    mode: 'create',
-    targetId: 'roof-insulation-dammam',
-    primaryKeyword: 'عزل اسطح الدمام',
-    title: 'عزل أسطح في الدمام للعزل المائي والحراري',
-    serviceKey: SERVICE_KEYS.roofInsulation,
-    areaKey: 'dammam',
-    summary:
-      'عزل أسطح في الدمام يبدأ بفحص طبقات السطح والمصارف والميول، ثم اختيار نظام مائي أو حراري مناسب لحالة السطح ونطاق العمل.',
-    localAngle:
-      'في عقارات الدمام نراجع التقاء السطح بالجدران والخزانات ومخارج التصريف قبل التنفيذ، لأن معالجة هذه النقاط تحدد جاهزية السطح لاستقبال طبقات العزل.',
-    deliverables: [
-      'فحص طبقات السطح والتلف الظاهر',
-      'مراجعة الميول ومخارج التصريف',
-      'تجهيز الفواصل والنقاط الحساسة',
-      'تطبيق نظام العزل المتفق عليه وحمايته',
-    ],
-    process: [
-      'معاينة السطح وتحديد نوع العزل',
-      'تنظيف السطح ومعالجة القاعدة',
-      'تنفيذ الطبقات حسب النظام المعتمد',
-      'فحص التصريف وحماية مناطق الحركة',
-    ],
-    faqs: [
-      {
-        question: 'هل العزل المائي يكفي لسطح المنزل في الدمام؟',
-        answer:
-          'يعتمد ذلك على حالة السطح وهدف العمل؛ قد يحتاج السطح حماية مائية فقط أو مائية وحرارية بعد المعاينة.',
-      },
-      {
-        question: 'هل يجب إصلاح الميول قبل عزل السطح؟',
-        answer:
-          'تُراجع الميول والمصارف أولًا، لأن تجمع المياه يحتاج معالجة قبل تغطية السطح بطبقات جديدة.',
-      },
-      {
-        question: 'هل يمكن عزل سطح عليه طبقات قديمة؟',
-        answer:
-          'يُقرر ذلك بعد فحص تماسك الطبقات القائمة ووجود انتفاخ أو تشقق أو مناطق مفصولة عن القاعدة.',
-      },
-    ],
-  },
-  {
     key: 'plumbing-dammam',
+    planning: qualifiedLandingSections.plumbing,
     mode: 'create',
     targetId: 'plumbing-dammam',
     primaryKeyword: 'سباك الدمام',
@@ -107,6 +67,7 @@ export const keywordContentWave = [
   },
   {
     key: 'electrical-dammam',
+    planning: qualifiedLandingSections.electrical,
     mode: 'create',
     targetId: 'electrical-dammam',
     primaryKeyword: 'كهربائي الدمام',
@@ -149,6 +110,7 @@ export const keywordContentWave = [
   },
   {
     key: 'gypsum-dammam',
+    planning: qualifiedLandingSections['gypsum-board'],
     mode: 'create',
     targetId: 'gypsum-dammam',
     primaryKeyword: 'جبس بورد الدمام',
@@ -191,6 +153,7 @@ export const keywordContentWave = [
   },
   {
     key: 'building-contractor-dammam',
+    planning: qualifiedLandingSections['building-contractor'],
     mode: 'create',
     targetId: 'building-contractor-dammam',
     primaryKeyword: 'مقاول بناء الدمام',
@@ -275,6 +238,7 @@ export const keywordContentWave = [
   },
   {
     key: 'painter-khobar',
+    planning: qualifiedLandingSections['interior-exterior-painting'],
     mode: 'create',
     targetId: 'painter-khobar',
     primaryKeyword: 'صباغ الخبر',
@@ -317,6 +281,7 @@ export const keywordContentWave = [
   },
   {
     key: 'plumbing-khobar',
+    planning: qualifiedLandingSections.plumbing,
     mode: 'create',
     targetId: 'plumbing-khobar',
     primaryKeyword: 'سباك الخبر',
@@ -530,7 +495,7 @@ export const keywordContentWaveImprovements = [
           'يبدأ التجديد بعد معالجة سبب التسرب والتأكد من جاهزية السطح، ثم تُنفذ طبقات التحضير والدهان المناسبة.',
       },
     ],
-    internalLinkTargets: ['كشف-ومعالجة-تسربات-المياه', 'جبس-بورد', 'ترميم-منازل-وفلل'],
+    internalLinkTargets: ['اعمال-السباكة', 'جبس-بورد', 'ترميم-منازل-وفلل'],
   },
   {
     key: 'annex-dammam',
@@ -539,7 +504,7 @@ export const keywordContentWaveImprovements = [
     primaryKeyword: 'بناء ملاحق الدمام',
     title: 'بناء ملاحق في الدمام للفلل والمنازل',
     summary:
-      'بناء ملاحق ومجالس وغرف خدمات في الدمام مع ضبط المناسيب وفتحات الكهرباء والسباكة والعزل والتشطيب ضمن نطاق منسق.',
+      'بناء ملاحق ومجالس وغرف خدمات في الدمام مع ضبط المناسيب وفتحات الكهرباء والسباكة والتشطيب ضمن نطاق منسق.',
     additionalFaqs: [
       {
         question: 'هل تُراجع فتحات الخدمات قبل إغلاق مباني الملحق؟',

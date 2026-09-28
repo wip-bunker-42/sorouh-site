@@ -1,5 +1,7 @@
 ---
 import { contactLinks } from '../lib/phone'
+import { contactContextForPath } from '../lib/contact-context'
+import { loadSnapshot } from '../lib/content/load-snapshot'
 type Props = {
   primary: string
   backup?: string
@@ -18,7 +20,8 @@ const {
   action = 'whatsapp',
   label,
 } = Astro.props
-const first = contactLinks(primary)
+const contactContext = contactContextForPath(Astro.url.pathname, loadSnapshot())
+const first = contactLinks(primary, contactContext.message)
 const second = backup ? contactLinks(backup) : null
 const preferredHref = action === 'call' ? first.tel : first.whatsapp
 const alternateHref = action === 'call' ? first.whatsapp : first.tel

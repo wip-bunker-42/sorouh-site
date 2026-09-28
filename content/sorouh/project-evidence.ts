@@ -18,7 +18,7 @@ export const projectDrafts: ProjectDraft[] = [
       'معالجة الحواف ومراجعة السطح النهائي',
     ],
     result:
-      'أسطح متجانسة وخطوط معمارية واضحة أصبحت جاهزة لاستقبال أعمال العزل والدهانات والتشطيبات الخارجية.',
+      'أسطح متجانسة وخطوط معمارية واضحة أصبحت جاهزة لاستقبال أعمال الدهانات والتشطيبات الخارجية.',
     mediaKeys: ['building-plastering-video'],
     youtubeUrl: 'https://youtube.com/shorts/IK7jw0fu3zE?feature=share',
     youtubeUploadDate: '2026-08-12',

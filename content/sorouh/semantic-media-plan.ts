@@ -302,20 +302,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       alt: 'سقف جبس بورد مقاوم للرطوبة منفذ في المنطقة الشرقية',
     },
     {
-      target: `service-${SERVICE_KEYS.roofInsulation}`,
-      role: 'service',
-      assetKey: 'generated-roof-insulation',
-      topic: 'roof-insulation',
-      alt: 'تنفيذ عزل مائي وحراري حول مصارف وحواف سطح فيلا سكنية',
-    },
-    {
-      target: `service-${SERVICE_KEYS.leakDetection}`,
-      role: 'service',
-      assetKey: 'generated-water-leak-detection',
-      topic: 'water-leak-detection',
-      alt: 'فني يفحص موضع رطوبة في جدار داخلي بأجهزة قياس مخصصة',
-    },
-    {
       target: `service-${SERVICE_KEYS.annexConstruction}`,
       role: 'service',
       assetKey: 'generated-annex-construction',
@@ -385,13 +371,6 @@ export const sorouhSemanticMediaPlan: SemanticMediaPlan = {
       assetKey: 'source-porcelain',
       topic: 'tile-porcelain',
       alt: 'تفاصيل تشطيب حمام ببورسلان رخامي ذهبي في الدمام',
-    },
-    {
-      target: 'post-roof-insulation-guide',
-      role: 'post',
-      assetKey: 'generated-blog-roof-insulation-guide',
-      topic: 'roof-insulation-guide',
-      alt: 'سطح فيلا سكنية مجهز بمصارف ومواد عزل مائي قبل التنفيذ',
     },
     {
       target: 'post-water-leak-before-renovation',

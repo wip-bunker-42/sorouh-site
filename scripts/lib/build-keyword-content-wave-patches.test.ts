@@ -84,3 +84,28 @@ test('refuses a create when its referenced service is missing', () => {
     'Missing service document for keyword content: plumbing',
   )
 })
+
+test('includes decision sections inside the landing intro without changing the service reference', () => {
+  const fixture = input()
+  fixture.entries = [
+    {
+      ...fixture.entries[0]!,
+      planning: [{ title: 'قبل التنفيذ', body: 'راجع نقاط التغذية والصرف.' }],
+    },
+  ]
+  const created = buildKeywordContentWavePlan(fixture).creates[0]!
+
+  expect(created.service).toEqual({ _type: 'reference', _ref: 'service-plumbing' })
+  expect(created.intro).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        style: 'h2',
+        children: [expect.objectContaining({ text: 'قبل التنفيذ' })],
+      }),
+      expect.objectContaining({
+        style: 'normal',
+        children: [expect.objectContaining({ text: 'راجع نقاط التغذية والصرف.' })],
+      }),
+    ]),
+  )
+})
