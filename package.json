@@ -42,16 +42,16 @@
     "bootstrap:client": "pnpm --dir studio exec sanity exec ../scripts/bootstrap-client.ts --with-user-token"
   },
   "devDependencies": {
-    "@portabletext/markdown": "2.0.0",
-    "@sanity/client": "8.4.0",
-    "@types/node": "26.4.1",
-    "prettier": "3.9.6",
+    "@portabletext/markdown": "2.5.0",
+    "@sanity/client": "8.9.0",
+    "@types/node": "26.6.4",
+    "prettier": "3.9.9",
     "prettier-plugin-astro": "0.14.1",
-    "sanity": "6.12.0",
-    "sharp": "0.35.4",
-    "tsx": "4.23.13",
+    "sanity": "6.17.0",
+    "sharp": "0.35.5",
+    "tsx": "4.23.15",
     "typescript": "6.0.3",
     "vitest": "4.1.11",
-    "zod": "4.5.4"
+    "zod": "4.6.5"
   }
 }
