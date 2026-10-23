@@ -22,7 +22,7 @@
     "@portabletext/types": "4.0.2",
     "@sanity/client": "8.4.0",
     "@sanity/image-url": "2.1.1",
-    "astro": "7.2.10",
+    "astro": "7.3.3",
     "astro-portabletext": "1.0.0",
     "github-slugger": "2.0.0",
     "groq": "6.12.0",
