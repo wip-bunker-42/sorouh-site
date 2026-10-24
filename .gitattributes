@@ -1,1 +1,4 @@
 * text=auto eol=lf
+
+# Unified diff context lines include a required space, even on blank lines.
+patches/*.patch -whitespace

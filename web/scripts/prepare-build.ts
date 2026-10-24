@@ -10,6 +10,7 @@ import { validateRawSnapshot } from '../src/lib/content/validate'
 import { validateRenderContract } from '../src/lib/content/contract'
 import { redirects, rss, sitemapIndex, sitemapPages, sitemapVideos } from '../src/lib/seo/discovery'
 import { SITE_ORIGIN } from '../src/config/site'
+import { fetchBuildContent } from '../../scripts/check-published-content.mjs'
 
 const webRoot = fileURLToPath(new URL('..', import.meta.url))
 const outputPath = resolve(webRoot, 'src/data/site-snapshot.json')
@@ -40,7 +41,11 @@ export async function writeSnapshotAtomically(value: unknown, destination = outp
 }
 
 export async function prepareBuild(environment: NodeJS.ProcessEnv = process.env) {
-  const raw = await fetchRawSnapshot(environment)
+  const fixturePath = environment.CONTENT_FIXTURE_PATH?.trim()
+  const buildInput = fixturePath
+    ? { snapshot: await readFixture(fixturePath), digest: undefined }
+    : await fetchBuildContent(createBuildClient(environment), SITE_SNAPSHOT_QUERY)
+  const raw = buildInput.snapshot
   const snapshot = validateRenderContract(normalizeSnapshot(validateRawSnapshot(raw)))
   await writeSnapshotAtomically(snapshot)
   const publicDir = resolve(webRoot, 'public')
@@ -60,6 +65,13 @@ export async function prepareBuild(environment: NodeJS.ProcessEnv = process.env)
     ),
     writeFile(resolve(publicDir, '_redirects'), redirects(snapshot)),
   ])
+  const revisionPath = environment.DEPLOYED_CONTENT_REVISION_PATH
+  if (revisionPath) {
+    if (!buildInput.digest) throw new Error('A fixture build cannot record a production revision')
+    const destination = resolve(webRoot, revisionPath)
+    await mkdir(dirname(destination), { recursive: true })
+    await writeFile(destination, `${buildInput.digest}\n`)
+  }
   return snapshot
 }
 
