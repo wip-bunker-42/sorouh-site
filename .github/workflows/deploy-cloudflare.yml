@@ -1,0 +1,146 @@
+name: Deploy Cloudflare
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [sanity-content-update]
+  schedule:
+    - cron: '*/15 * * * *'
+
+permissions:
+  contents: read
+
+jobs:
+  source:
+    if: >-
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository) ||
+      ((github.event_name == 'workflow_dispatch' || github.event_name == 'repository_dispatch' ||
+        github.event_name == 'schedule') &&
+       github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      sha: ${{ steps.main.outputs.sha }}
+      changed: ${{ steps.content.outputs.changed }}
+    env:
+      CONTENT_REVISION_PATH: work/published-content.sha256
+    steps:
+      - name: Select the checked commit only while it is still main
+        id: main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKED_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          current_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+          if [ "$CHECKED_SHA" = "$current_sha" ]; then
+            echo "sha=$CHECKED_SHA" >> "$GITHUB_OUTPUT"
+          else
+            echo 'A newer main commit exists; this deployment is skipped.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        if: steps.main.outputs.sha != ''
+        with:
+          ref: ${{ steps.main.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        if: steps.main.outputs.sha != ''
+        with:
+          node-version: 24
+      - name: Restore the last successfully deployed content revision
+        if: steps.main.outputs.sha != ''
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: ${{ env.CONTENT_REVISION_PATH }}
+          key: sorouh-content-production-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: sorouh-content-production-
+      - name: Check published content without a Sanity token
+        if: steps.main.outputs.sha != ''
+        id: content
+        run: node scripts/check-published-content.mjs
+
+  deploy:
+    needs: source
+    if: >-
+      needs.source.outputs.sha != '' &&
+      (github.event_name != 'schedule' || needs.source.outputs.changed == 'true')
+    concurrency:
+      group: cloudflare-production
+      cancel-in-progress: false
+      queue: max
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: 'true'
+      PUBLIC_SANITY_PROJECT_ID: ki7bs4vk
+      PUBLIC_SANITY_DATASET: production
+      PUBLIC_SITE_ORIGIN: https://sorouh.site
+      PUBLIC_GTM_ID: GTM-MPNKM8RR
+      SANITY_STUDIO_PROJECT_ID: ki7bs4vk
+      SANITY_STUDIO_DATASET: production
+      DEPLOYED_CONTENT_REVISION_PATH: ../work/published-content.sha256
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ needs.source.outputs.sha }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 11.11.0
+          run_install: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --audit-level moderate
+      - name: Validate a manual or content rebuild
+        if: github.event_name != 'workflow_run'
+        run: pnpm check
+      - name: Build fresh published content after successful CI
+        if: github.event_name == 'workflow_run'
+        run: pnpm --filter @sorouh/web build
+      - run: pnpm --dir web deploy:dry
+      - name: Install Chromium for a manual or content rebuild
+        if: github.event_name != 'workflow_run'
+        run: pnpm --dir web exec playwright install --with-deps chromium
+      - name: Test a manual or content rebuild
+        if: github.event_name != 'workflow_run'
+        run: pnpm test:e2e
+      - name: Recheck main immediately before deployment
+        id: current
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHECKED_SHA: ${{ needs.source.outputs.sha }}
+        run: |
+          current_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+          if [ "$CHECKED_SHA" = "$current_sha" ]; then
+            echo 'deploy=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'Main changed during validation; this deployment is skipped.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Check the build recorded its actual content revision
+        if: steps.current.outputs.deploy == 'true'
+        run: test -s work/published-content.sha256
+      - name: Deploy Worker and static assets
+        if: steps.current.outputs.deploy == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: pnpm --dir web deploy
+      - name: Verify production
+        if: steps.current.outputs.deploy == 'true'
+        run: pnpm verify:production
+      - name: Save the latest successful content revision
+        if: steps.current.outputs.deploy == 'true'
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: work/published-content.sha256
+          key: sorouh-content-production-${{ github.run_id }}-${{ github.run_attempt }}

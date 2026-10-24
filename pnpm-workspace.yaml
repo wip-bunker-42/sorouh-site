@@ -19,13 +19,33 @@ minimumReleaseAgeExclude:
   - undici@7.29.0
 
 overrides:
-  fast-uri@>=3.0.0 <3.1.6: ^3.1.6
+  fast-uri@>=3.0.0 <3.1.8: ^3.1.8
   js-yaml@>=3.0.0 <3.15.2: 3.15.2
   js-yaml@>=4.0.0 <4.3.2: 4.3.2
-  sharp@<0.35.4: 0.35.4
+  sharp@<0.35.5: 0.35.5
   adm-zip@<0.6.1: 0.6.1
   svgo@>=4.0.0 <4.1.0: 4.1.0
-  devalue@<5.9.1: 5.9.1
-  smol-toml@<1.6.1: ^1.6.1
-  undici@>=7.0.0 <7.29.0: ^7.29.0
+  devalue@<5.9.3: 5.9.3
+  smol-toml@<1.8.1: ^1.8.1
+  undici@>=7.0.0 <7.29.1: ^7.29.1
+  undici@>=8.0.0 <8.10.2: ^8.10.2
   uuid@<11.1.1: ^11.1.1
+  brace-expansion@>=2.0.0 <2.1.7: 2.1.7
+  brace-expansion@>=4.0.0 <5.0.12: 5.0.12
+  dompurify@>=3.0.0 <3.4.17: 3.4.17
+  http-cache-semantics@>=4.0.0 <4.3.0: 4.3.0
+  markdown-it@>=14.0.0 <14.3.3: 14.3.3
+  source-map-js@>=1.0.0 <1.2.2: 1.2.2
+  vite@>=8.2.0 <8.2.4: ^8.2.4
+  zod@>=4.0.0 <4.6.6: 4.6.6
+
+patchedDependencies:
+  braces@3.0.3: patches/braces@3.0.3.patch
+
+# No upstream release exists for this advisory. The patch above bounds parser
+# and AST-walker depth; scripts/dependency-security.test.ts verifies the actual
+# Sanity dependency. Remove this exception with the patch when upstream fixes it.
+# See docs/security-dependencies.md for scope and raw-audit evidence.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-vfj7-8cjw-p6xm

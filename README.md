@@ -36,8 +36,9 @@ Seed صروح create-missing: لا يكتب فوق تغييرات المحرر. 
 
 - `CI` يعمل على `main` وكل Pull Request: تثبيت مقفل، تدقيق ثغرات متوسطة فأعلى، الفحص الكامل، Wrangler dry-run، واختبارات Chromium للديسكتوب والموبايل.
 - `Deploy Sanity Studio` يعمل عند تغييرات `studio/` على `main` وينشر Studio والـSchema إلى `sorouh-studio.sanity.studio` باستخدام GitHub Environment باسم `sanity-production`.
-- Cloudflare Workers Builds مرتبط مباشرة بالمستودع وينشر `sorouh-site` تلقائيًا من `main` بتوكن Cloudflare مخصص؛ لا تُخزن أسرار Cloudflare في GitHub لهذا المسار.
-- Webhook باسم `Cloudflare Production Rebuild` يعيد بناء الموقع عند نشر أو تحديث أو حذف محتوى `production` في Sanity؛ تعديلات المسودة وحدها لا تنشر الموقع.
+- `Deploy Cloudflare` ينشر `sorouh-site` من GitHub Actions بعد نجاح `CI` على آخر commit في `main`. يستخدم `CLOUDFLARE_API_TOKEN` و`CLOUDFLARE_ACCOUNT_ID` من GitHub Secrets داخل خطوة النشر فقط، ثم يفحص الإنتاج. لا يحتاج هذا المسار إلى ربط Git داخل Cloudflare.
+- يمكن تشغيل `Deploy Cloudflare` يدويًا على `main` أو بإرسال `repository_dispatch` من النوع `sanity-content-update`. يعيدان الفحص الكامل واختبارات المتصفح قبل النشر؛ نشر Pull Requests غير متاح.
+- يراجع GitHub محتوى Sanity المنشور بجدول كل 15 دقيقة باستخدام القراءة العامة، وينشر عند تغيره فقط. لا يحتاج مفتاح Sanity أو Webhook؛ المسودات وContent Releases غير المنشورة والأصول غير المستخدمة لا تغيّر البصمة. تُحفظ بصمة آخر نشر ناجح فقط في Actions Cache.
 - `pnpm verify:production` يفحص الدومين الأساسي وcanonical وsitemaps وتحويل `www` بعد النشر.
 - `Production Check` يعيد فحص الإنتاج يوميًا ويمكن تشغيله يدويًا من Actions.
 - Dependabot يراجع pnpm وGitHub Actions أسبوعيًا، ولا يدمج تحديثات تلقائيًا.

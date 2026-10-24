@@ -47,6 +47,37 @@ describe('repository automation contracts', () => {
     expect(deployStep).toContain('SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}')
   })
 
+  test('Cloudflare deploys checked main commits and exposes credentials only to the deployment', () => {
+    const workflow = read('.github/workflows/deploy-cloudflare.yml')
+
+    expect(workflow).toContain('workflows: [CI]')
+    expect(workflow).toContain("github.event.workflow_run.conclusion == 'success'")
+    expect(workflow).toContain("github.event.workflow_run.event == 'push'")
+    expect(workflow).toContain("github.event.workflow_run.head_branch == 'main'")
+    expect(workflow).toContain(
+      'github.event.workflow_run.head_repository.full_name == github.repository',
+    )
+    expect(workflow).toContain("github.ref == 'refs/heads/main'")
+    expect(workflow).toContain('types: [sanity-content-update]')
+    expect(workflow).toContain('ref: ${{ needs.source.outputs.sha }}')
+    expect(workflow).toContain('cancel-in-progress: false')
+    expect(workflow).toContain('persist-credentials: false')
+    expect(workflow).toContain('Recheck main immediately before deployment')
+    expect(workflow).toContain("if: steps.current.outputs.deploy == 'true'")
+    expect(workflow).toContain('pnpm check')
+    expect(workflow).toContain('pnpm test:e2e')
+    expect(workflow).toContain('pnpm verify:production')
+    expect(workflow).not.toContain('pull_request_target')
+    expect(workflow).not.toContain('actions/download-artifact')
+
+    const deployIndex = workflow.indexOf('- name: Deploy Worker and static assets')
+    expect(workflow.slice(0, deployIndex)).not.toContain('secrets.CLOUDFLARE_')
+    const deployStep = workflow.slice(deployIndex, workflow.indexOf('- name: Verify production'))
+    expect(deployStep).toContain('CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}')
+    expect(deployStep).toContain('CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}')
+    expect(deployStep).toContain('pnpm --dir web deploy')
+  })
+
   test('Dependabot maintains pnpm and GitHub Actions on a restrained weekly schedule', () => {
     const config = read('.github/dependabot.yml')
 
@@ -109,8 +140,8 @@ describe('repository automation contracts', () => {
   test('the release checklist records the current automated verification counts', () => {
     const checklist = read('docs/release-checklist.md')
 
-    expect(checklist).toContain('180 unit tests')
-    expect(checklist).toContain('7 build tests')
+    expect(checklist).toContain('282 unit tests')
+    expect(checklist).toContain('8 build tests')
     expect(checklist).toContain('24 browser tests')
     expect(checklist).not.toContain('158 unit tests')
     expect(checklist).not.toContain('128 unit tests')
